@@ -2,21 +2,13 @@
 
 open Microsoft.FSharp.Collections;
 open Microsoft.FSharp.Compiler;
-open Microsoft.FSharp.Compiler.Interactive;
 open Microsoft.FSharp.Control;
 open Microsoft.FSharp.Core;
-open Microsoft.FSharp.Core.CompilerServices;
 open Rop;
 open System;
-open System.Collections;
-open System.Collections.Generic;
-open System.Diagnostics;
 open System.IO;
-open System.Runtime.CompilerServices;
-open System.Runtime.InteropServices;
 open System.Text;
 open System.Text.RegularExpressions;
-open System.Threading;
 open Microsoft.FSharp.Compiler.Interactive.Shell
 
 type TranspilerError =
