@@ -1,6 +1,7 @@
 ﻿module CIPHERPrototype.Transpiler
 
 open Rop
+open FsiExe
 open Fsi
 open System
 open System.IO
@@ -277,6 +278,9 @@ let getJSW: bool     -> string -> Wrap.Wrapper<string> =
 let evalFSI: string -> Wrap.Wrapper<string> =
   fun        fsx    -> processCode processFSI fsx
 
+let evalFsiExe: string -> Wrap.Wrapper<string> =
+  fun           fsx    -> processCode processFsiExe fsx
+
 let nl = "\r\n"
 
 let errors2string file (ms:ErrMsg list) = ms |> List.map (fun m -> m.ErrMsg) |> String.concat nl |> sprintf "%s: %s" file
@@ -317,7 +321,8 @@ let readFile: string -> string =
     } |> Result.withError (errors2string name)
 
 type Transpiler(fscript: string) =
-    member this.EvalFS(                  ) = evalFSI fscript
+    member this.EvalFSI   (              ) = evalFSI         fscript
+    member this.EvalFsiExe(              ) = evalFsiExe      fscript
     member this.GetJS (minified          ) = getJSW minified fscript
     member this.GetJS (minified, callback) = getJSW minified fscript 
                                              |> Wrap.getResult callback
@@ -337,9 +342,9 @@ let translate source minified =
         return r |> Result.mapMsgs Result.getMessages
     }
 
-let evaluate source            = 
+let evaluate source           = 
     async {
-        let! r = Transpiler(source).EvalFS(       ) |> Wrap.getAsyncR
+        let! r = Transpiler(source).EvalFsiExe() |> Wrap.getAsyncR
         return r |> Result.mapMsgs Result.getMessages
     }
 

@@ -53,6 +53,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="FsiExe.fs" />
     <Compile Include="Fsi.fs" />
     <Compile Include="Transpiler.fs" />
     <Compile Include="Editor.fs" />
