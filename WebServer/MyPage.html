@@ -1,0 +1,157 @@
+﻿
+<h1>People</h1>v1.7
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+        </tr>
+    </thead>
+    <tbody ws-hole="TableBody">
+        <tr ws-template="TableRow1">
+            <td>${txtName}</td>
+            <td>${txtAge}</td>
+            <td><button ws-onclick="onRemove">Remove</button></td>
+        </tr>
+        <tr ws-template="TableRow2">
+            <td>${txtName}</td>
+            <td>${txtAge}</td>
+            <td><button ws-onclick="onRemove">Borrar</button></td>
+        </tr>
+        <tr ws-template="TableRow3">
+            <td>${txtName}</td>
+            <td>${txtAge}</td>
+            <td><button ws-onclick="onRemove">${txtBorrar}</button></td>
+        </tr>
+    </tbody>
+</table>
+<h1>Add a person</h1>
+<p><label>Name: <input ws-var="varAddPersonName" /></label></p>
+<p><label>Age: <input ws-var="varAddPersonAge" type="number" /></label></p>
+<p><button ws-attr="attrAddPersonSubmit">Add person</button></p>
+<p><label>Remove button text: <input ws-var="varRemoveText" /></label></p>
+
+<div ws-template="Input" class="form-group">
+    <label for="${Id}">${Label}</label>
+    <input type="${Type}" class="form-control" id="${Id}" ws-var="varInput" placeholder="${Label}" />
+</div>
+
+<div ws-template="LoginPane">
+    <form class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3">
+            <div class="panel panel-default shadow">
+                <div class="panel-body">
+                    <div ws-replace="Logo" />
+                    <ws-Input varInput="varEmail">
+                        <Id>exampleInputEmail</Id>
+                        <Label>Email address</Label>
+                        <Type>email</Type>
+                    </ws-Input>
+                    <ws-Input varInput="varPassword">
+                        <Id>exampleInputPassword</Id>
+                        <Label>Password</Label>
+                        <Type>password</Type>
+                    </ws-Input>
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div ws-template="Input2" >
+    <input type="${Type}" class="form-control" id="${Id}" ws-var="varInput" placeholder="${Label}" />
+    <br>
+</div>
+
+<div ws-template="Button">
+    <button type="${Type}" class="btn ${Class} btn-block" ws-onclick="Click">${Text}</button>
+</div>
+
+<div ws-template="LoginPane2">
+    <form class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3">
+            <div class="panel panel-default shadow">
+                <div class="panel-body" style="text-align:center">
+                    <fieldset ws-attr="attrDisabled">
+                        <div ws-replace="Logo" />
+                        <ws-Input2 varInput="varEmail">
+                            <Id>exampleInputEmail</Id>
+                            <Label>Email address</Label>
+                            <Type>email</Type>
+                        </ws-Input2>
+                        <ws-Input2 varInput="varPassword">
+                            <Id>exampleInputPassword</Id>
+                            <Label>Password</Label>
+                            <Type>password</Type>
+                        </ws-Input2>
+                        <ws-Button Click="clickSubmit">
+                            <Type>Submit</Type>
+                            <Class>btn-primary</Class>
+                            <Text>Login</Text>
+                        </ws-Button>
+                        <div class="flex-row"><div class="flexgrow"><hr></div><div class="flexgrow-1-5 text-center"><h5>or</h5></div><div class="flexgrow"><hr></div></div>
+                        <ws-Button Click="clickGuest">
+                            <Type>Button</Type>
+                            <Class>btn-info</Class>
+                            <Text>Enter as Guest</Text>
+                        </ws-Button>
+                        <br />
+                        <div ws-replace="htmlMessage" />
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div ws-template="Blurred">
+    <div class="blur" style="position:absolute; top:0Px; left:0Px; bottom:0Px; right:0Px;
+            background-image: url('${BackImage}');
+            background-size:cover;
+            background-position:center;
+            z-index:-1" other="${Image}" />
+    <div ws-replace="Content" />
+</div>
+
+<div style="position:relative; height:100ch"  ws-template="LoginForm">
+    <ws-Blurred>
+        <BackImage>/EPFileX/image/BI_CONSULTANCY.jpg</BackImage>
+        <Content>
+            <div class="row" style="height:25ch" />
+            <ws-LoginPane varEmail varPassword>
+                <Logo><img alt="Brand" src="/EPFileX/image/LOGO_cipher2.png" width="200px" /></Logo>
+            </ws-LoginPane>
+        </Content>
+    </ws-Blurred>
+</div>
+
+<ws-LoginForm />
+
+<div style="position:relative; height:100ch" ws-template="LoginFormCipher">
+    <ws-Blurred>
+        <BackImage>/EPFileX/image/BI_CONSULTANCY.jpg</BackImage>
+        <Content>
+            <div class="container">
+                <div class="row" style="height:25ch" />
+                <ws-LoginPane2 varEmail varPassword htmlMessage attrDisabled clickSubmit clickGuest>
+                    <Logo><img alt="Brand" src="/EPFileX/image/LOGO_cipher2.png" width="200px" /></Logo>
+                </ws-LoginPane2>
+            </div>
+        </Content>
+    </ws-Blurred>
+</div>
+
+<div ws-template="Alert">
+    <div class="alert alert-danger">${Text}</div>
+</div>
+
+<div ws-template="HourGlass">
+    <img src="/EPFileX/image/loader.gif"/>
+</div>
+
+<ws-LoginFormCipher />
+
+<p>Enter HTML:</p>
+<p><textarea ws-var="varFreeHtml" style="height:auto" /><textarea ws-var="varFreeHtml" /></p>
+<p><div ws-hole="htmlFreeHtml" /></p>
