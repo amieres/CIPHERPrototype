@@ -19,10 +19,18 @@ let (|CompiledMatch|_|) pattern input =
     Some [for x in m.Groups -> x]
 
 type ShellExError =
-    | ShellFailWithMessage of string
+    | ShellFailWithMessage       of string
+    | ShellFinishedWithNoMessage 
 with interface ErrMsg with
-        member this.ErrMsg    = match this with ShellFailWithMessage msg -> msg
-        member this.IsWarning = false
+        member this.ErrMsg    = 
+            match this with 
+            | ShellFailWithMessage msg   -> msg  
+            | ShellFinishedWithNoMessage -> "warning - No output"
+            | msg                          -> sprintf "%A" msg
+        member this.IsWarning =
+            match this with 
+            | ShellFinishedWithNoMessage -> true
+            | _                          -> false 
 
 
 type ShellEx(program, args)               =
@@ -67,12 +75,12 @@ type ShellEx(program, args)               =
             this.Send send
             let!   evArgs = Async.AwaitEvent <| (if defaultArg onError false then this.CheckForError else this.CheckForResult) wait            
             do!    Async.Sleep 200
-            let!   res1 =
+            let!   res =
                    if defaultArg onError false then 
                        this.Response(this.Output(), this.Error() |> fun msg -> msg.Split([| evArgs.Data |], System.StringSplitOptions.None) |> Array.head)
                    else this.Response()
-            let!   res2 = res1
-            return res2
+                   |> Option.defaultWith (fun () -> Result.succeedWithMsg "" ShellFinishedWithNoMessage)
+            return res
         }
     member this.Exit() =
         proc.CloseMainWindow() |> ignore
