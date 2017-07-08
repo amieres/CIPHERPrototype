@@ -63,6 +63,7 @@ type ShellEx(program, args)               =
     member this.CheckForError (res) = proc.ErrorDataReceived  |> Event.filter (fun evArgs -> evArgs.Data.Contains res)
     member this.SendAndWait(send, wait, ?onError) =
         Wrap.wrapper {
+            do! Result.tryProtection()
             this.Send send
             let!   evArgs = Async.AwaitEvent <| (if defaultArg onError false then this.CheckForError else this.CheckForResult) wait            
             do!    Async.Sleep 200
@@ -88,6 +89,7 @@ type FsiExe() =
     do shell.Start() |> ignore
     member this.Eval txt =
         Wrap.wrapper {
+            do! Result.tryProtection()
             shell.Send <| txt + ";;"
             let! res = shell.SendAndWait(endToken + ";;", endToken, true)
             return res
@@ -130,13 +132,15 @@ let fsiExe = lazy ResourceAgent(20, (fun () -> new FsiExe()), fun fsi -> (fsi :>
 let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
     Wrap.wrapper {
         let! res1 = fsiExe.Value.Process(fun fsi -> 
-            async {
-              return
+            Wrap.wrapper {
+              do! Result.tryProtection()
+              let! res =
                 Seq.map (fun assem -> sprintf "#r @\"%s\"" assem) assemblies
                 |> Seq.append    <| [ code ]
                 |> String.concat "\n" 
                 |> fsi.Eval
-            }
+              return res
+            } |> Wrap.getAsyncR
         )
         let!   res2 = res1
         return res2
