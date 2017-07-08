@@ -49,24 +49,29 @@ type ShellEx(program, args)               =
         proc.BeginOutputReadLine()
         proc.BeginErrorReadLine ()
         r
-    member this.Send(txt: string) = proc.StandardInput.WriteLine txt
-    member this.Output  ()        = consume bufferOutput
-    member this.Error   ()        = consume bufferError
-    member this.Response()        = 
-        match this.Output(), this.Error() with
+    member this.Send(txt: string)   = proc.StandardInput.WriteLine txt
+    member this.Output  ()          = consume bufferOutput
+    member this.Error   ()          = consume bufferError
+    member this.Response(out:string, err:string)  = 
+        match out.Trim(), err.Trim() with
         | ""  , ""  -> None
         | good, ""  -> Some( Result.succeed        good                             )
         | ""  , bad -> Some( Result.fail                <| ShellFailWithMessage bad )
         | good, bad -> Some( Result.succeedWithMsg good <| ShellFailWithMessage bad )
+    member this.Response()          = this.Response(this.Output(), this.Error())
     member this.CheckForResult(res) = proc.OutputDataReceived |> Event.filter (fun evArgs -> evArgs.Data.Contains res)
     member this.CheckForError (res) = proc.ErrorDataReceived  |> Event.filter (fun evArgs -> evArgs.Data.Contains res)
     member this.SendAndWait(send, wait, ?onError) =
-        async {
+        Wrap.wrapper {
             this.Send send
-            let! evArgs = Async.AwaitEvent <| (if defaultArg onError false then this.CheckForError else this.CheckForResult) wait            
-            printfn "Event: %A" evArgs.Data
-            do! Async.Sleep 200
-            return this.Response()
+            let!   evArgs = Async.AwaitEvent <| (if defaultArg onError false then this.CheckForError else this.CheckForResult) wait            
+            do!    Async.Sleep 200
+            let!   res1 =
+                   if defaultArg onError false then 
+                       this.Response(this.Output(), this.Error() |> fun msg -> msg.Split([| evArgs.Data |], System.StringSplitOptions.None) |> Array.head)
+                   else this.Response()
+            let!   res2 = res1
+            return res2
         }
     member this.Exit() =
         proc.CloseMainWindow() |> ignore
@@ -78,17 +83,14 @@ type ShellEx(program, args)               =
             proc.Dispose()
 
 type FsiExe() =
-    let shell    = new ShellEx(@"C:\Users\Abelardo\AppData\Local\Temp\fsi.exe", "--nologo")  // --noninteractive
+    let shell    = new ShellEx(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", "--nologo --quiet")  // --noninteractive
     let endToken = "xXxY" + "yYyhH"
     do shell.Start() |> ignore
     member this.Eval txt =
-        async {
+        Wrap.wrapper {
             shell.Send <| txt + ";;"
             let! res = shell.SendAndWait(endToken + ";;", endToken, true)
-            return 
-                res 
-               // |> Option.map (Result.mapError (fun e -> e.Split([|endToken|]) |> Array.head))
-               // |> Option.defaultValue (Result.succeed "")
+            return res
         }
     interface System.IDisposable with
         member this.Dispose () = 
@@ -127,7 +129,7 @@ let fsiExe = lazy ResourceAgent(20, (fun () -> new FsiExe()), fun fsi -> (fsi :>
 
 let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
     Wrap.wrapper {
-        let! r1 = fsiExe.Value.Process(fun fsi -> 
+        let! res1 = fsiExe.Value.Process(fun fsi -> 
             async {
               return
                 Seq.map (fun assem -> sprintf "#r @\"%s\"" assem) assemblies
@@ -136,8 +138,6 @@ let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> 
                 |> fsi.Eval
             }
         )
-        let! r2 = r1
-        let! r3 = r2
-        let! r4 = r3
-        return r4
+        let!   res2 = res1
+        return res2
     }
