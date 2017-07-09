@@ -515,7 +515,7 @@
    {
     return runFS();
    };
-  }).get_Render(),Html.someElt((a=[AttrProxy.Create("placeholder","F#:"),AttrProxy.Create("title","Add F# code and invoke with Eval F#")],Doc.InputArea(a,freeFS))),Html.someElt((a$1=[AttrProxy.Create("placeholder","HTML:"),AttrProxy.Create("title","Enter HTML tags and text")],Doc.InputArea(a$1,freeHtml))),Html.someElt((a$2=[AttrProxy.Create("placeholder","CSS:"),AttrProxy.Create("title","Test your CSS styles dynamically")],Doc.InputArea(a$2,freeCSS))),Html.someElt((a$3=[AttrProxy.Create("placeholder","JavaScript:"),AttrProxy.Create("title","Add JS code and invoke with Eval JS")],Doc.InputArea(a$3,freeJS))),Button.New$1("Eval JS").Style("vertical-align:top").OnClick(function()
+  }).get_Render(),Html.someElt((a=[AttrProxy.Create("placeholder","F#:"),AttrProxy.Create("title","Add F# code and invoke with Eval F#"),AttrProxy.Create("spellcheck","false")],Doc.InputArea(a,freeFS))),Html.someElt((a$1=[AttrProxy.Create("placeholder","HTML:"),AttrProxy.Create("title","Enter HTML tags and text"),AttrProxy.Create("spellcheck","false")],Doc.InputArea(a$1,freeHtml))),Html.someElt((a$2=[AttrProxy.Create("placeholder","CSS:"),AttrProxy.Create("title","Test your CSS styles dynamically"),AttrProxy.Create("spellcheck","false")],Doc.InputArea(a$2,freeCSS))),Html.someElt((a$3=[AttrProxy.Create("placeholder","JavaScript:"),AttrProxy.Create("title","Add JS code and invoke with Eval JS"),AttrProxy.Create("spellcheck","false")],Doc.InputArea(a$3,freeJS))),Button.New$1("Eval JS").Style("vertical-align:top").OnClick(function()
   {
    return function()
    {

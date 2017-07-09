@@ -214,13 +214,13 @@ module TestForm =
             freeJS.Value   <- ""
             compile (fun msgs js -> freeJS.Value <- js ; runJS() ) sendMsg freeFS.Value
         div [ style "height: 100%"
-              Button.New("Eval F#").Style("vertical-align:top").OnClick(fun _ _ -> runFS()                                 ).Render  
-              someElt <| Doc.InputArea [ attr.placeholder "F#:"         ; attr.title "Add F# code and invoke with Eval F#" ] freeFS
-              someElt <| Doc.InputArea [ attr.placeholder "HTML:"       ; attr.title "Enter HTML tags and text"            ] freeHtml 
-              someElt <| Doc.InputArea [ attr.placeholder "CSS:"        ; attr.title "Test your CSS styles dynamically"    ] freeCSS 
-              someElt <| Doc.InputArea [ attr.placeholder "JavaScript:" ; attr.title "Add JS code and invoke with Eval JS" ] freeJS
-              Button.New("Eval JS").Style("vertical-align:top").OnClick(fun _ _ -> freeMsgs.Value <- "" ; runJS()          ).Render  
-              someElt <| Doc.InputArea [ attr.placeholder "Output:"     ; attr.title "Messages"                            ] freeMsgs
+              Button.New("Eval F#").Style("vertical-align:top").OnClick(fun _ _ -> runFS()                                                           ).Render  
+              someElt <| Doc.InputArea [ attr.placeholder "F#:"         ; attr.title "Add F# code and invoke with Eval F#" ; attr.spellcheck "false" ] freeFS
+              someElt <| Doc.InputArea [ attr.placeholder "HTML:"       ; attr.title "Enter HTML tags and text"            ; attr.spellcheck "false" ] freeHtml 
+              someElt <| Doc.InputArea [ attr.placeholder "CSS:"        ; attr.title "Test your CSS styles dynamically"    ; attr.spellcheck "false" ] freeCSS 
+              someElt <| Doc.InputArea [ attr.placeholder "JavaScript:" ; attr.title "Add JS code and invoke with Eval JS" ; attr.spellcheck "false" ] freeJS
+              Button.New("Eval JS").Style("vertical-align:top").OnClick(fun _ _ -> freeMsgs.Value <- "" ; runJS()                                    ).Render  
+              someElt <| Doc.InputArea [ attr.placeholder "Output:"     ; attr.title "Messages"                                                      ] freeMsgs
               SomeDoc <| tag Doc.Verbatim (Val.map2 (sprintf "%s<style>%s</style>") freeHtml freeCSS)
         ] |> renderDoc
 (*        let varDynamicHtml = Var.Create "How are you?"

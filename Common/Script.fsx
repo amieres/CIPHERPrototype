@@ -297,6 +297,7 @@ module HtmlNode =
     let inline title       v  = htmlAttribute "title"       v
     let inline Id          v  = htmlAttribute "id"          v
     let inline frameborder v  = htmlAttribute "frameborder" v
+    let inline spellcheck  v  = htmlAttribute "spellcheck"  v
     
     let inline classIf cls v = ``class`` <| Val.map (fun b -> if b then cls else "") (Val.fixit v)
     
@@ -476,32 +477,37 @@ module Template =
         _class      : Val<string>
         placeholder : Val<string>
         title       : Val<string>
+        spellcheck  : Val<bool>
         id          : string
         var         : IRef<string>
     } with
       static member  New(var) = { _class      = Val.fixit "form-control"
                                   placeholder = Val.fixit "Enter text:"
                                   title       = Val.fixit ""
+                                  spellcheck  = Val.fixit false
                                   id          = ""
-                                  var         = var   
+                                  var         = var 
                                 }
       static member  New(v)   = TextArea.New(Var.Create v)
       member        this.Render    =    
         someElt 
         <| Doc.InputArea
             [ 
-              _class       this._class
-              attr.id      this.id  
-              atr "title"  this.title
-              _placeholder this.placeholder ]
+              _class              this._class
+              attr.id             this.id  
+              atr "spellcheck" <| Val.map (fun spl -> if spl then "true" else "false") this.spellcheck
+              atr "title"         this.title
+              _placeholder        this.placeholder 
+            ]
             this.var
       member inline this.Class       clas = { this with _class      = Val.fixit clas }
       member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc  }
       member inline this.Title       ttl  = { this with title       = Val.fixit ttl  }
-      member inline this.Id          id   = { this with id          =       id       }
+      member inline this.Spellcheck  spl  = { this with spellcheck  = spl            }
+      member inline this.Id          id   = { this with id          = id             }
       member inline this.SetVar      v    = { this with var         = v              }
       member inline this.Var              = this.var
-    
+      
 # 1 @"(4) F# let codeMirrorIncludes =.fsx"
     let codeMirrorIncludes =
        [| "/EPFileX/codemirror/scripts/codemirror/codemirror.js"             
