@@ -1,2246 +1,1530 @@
-﻿//" F# namespace TestFS.fsx"
-//namespace TestFS
+﻿# 1 @" F# namespace TestWebSharper.fsx"
+#if INTERACTIVE
+#I @"../WebServer/bin"
+#else
+namespace TestWebSharper
+#endif
+#nowarn "1182"
 
-//" F# SlowlyChangingDimensions.fsx"
-#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
-#r @"C:\Users\Abelardo\OneDrive - Cipher Business Solutions\Clientes\Houston\CIPHERTool\FSharp.Data.SqlClient\FSharp.Data.SqlClient.dll"
+# 1 @" F# open WebSharper.fsx"
+#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
+#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
 
-module SlowlyChangingDimensions =
-//"(4) F# Fields.fsx"
-    type TargetField =
-         | CURR_ASSIGNED_VEND
-         | ORIG_ASSIGNED_VEND
-         | ORIG_INV_NUM
-         | POST_DTE_KEY
-         | RECEIVABLE_CURR_BILLING_TO_DTE
-         | RECEIVABLE_CURR_DELINQ_DTE
-         | RECEIVABLE_CURR_DUE_DTE
-         | RECEIVABLE_CURR_ISSUE_DTE
-         | RECEIVABLE_CURR_TO_DTE
-         | RECEIVABLE_KEY
-         | RECEIVABLE_ORIG_BILLING_TO_DTE
-         | RECEIVABLE_ORIG_DELINQ_DTE
-         | RECEIVABLE_ORIG_DUE_DTE
-         | RECEIVABLE_ORIG_ISSUE_DTE
-         | RECEIVABLE_ORIG_TO_DTE
-         | TRANS_DTE_KEY
-         | VERS_BEG_DTE  
-         | VERS_END_DTE 
-         | CURR_VERS_FLAG
-         | ITEM_KEY
-         | INCDT_KEY
-         | CUST_KEY
-         | CARRIER_KEY
-         | CARRIER_PROCEDURE_KEY
-         | COLL_PERSON_KEY
-         | EMP_KEY
-         | FIN_TRANS_TYPE_KEY
-         | DTE_KEY
-         | COH_ORG_KEY
-         | SYS_LOAD_KEY       
-         | ORIG_CUST_KEY      
-         | COLL_VEND_CONTR_KEY
-         | GL_COMBO_KEY 
-         | GL_ACCT_ID
-         | FUND_ID
-         | FUND_CNTR_ID
-         | FUNC_AREA_ID
-         | ROW_CHG_RSN
-         | Nil
+#r @"WebSharper.Core.dll"
+#r @"WebSharper.Collections.dll"
+#r @"WebSharper.Main.dll"
+#r @"WebSharper.UI.Next.dll"
+#r @"WebSharper.JavaScript.dll"
+#r @"WebSharper.Web.dll"
+#r @"WebSharper.UI.Next.dll"
+#r @"WebSharper.Sitelets.dll"
+
+open WebSharper
+open WebSharper.JavaScript
+open WebSharper.UI.Next
+open WebSharper.UI.Next.Client
+type on   = WebSharper.UI.Next.Html.on
+type attr = WebSharper.UI.Next.Html.attr
+
+# 1 @" F# module HtmlNode =.fsx"
+#nowarn "1182"
+[<JavaScript>]
+module HtmlNode =
+
+# 1 @"(4) F# type Val'a =.fsx"
+    [<NoComparison>]
+    type Val<'a> =
+        | Constant  of 'a
+        | DynamicV  of IRef<'a>
+        | Dynamic   of View<'a>
     
-    type FinTransViewField =
-         | INTRA_DAY_ORDER
-         | DEPT_LONG_NAME
-         | CONTR_ID
-         | CUST_PAR_ID
-         | CUST_PAR_NAME
-         | ADJ_FLAG
-         | ALLOC_TRANS_FLAG
-         | BILLED_FLAG
-         | BLK_NUM
-         | BOOT_SERIAL_NUM
-         | BUS_AREA_ID
-         | BUS_CONT_PERSON_NAME
-         | CARRIER_FIN_CLASS
-         | CARRIER_FIN_GRP
-         | CARRIER_GRP
-         | CARRIER_NAME
-         | CARRIER_PROCEDURE_BILL_CODE
-         | CARRIER_PROCEDURE_CODE
-         | CARRIER_PROCEDURE_DESCR
-         | CARRIER_PROCEDURE_SRC
-         | CARRIER_PROCEDURE_TYPE
-         | CARRIER_SRC
-         | COH_EMP_NUM
-         | COLL_PERSON_ID
-         | COLL_PERSON_NAME
-         | COLL_PERSON_TYPE
-         | CONFI_CUST_FLAG
-         | CUST_ADDR_LINE_1
-         | CUST_ADDR_LINE_2
-         | CUST_ADDR_LINE_3
-         | CUST_APT_LOT
-         | CUST_CITY
-         | CUST_CNTY
-         | CUST_CTRY
-         | CUST_EMAIL_ADDR
-         | CUST_FAX_NUM
-         | CUST_GIS_CITY
-         | CUST_GIS_LOCATR_NAME
-         | CUST_GIS_MATCH_SCORE
-         | CUST_GIS_PREFIX
-         | CUST_GIS_ST_NAME
-         | CUST_GIS_ST_NUM
-         | CUST_GIS_ST_PRETYPE
-         | CUST_GIS_ST_TYPE
-         | CUST_GIS_SUFF
-         | CUST_GIS_X
-         | CUST_GIS_Y
-         | CUST_GIS_ZIP
-         | CUST_ID
-         | CUST_IN_CITY_FLAG
-         | CUST_IS_VEND_FLAG
-         | CUST_NAME
-         | CUST_PAR_KEY
-         | CUST_PHN_NUM_1
-         | CUST_PHN_NUM_2
-         | CUST_PHN_NUM_3
-         | CUST_PREFIX
-         | CUST_SERV_LVL
-         | CUST_ST
-         | CUST_STATE
-         | CUST_ST_DIR
-         | CUST_ST_NAME
-         | CUST_ST_NUM
-         | CUST_ST_PRETYPE
-         | CUST_ST_TYPE
-         | CUST_SUFF
-         | CUST_TYPE
-         | CUST_ZIP_CODE
-         | CUST_ZIP_PLUS_4
-         | DEC_CUST_FLAG
-         | DERIVED_TRANS_FLAG
-         | DET_TRANS_CODE
-         | DET_TRANS_DESCR
-         | DIGITECH_ID
-         | DIGITECH_TRANS_TYPE
-         | DIGITECH_TRANS_TYPE_DET
-         | DIV_LONG_NAME
-         | DL_ISSUE_STATE
-         | DL_NUM
-         | DTE
-         | EMP_NAME
-         | EMP_TYPE
-         | FED_TAX_ID
-         | FIRE_ALM_AGING_RST_FLAG
-         | FIRE_ORIG_ISSUE_DTE
-         | FUNC_AREA_ID
-         | FUND_CNTR_ID
-         | FUND_ID
-         | GL_ACCT_ID
-         | HCTO_AD_VAL_ID
-         | INCDT_ADDR_LINE_1
-         | INCDT_ADDR_LINE_2
-         | INCDT_ADDR_LINE_3
-         | INCDT_APT_LOT
-         | INCDT_CAT
-         | INCDT_CITY
-         | INCDT_CNTY
-         | INCDT_CTRY
-         | INCDT_DESCR
-         | INCDT_DTE
-         | INCDT_GIS_CITY
-         | INCDT_GIS_LOCATR_NAME
-         | INCDT_GIS_MATCH_SCORE
-         | INCDT_GIS_PREFIX
-         | INCDT_GIS_ST_NAME
-         | INCDT_GIS_ST_NUM
-         | INCDT_GIS_ST_PRETYPE
-         | INCDT_GIS_ST_TYPE
-         | INCDT_GIS_SUFF
-         | INCDT_GIS_X
-         | INCDT_GIS_Y
-         | INCDT_GIS_ZIP
-         | INCDT_IN_CITY_FLAG
-         | INCDT_PREFIX
-         | INCDT_SEQ_NUM
-         | INCDT_SERV_LVL
-         | INCDT_ST
-         | INCDT_STATE
-         | INCDT_ST_DIR
-         | INCDT_ST_NAME
-         | INCDT_ST_NUM
-         | INCDT_ST_PRETYPE
-         | INCDT_ST_TYPE
-         | INCDT_SUFF
-         | INCDT_TIME
-         | INCDT_TYPE
-         | INCDT_ZIP_CODE
-         | INCDT_ZIP_PLUS_4
-         | INTRA_FUND_TRANS_AMT
-         | INTRA_FUND_TRANS_FLAG
-         | INT_EXT_EMP_FLAG
-         | INV_NUM
-         | ITEM_ADDR_LINE_1
-         | ITEM_ADDR_LINE_2
-         | ITEM_ADDR_LINE_3
-         | ITEM_APT_LOT
-         | ITEM_CITY
-         | ITEM_CNTY
-         | ITEM_CTRY
-         | ITEM_DESCR
-         | ITEM_EXMPT_FLAG
-         | ITEM_GIS_CITY
-         | ITEM_GIS_LOCATR_NAME
-         | ITEM_GIS_MATCH_SCORE
-         | ITEM_GIS_PREFIX
-         | ITEM_GIS_ST_NAME
-         | ITEM_GIS_ST_NUM
-         | ITEM_GIS_ST_PRETYPE
-         | ITEM_GIS_ST_TYPE
-         | ITEM_GIS_SUFF
-         | ITEM_GIS_X
-         | ITEM_GIS_Y
-         | ITEM_GIS_ZIP
-         | ITEM_IN_CITY_FLAG
-         | ITEM_PREFIX
-         | ITEM_SERV_LVL
-         | ITEM_ST
-         | ITEM_STAT
-         | ITEM_STATE
-         | ITEM_STAT_CHG_DTE
-         | ITEM_ST_DIR
-         | ITEM_ST_NAME
-         | ITEM_ST_NUM
-         | ITEM_ST_PRETYPE
-         | ITEM_ST_TYPE
-         | ITEM_SUFF
-         | ITEM_TYPE
-         | ITEM_ZIP_CODE
-         | ITEM_ZIP_PLUS_4
-         | JV_CUST_FLAG
-         | LOAD_DTE
-         | LOAD_TIME
-         | MAN_TRANS_FLAG
-         | MEDICAID_PAYER_CODE
-         | MEDICARE_PAYER_CODE
-         | MSTR_TRANS_TYPE
-         | NAICS_DET_CODE
-         | NAICS_DET_NAME
-         | NAICS_DIV_CODE
-         | NAICS_DIV_NAME
-         | NAICS_INDY_CODE
-         | NAICS_INDY_GRP_CODE
-         | NAICS_INDY_GRP_NAME
-         | NAICS_INDY_NAME
-         | NAICS_MAJ_GRP_CODE
-         | NAICS_MAJ_GRP_NAME
-         | ORIG_BILL_NAME
-         | PAY_METH
-         | PERMIT_IS_CURR_AT_TIME_OF_INCDT_FLAG
-         | PMAM_ADJMT_TO
-         | PMAM_ADJMT_TYPE
-         | PMAM_ID
-         | POST_DTE
-         | PRKG_METER_NUM
-         | PRKG_METER_VIO_FLAG
-         | RECEIVABLE_1ST_PAY_DTE
-         | RECEIVABLE_EVER_TRANS_FLAG
-         | RECEIVABLE_FNL_PAY_DTE
-         | RECEIVABLE_LITIGATION_DTE
-         | RECEIVABLE_MSTR_STAT
-         | RECEIVABLE_MSTR_STAT_CHG_DTE
-         | RECEIVABLE_SETTLEMENT_DTE
-         | RECEIVABLE_STAT
-         | RECEIVABLE_STAT_CHG_DTE
-         | RECEIVABLE_VERS_BILLING_TO_DTE
-         | RECEIVABLE_VERS_DELINQ_DTE
-         | RECEIVABLE_VERS_DUE_DTE
-         | RECEIVABLE_VERS_ISSUE_DTE
-         | RECEIVABLE_VERS_TO_DTE
-         | REINSTATEMENT_DTE
-         | RM_EMP_MSTR_KEY
-         | RM_LOAD_DTE
-         | RM_LOAD_TIME
-         | RSN_INCDT_NOT_BILLED
-         | SAP_BUS_ID
-         | SIC_CODE
-         | SIC_DIV_CODE
-         | SIC_DIV_NAME
-         | SIC_INDY_GRP_CODE
-         | SIC_INDY_GRP_NAME
-         | SIC_MAJ_GRP_CODE
-         | SIC_MAJ_GRP_NAME
-         | SIC_NAME
-         | SMARTCM_IS_ADJMT
-         | SMARTCM_IS_FEE
-         | SMARTCM_IS_PAY
-         | SMARTCM_OTHER_CRITERIA
-         | SMART_CM_ID
-         | SRC_CARRIER_KEY
-         | SRC_CARRIER_PROCEDURE_KEY
-         | SRC_SYS
-         | SRC_SYS_ID
-         | SRC_SYS_MOD_DTE
-         | SRC_SYS_TRANS_ID
-         | STATE_CORP_CHTR_ID
-         | STATE_SALES_TAX_ID
-         | T2_ID
-         | T2_TRANS_MISC_ITEM_CODE
-         | T2_TRANS_MISC_ITEM_DESCR
-         | T2_TRANS_ORIG_OBJ_TYPE_ID
-         | T2_TRANS_PARSED_DESCR
-         | T2_TRANS_RSN
-         | T2_TRANS_SCENARIO
-         | T2_TRANS_TYPE_CODE
-         | T2_TRANS_TYPE_DESCR
-         | TOWING_CMPNY
-         | TRANS_AMT
-         | TRANS_CNT
-         | UNK_CUST_AT_BILL_FLAG
-         | VERS_ASSIGNED_VEND
-         | VIO_CODE
-         | EMS_INCDT   
-         | DISPATCH_NUM
-         | FLAG_DIM_INCDT_EMS_DET
-         | DEST_LOC
-         | EMS_INCDT_CAT
-         | ORIGIN_LOC
-         | TXP_SERV_LVL
-         | TXP_TYPE
-         | VEH
-         | FLAG_DIM_ITEM_BURG_ALM_PERMIT_DET
-         | ALLOWABLE_NO_CHRG_INCDTS
-         | ALM_MNT_CMPNY
-         | ALM_TYPE
-         | PERMIT_EXP_DTE
-         | PERMIT_ISSUE_DTE
-         | PERMIT_NAME
-         | PERMIT_NUM
-         | REG_HOLDER_FLAG
-         | SUSPD_PERMIT_DTE
-         | SUSPD_PERMIT_RSN
-         | TYPE_OF_ALM_SITE
-         | FLAG_DIM_ITEM_FIRE_ALM_PERMIT_DET
-         | ALM_INSTL_CMPNY
-         | ALM_INSTL_DTE
-         | ALM_REG_KEY
-         | APPLICTN_RECV_DTE
-         | CURR_FIRE_ALM_PERMIT_FLAG
-         | EXCL_TYPE
-         | FIRE_ALM_PERMIT_ACTV_FLAG
-         | FIRE_ALM_PERMIT_NUM
-         | FIRE_ALM_PURPOSE
-         | FLAG_DIM_ITEM_LICENSED_VEH_DET
-         | LICENSE_PLATE_EXP_MTH
-         | LICENSE_PLATE_EXP_YR
-         | LICENSE_PLATE_NUM
-         | LICENSE_PLATE_TYPE
-         | OWNER_IS_CUST_FLAG
-         | SRC_SYS_VEH_ID
-         | VEH_COLOR
-         | VEH_ID_NUM
-         | VEH_MAKE
-         | VEH_MODEL
-         | VEH_MODEL_YR
-         | VEH_OWNER_ID
-         | VEH_OWNER_NAME
-         | VEH_TYPE
-         | FLAG_DIM_ITEM_PT_DET
-         | PT_AGE
-         | PT_GNDR
-         | FLAG_DIM_ITEM_TAXABLE_PROP_DET
-         | APPRAISAL_DISTR_ACCT_NUM
-         | CAN
-         | CC_JURIS_CODE
-         | CC_JURIS_DESCR
-         | CITY_RFPD_JURIS_CODE
-         | CITY_RFPD_JURIS_DESCR
-         | CONFI_ACCT_FLAG
-         | MUNIC_UTIL_DISTR_CODE
-         | MUNIC_UTIL_DISTR_DESCR
-         | NUM_OF_ACRES
-         | OWNERSHIP_EFF_DTE
-         | PROP_CLASS_CODE
-         | PROP_CLASS_DESCR
-         | REND_PENALTY_JURIS_CODE
-         | REND_PENALTY_JURIS_DESCR
-         | SCHOOL_JURIS_CODE
-         | SCHOOL_JURIS_DESCR
-         | SUBSTANTIAL_ERR_PENALTY
-         | TAX_DEFERRAL_END_DTE
-         | TAX_DEFERRAL_START_DTE
-         | TAX_ROLL_CODE
-         | TAX_ROLL_DESCR
-         | TAXABLE_PROP_LGL_DESCR_1
-         | TAXABLE_PROP_LGL_DESCR_2
-         | TAXABLE_PROP_LGL_DESCR_3
-         | TAXABLE_PROP_LGL_DESCR_4
-         | TAXABLE_PROP_LGL_DESCR_5
-         | TAXABLE_PROP_ROLL_TYPE
-         | FLAG_DIM_ITEM_WTR_ACCT_DET
-         | CURR_WTR_ACCT_FLAG
-         | DELINQ_DTE
-         | LAST_CUST_CONN_DTE
-         | LAST_CUST_CUTOFF_DTE
-         | LAST_CUST_DISCONN_DTE
-         | LAST_METER_INSPECT_DTE
-         | OWNER_RENTER
-         | SEN_CITIZEN_FLAG
-         | VAC_FLAG
-         | WTR_ACCT_NUM_OF_UNITS
-         | WTR_ACCT_ORIG_USE_TYPE
-         | WTR_ACCT_PROP_USE_TYPE
-         | WTR_METER_NUM
-         | FLAG_DIM_RECEIVABLE_AD_VAL_RECEIVABLE_DET
-         | ``A#3307_ATTY_FEE_DTE``
-         | ``A#3308_ATTY_FEE_DTE``
-         | ``A#3348_ATTY_FEE_DTE``
-         | AD_VAL_ACCT_LVL_ID
-         | AD_VAL_DISABLED_FLAG
-         | AD_VAL_EFF_DTE_OF_OWNERSHIP
-         | AD_VAL_HOMESTEAD_FLAG
-         | AD_VAL_OVER_66_FLAG
-         | AD_VAL_TAX_DEFERRAL_END_DTE
-         | AD_VAL_TAX_DEFERRAL_START_DTE
-         | AD_VAL_VET_FLAG
-         | COLL_LAWSUIT_NUM
-         | COLL_LGL_COND
-         | HCAD_ACCT_STAT
-         | QTRLY_PAY_FLAG
-         | FLAG_DIM_RECEIVABLE_BOOT_TOW_DET
-         | RECEIVABLE_HAS_LTR_FLAG
-         | RECEIVABLE_HAS_NOTE_FLAG
-         | RECEIVABLE_HAS_PEND_LTR_FLAG
-         | RESOLVE_DESCR
-         | RESOLVE_DTE
-         | RESOLVE_RSN
-         | RESOLVED_BY
-         | FLAG_DIM_RECEIVABLE_EMS_RECEIVABLE_DET
-         | ACTV_CARRIER
-         | ACTV_CARRIER_FIN_CLASS
-         | ACTV_CARRIER_FIN_GRP
-         | BILLING_HOLD_FLAG
-         | SIG_FLAG
-         | FLAG_DIM_RECEIVABLE_FIRE_ALM_CIT_DET
-         | VOID_CODE
-         | VOID_DESCR
-         | WORK_STAT
-         | FLAG_DIM_RECEIVABLE_PRKG_CONTRA_DET
-         | ESC_CAND_FLAG
-         | ON_ADMIN_HOLD_FLAG
-         | UNDER_APPEAL_FLAG
-         | VOID_FLAG
-         | WRITE_OFF_FLAG
-         | Nil_
+    module Val =
+        
+        let mapV : ('a -> 'b) -> Val<'a> -> Val<'b> =
+            fun    f             va      ->
+                match va with
+                | Constant  a -> f a                   |> Constant
+                | Dynamic  wa -> wa      |> View.Map f |> Dynamic 
+                | DynamicV va -> va.View |> View.Map f |> Dynamic 
     
-//"(4) F# FieldDecls.fsx"
-    let fieldDecl = [|
-        ("3307_ATTY_FEE_DTE", "datetime", 0)
-        ("3308_ATTY_FEE_DTE", "datetime", 0)
-        ("3348_ATTY_FEE_DTE", "datetime", 0)
-        ("ACCT_GRP_DESCR", "varchar(30)", 0)
-        ("ACCT_GRP_ID", "varchar(4)", 0)
-        ("ACTV_CARRIER", "varchar(120)", 0)
-        ("ACTV_CARRIER_FIN_CLASS", "varchar(40)", 0)
-        ("ACTV_CARRIER_FIN_GRP", "varchar(40)", 0)
-        ("AD_VAL_ACCT_LVL_ID", "varchar(4)", 1)
-        ("AD_VAL_DISABLED_FLAG", "varchar(1)", 0)
-        ("AD_VAL_EFF_DTE_OF_OWNERSHIP", "datetime", 0)
-        ("AD_VAL_HOMESTEAD_FLAG", "varchar(1)", 0)
-        ("AD_VAL_OVER_66_FLAG", "varchar(1)", 0)
-        ("AD_VAL_TAX_DEFERRAL_END_DTE", "datetime", 0)
-        ("AD_VAL_TAX_DEFERRAL_START_DTE", "datetime", 0)
-        ("AD_VAL_VET_FLAG", "varchar(1)", 0)
-        ("ADDR_ID", "varchar(10)", 0)
-        ("ADJ_FLAG", "varchar(1)", 0)
-        ("ALLOC_TRANS_FLAG", "varchar(1)", 0)
-        ("ALLOWABLE_NO_CHRG_INCDTS", "int", 0)
-        ("ALM_INSTL_CMPNY", "varchar(50)", 0)
-        ("ALM_INSTL_DTE", "datetime", 0)
-        ("ALM_MNT_CMPNY", "varchar(50)", 0)
-        ("ALM_REG_KEY", "varchar(20)", 0)
-        ("ALM_TYPE", "varchar(2)", 0)
-        ("ALT_PAYEE_NUM", "varchar(10)", 0)
-        ("AM_PM", "varchar(2)", 0)
-        ("APPLICTN_RECV_DTE", "datetime", 0)
-        ("APPRAISAL_DISTR_ACCT_NUM", "varchar(16)", 0)
-        ("AUTH_GRP_ID", "varchar(10)", 0)
-        ("BAL_SHT_ACCT_FLAG", "varchar(1)", 0)
-        ("BAL_UPD_IND", "varchar(1)", 0)
-        ("BILLED_FLAG", "varchar(1)", 0)
-        ("BILLING_HOLD_FLAG", "varchar(1)", 0)
-        ("BLANK_BUD_PER_ALLOWED", "varchar(1)", 0)
-        ("BLK_NUM", "varchar(8)", 0)
-        ("BOOT_SERIAL_NUM", "varchar(32)", 0)
-        ("BUS_AREA_DESCR", "varchar(30)", 0)
-        ("BUS_AREA_FULL_NAME", "varchar(120)", 0)
-        ("BUS_AREA_ID", "varchar(4)", 0)
-        ("BUS_AREA_KEY", "int", 0)
-        ("BUS_CONT_PERSON_NAME", "varchar(40)", 0)
-        ("CAL_DAY_OF_MTH_NUM", "int", 0)
-        ("CAL_MTH", "varchar(15)", 0)
-        ("CAL_MTH_NUM", "int", 0)
-        ("CAL_PER", "varchar(20)", 1)
-        ("CAL_QTR", "varchar(15)", 1)
-        ("CAL_QTR_NUM", "int", 0)
-        ("CAL_WK_ENDING_SAT", "varchar(15)", 0)
-        ("CAL_YR", "int", 0)
-        ("CAN", "varchar(16)", 1)
-        ("CARRIER_FIN_CLASS", "varchar(40)", 0)
-        ("CARRIER_FIN_GRP", "varchar(40)", 0)
-        ("CARRIER_GRP", "varchar(40)", 0)
-        ("CARRIER_KEY", "int", 0)
-        ("CARRIER_NAME", "varchar(120)", 0)
-        ("CARRIER_PROCEDURE_BILL_CODE", "varchar(40)", 0)
-        ("CARRIER_PROCEDURE_CODE", "varchar(40)", 0)
-        ("CARRIER_PROCEDURE_DESCR", "varchar(120)", 0)
-        ("CARRIER_PROCEDURE_KEY", "int", 0)
-        ("CARRIER_PROCEDURE_SRC", "varchar(120)", 0)
-        ("CARRIER_PROCEDURE_TYPE", "varchar(40)", 0)
-        ("CARRIER_SRC", "varchar(120)", 0)
-        ("CC_JURIS_CODE", "varchar(13)", 1)
-        ("CC_JURIS_DESCR", "varchar(50)", 0)
-        ("CENTRAL_POSTING_BLK", "varchar(1)", 0)
-        ("CENTRALLY_IMPOSED_PURCH_BLK", "varchar(1)", 0)
-        ("CHGED_BY", "varchar(12)", 0)
-        ("CHGED_ON", "datetime", 0)
-        ("CHGED_ON_DTE", "datetime", 0)
-        ("CHRT_OF_ACCT_FULL_NAME", "varchar(120)", 0)
-        ("CHRT_OF_ACCT_ID", "varchar(4)", 0)
-        ("CHRT_OF_ACCT_NAME", "varchar(50)", 0)
-        ("CITY", "varchar(40)", 0)
-        ("CITY_BUS_DAY", "varchar(40)", 1)
-        ("CITY_HOL_FLAG", "varchar(1)", 0)
-        ("CITY_RFPD_JURIS_CODE", "varchar(13)", 1)
-        ("CITY_RFPD_JURIS_DESCR", "varchar(50)", 0)
-        ("CMPNY_CODE_ID", "varchar(4)", 0)
-        ("CMPNY_CODE_NAME", "varchar(25)", 0)
-        ("COH", "varchar(20)", 1)
-        ("COH_EMP_NUM", "varchar(8)", 0)
-        ("COH_ORG_KEY", "int", 0)
-        ("COLL_BID_NUM", "varchar(10)", 0)
-        ("COLL_LAWSUIT_NUM", "varchar(7)", 0)
-        ("COLL_LGL_COND", "varchar(100)", 0)
-        ("COLL_PERSON_ID", "varchar(20)", 0)
-        ("COLL_PERSON_KEY", "int", 0)
-        ("COLL_PERSON_NAME", "varchar(120)", 0)
-        ("COLL_PERSON_TYPE", "varchar(40)", 0)
-        ("COLL_VEND_CONTR_KEY", "int", 0)
-        ("CONFI_ACCT_FLAG", "varchar(2)", 1)
-        ("CONFI_CUST_FLAG", "varchar(1)", 0)
-        ("CONTR_DESCR", "varchar(1000)", 1)
-        ("CONTR_ID", "varchar(10)", 0)
-        ("CONTR_KEY", "int", 0)
-        ("CONTR_LIFE_PRIOD", "int", 0)
-        ("CONTR_PER_KEY", "int", 0)
-        ("CONTR_REV_STREAM", "varchar(50)", 1)
-        ("CONTR_YR", "varchar(15)", 0)
-        ("CONTR_YR_PER", "varchar(15)", 0)
-        ("CR_INFO_ID", "varchar(11)", 0)
-        ("CREATE_DTE", "datetime", 0)
-        ("CREATED_BY", "varchar(12)", 0)
-        ("CTRL_AREA_DESCR", "varchar(20)", 0)
-        ("CTRL_AREA_ID", "varchar(4)", 0)
-        ("CTRY_ID", "varchar(3)", 0)
-        ("CTRY_NAME", "varchar(15)", 0)
-        ("CURR_ASSIGNED_VEND", "varchar(120)", 1)
-        ("CURR_FIRE_ALM_PERMIT_FLAG", "varchar(1)", 0)
-        ("CURR_VERS_FLAG", "varchar(1)", 0)
-        ("CURR_WTR_ACCT_FLAG", "varchar(1)", 0)
-        ("CUST_ADDR_LINE_1", "varchar(200)", 0)
-        ("CUST_ADDR_LINE_2", "varchar(200)", 0)
-        ("CUST_ADDR_LINE_3", "varchar(200)", 0)
-        ("CUST_APT_LOT", "varchar(20)", 0)
-        ("CUST_CITY", "varchar(40)", 1)
-        ("CUST_CNTY", "varchar(20)", 0)
-        ("CUST_CTRY", "varchar(32)", 1)
-        ("CUST_EMAIL_ADDR", "varchar(100)", 0)
-        ("CUST_FAX_NUM", "varchar(15)", 0)
-        ("CUST_GIS_CITY", "varchar(20)", 0)
-        ("CUST_GIS_CMPLT_MATCH_ADDR", "varchar(200)", 1)
-        ("CUST_GIS_LAT", "varchar(38)", 1)
-        ("CUST_GIS_LOCATR_NAME", "varchar(40)", 0)
-        ("CUST_GIS_LONG", "varchar(38)", 1)
-        ("CUST_GIS_MATCH_SCORE", "varchar(10)", 1)
-        ("CUST_GIS_PREFIX", "varchar(12)", 1)
-        ("CUST_GIS_ST_NAME", "varchar(60)", 1)
-        ("CUST_GIS_ST_NUM", "varchar(12)", 1)
-        ("CUST_GIS_ST_PRETYPE", "varchar(40)", 1)
-        ("CUST_GIS_ST_TYPE", "varchar(40)", 1)
-        ("CUST_GIS_SUFF", "varchar(12)", 1)
-        ("CUST_GIS_X", "varchar(21)", 1)
-        ("CUST_GIS_Y", "varchar(17)", 1)
-        ("CUST_GIS_ZIP", "varchar(5)", 0)
-        ("CUST_ID", "varchar(120)", 0)
-        ("CUST_IN_CITY_FLAG", "varchar(1)", 0)
-        ("CUST_IS_VEND_FLAG", "varchar(1)", 0)
-        ("CUST_KEY", "int", 0)
-        ("CUST_NAME", "varchar(120)", 0)
-        ("CUST_PAR_ADDR_LINE_1", "varchar(200)", 0)
-        ("CUST_PAR_ADDR_LINE_2", "varchar(200)", 0)
-        ("CUST_PAR_ADDR_LINE_3", "varchar(200)", 0)
-        ("CUST_PAR_APT_LOT", "varchar(20)", 0)
-        ("CUST_PAR_CITY", "varchar(20)", 0)
-        ("CUST_PAR_CNTY", "varchar(20)", 0)
-        ("CUST_PAR_CTRY", "varchar(20)", 0)
-        ("CUST_PAR_GIS_CITY", "varchar(20)", 0)
-        ("CUST_PAR_GIS_LOCATR_NAME", "varchar(40)", 0)
-        ("CUST_PAR_GIS_MATCH_SCORE", "varchar(3)", 1)
-        ("CUST_PAR_GIS_PREFIX", "varchar(2)", 0)
-        ("CUST_PAR_GIS_ST_NAME", "varchar(35)", 0)
-        ("CUST_PAR_GIS_ST_NUM", "varchar(7)", 0)
-        ("CUST_PAR_GIS_ST_PRETYPE", "varchar(15)", 0)
-        ("CUST_PAR_GIS_ST_TYPE", "varchar(4)", 0)
-        ("CUST_PAR_GIS_SUFF", "varchar(2)", 0)
-        ("CUST_PAR_GIS_X", "varchar(17)", 1)
-        ("CUST_PAR_GIS_Y", "varchar(17)", 1)
-        ("CUST_PAR_GIS_ZIP", "varchar(5)", 0)
-        ("CUST_PAR_ID", "varchar(40)", 0)
-        ("CUST_PAR_IN_CITY_FLAG", "varchar(1)", 0)
-        ("CUST_PAR_KEY", "int", 0)
-        ("CUST_PAR_NAME", "varchar(40)", 0)
-        ("CUST_PAR_PREFIX", "varchar(2)", 1)
-        ("CUST_PAR_SERV_LVL", "varchar(40)", 0)
-        ("CUST_PAR_ST", "varchar(100)", 0)
-        ("CUST_PAR_ST_DIR", "varchar(4)", 0)
-        ("CUST_PAR_ST_NAME", "varchar(35)", 0)
-        ("CUST_PAR_ST_NUM", "varchar(7)", 0)
-        ("CUST_PAR_ST_PRETYPE", "varchar(15)", 0)
-        ("CUST_PAR_ST_TYPE", "varchar(4)", 0)
-        ("CUST_PAR_STATE", "varchar(25)", 0)
-        ("CUST_PAR_SUFF", "varchar(2)", 0)
-        ("CUST_PAR_ZIP_CODE", "varchar(6)", 0)
-        ("CUST_PAR_ZIP_PLUS_4", "varchar(11)", 0)
-        ("CUST_PHN_NUM_1", "varchar(20)", 1)
-        ("CUST_PHN_NUM_2", "varchar(20)", 1)
-        ("CUST_PHN_NUM_3", "varchar(20)", 1)
-        ("CUST_PREFIX", "varchar(2)", 1)
-        ("CUST_SERV_LVL", "varchar(40)", 0)
-        ("CUST_ST", "varchar(100)", 0)
-        ("CUST_ST_DIR", "varchar(4)", 0)
-        ("CUST_ST_NAME", "varchar(35)", 0)
-        ("CUST_ST_NUM", "varchar(7)", 0)
-        ("CUST_ST_PRETYPE", "varchar(15)", 0)
-        ("CUST_ST_TYPE", "varchar(4)", 0)
-        ("CUST_STATE", "varchar(25)", 0)
-        ("CUST_SUFF", "varchar(2)", 0)
-        ("CUST_TYPE", "varchar(13)", 1)
-        ("CUST_ZIP_CODE", "varchar(32)", 1)
-        ("CUST_ZIP_PLUS_4", "varchar(13)", 1)
-        ("DAY_OF_WK", "varchar(9)", 0)
-        ("DAY_OF_WK_NUM", "int", 0)
-        ("DEC_CUST_FLAG", "varchar(1)", 0)
-        ("DEL_FLAG", "varchar(1)", 0)
-        ("DELINQ_DTE", "datetime", 0)
-        ("DELIV_POLICY_FLAG", "varchar(1)", 0)
-        ("DEPT_LONG_NAME", "varchar(120)", 1)
-        ("DEPT_NAME", "varchar(30)", 1)
-        ("DERIVED_NODE_FLAG", "varchar(1)", 0)
-        ("DERIVED_PAR_CUST_FLAG", "varchar(1)", 0)
-        ("DERIVED_TRANS_FLAG", "varchar(1)", 0)
-        ("DEST_LOC", "varchar(120)", 0)
-        ("DET_TRANS_CODE", "varchar(20)", 0)
-        ("DET_TRANS_DESCR", "varchar(50)", 0)
-        ("DIGITECH_ID", "varchar(20)", 1)
-        ("DIGITECH_TRANS_TYPE", "varchar(40)", 1)
-        ("DIGITECH_TRANS_TYPE_DET", "varchar(120)", 1)
-        ("DISASTER_FLAG", "varchar(1)", 0)
-        ("DISPATCH_NUM", "varchar(40)", 0)
-        ("DISTR", "varchar(40)", 0)
-        ("DIV_LONG_NAME", "varchar(120)", 1)
-        ("DIV_NAME", "varchar(30)", 1)
-        ("DL_ISSUE_STATE", "varchar(20)", 0)
-        ("DL_NUM", "varchar(20)", 0)
-        ("DST_EX_MIN_FLAG", "varchar(1)", 0)
-        ("DTE", "date", 0)
-        ("DTE_FISC_PER_KEY", "int", 0)
-        ("DTE_KEY", "int", 0)
-        ("EMP_KEY", "int", 0)
-        ("EMP_NAME", "varchar(120)", 0)
-        ("EMP_TYPE", "varchar(40)", 0)
-        ("EMS_INCDT", "varchar(40)", 0)
-        ("EMS_INCDT_CAT", "varchar(120)", 0)
-        ("ENTRY_DTE", "datetime", 0)
-        ("ESC_CAND_FLAG", "varchar(1)", 0)
-        ("ETL_PROC_USED", "varchar(50)", 0)
-        ("EXCH_RATE_LOCAL", "numeric", 0)
-        ("EXCL_TYPE", "varchar(50)", 0)
-        ("EXP_DTE", "datetime", 0)
-        ("EXTRACT_DTE_TIME", "datetime", 0)
-        ("EXTRACT_PROC_USED", "varchar(50)", 0)
-        ("FAX", "varchar(40)", 0)
-        ("FED_FISC_PER", "varchar(15)", 0)
-        ("FED_FISC_PER_NUM", "int", 0)
-        ("FED_FISC_QTR", "varchar(15)", 1)
-        ("FED_FISC_QTR_NUM", "int", 0)
-        ("FED_FISC_YR", "varchar(15)", 1)
-        ("FED_TAX_ID", "varchar(40)", 0)
-        ("FG_FIN_TRANS_KEY", "int", 0)
-        ("FIN_MGMT_AREA", "varchar(4)", 0)
-        ("FIN_MGMT_AREA_DESCR", "varchar(25)", 0)
-        ("FIN_TRANS_TYPE_KEY", "int", 0)
-        ("FIRE_ALM_AGING_RST_FLAG", "varchar(1)", 0)
-        ("FIRE_ALM_PERMIT_ACTV_FLAG", "varchar(1)", 0)
-        ("FIRE_ALM_PERMIT_NUM", "varchar(20)", 0)
-        ("FIRE_ALM_PURPOSE", "varchar(50)", 0)
-        ("FIRE_ORIG_ISSUE_DTE", "datetime", 0)
-        ("FISC_PER", "varchar(15)", 0)
-        ("FISC_PER_ANNUAL_SORT_ORD", "int", 0)
-        ("FISC_PER_NUM", "int", 0)
-        ("FISC_QTR", "varchar(15)", 0)
-        ("FISC_QTR_NUM", "int", 0)
-        ("FISC_YR", "int", 0)
-        ("FISC_YR_VARIANT", "varchar(2)", 0)
-        ("FM_AUTH_GRP", "varchar(10)", 0)
-        ("FM_FINUSE", "varchar(16)", 0)
-        ("FM_SPONSER", "varchar(10)", 0)
-        ("FUNC_AREA_DESCR", "varchar(30)", 0)
-        ("FUNC_AREA_FULL_NAME", "varchar(120)", 0)
-        ("FUNC_AREA_ID", "varchar(16)", 0)
-        ("FUNC_AREA_KEY", "int", 0)
-        ("FUNC_THAT_WILL_BE_BLKED", "varchar(2)", 1)
-        ("FUND_BUD_PROF", "varchar(6)", 0)
-        ("FUND_CNTR_DESCR", "varchar(40)", 0)
-        ("FUND_CNTR_FULL_NAME", "varchar(120)", 0)
-        ("FUND_CNTR_ID", "varchar(16)", 0)
-        ("FUND_CNTR_KEY", "int", 0)
-        ("FUND_CNTR_NAME", "varchar(20)", 0)
-        ("FUND_DESCR", "varchar(40)", 0)
-        ("FUND_ID", "varchar(10)", 0)
-        ("FUND_KEY", "int", 0)
-        ("FUND_NAME", "varchar(20)", 0)
-        ("FUND_SUBSTR1", "varchar(10)", 0)
-        ("FUND_SUBSTR2", "varchar(10)", 0)
-        ("FUND_TYPE_DESCR", "varchar(35)", 0)
-        ("FUND_TYPE_ID", "varchar(6)", 0)
-        ("GL_ACCT_FULL_NAME", "varchar(120)", 0)
-        ("GL_ACCT_GRP", "varchar(4)", 0)
-        ("GL_ACCT_ID", "varchar(30)", 0)
-        ("GL_ACCT_KEY", "int", 0)
-        ("GL_ACCT_MSTR_DESCR", "varchar(64)", 0)
-        ("GL_COMBO_KEY", "int", 0)
-        ("GRP_ACCT_NUM", "varchar(10)", 0)
-        ("HCAD_ACCT_STAT", "varchar(100)", 0)
-        ("HCTO_AD_VAL_ID", "varchar(22)", 1)
-        ("HCTO_DET_TRANS_DESCR", "varchar(50)", 1)
-        ("HCTO_FISC_PER", "varchar(15)", 0)
-        ("HCTO_FISC_PER_NUM", "int", 0)
-        ("HCTO_FISC_QTR", "varchar(15)", 1)
-        ("HCTO_FISC_QTR_NUM", "int", 0)
-        ("HCTO_FISC_YR", "varchar(15)", 1)
-        ("HH", "varchar(2)", 0)
-        ("HIER_ID", "varchar(30)", 0)
-        ("HOL_DESCR", "varchar(40)", 1)
-        ("HOUSE_NUM", "varchar(10)", 0)
-        ("INCDT_ADDR_LINE_1", "varchar(200)", 0)
-        ("INCDT_ADDR_LINE_2", "varchar(200)", 0)
-        ("INCDT_ADDR_LINE_3", "varchar(200)", 0)
-        ("INCDT_APT_LOT", "varchar(20)", 0)
-        ("INCDT_CAT", "varchar(40)", 0)
-        ("INCDT_CITY", "varchar(20)", 0)
-        ("INCDT_CNTY", "varchar(20)", 0)
-        ("INCDT_CTRY", "varchar(20)", 0)
-        ("INCDT_DESCR", "varchar(40)", 0)
-        ("INCDT_DTE", "datetime", 0)
-        ("INCDT_GIS_CITY", "varchar(20)", 0)
-        ("INCDT_GIS_CMPLT_MATCH_ADDR", "varchar(200)", 1)
-        ("INCDT_GIS_LAT", "varchar(38)", 1)
-        ("INCDT_GIS_LOCATR_NAME", "varchar(40)", 0)
-        ("INCDT_GIS_LONG", "varchar(38)", 1)
-        ("INCDT_GIS_MATCH_SCORE", "varchar(10)", 1)
-        ("INCDT_GIS_PREFIX", "varchar(12)", 1)
-        ("INCDT_GIS_ST_NAME", "varchar(60)", 1)
-        ("INCDT_GIS_ST_NUM", "varchar(12)", 1)
-        ("INCDT_GIS_ST_PRETYPE", "varchar(40)", 1)
-        ("INCDT_GIS_ST_TYPE", "varchar(40)", 1)
-        ("INCDT_GIS_SUFF", "varchar(12)", 1)
-        ("INCDT_GIS_X", "varchar(21)", 1)
-        ("INCDT_GIS_Y", "varchar(17)", 0)
-        ("INCDT_GIS_ZIP", "varchar(5)", 0)
-        ("INCDT_IN_CITY_FLAG", "varchar(1)", 0)
-        ("INCDT_KEY", "int", 0)
-        ("INCDT_PREFIX", "varchar(2)", 0)
-        ("INCDT_SEQ_NUM", "varchar(10)", 0)
-        ("INCDT_SERV_LVL", "varchar(120)", 0)
-        ("INCDT_ST", "varchar(100)", 0)
-        ("INCDT_ST_DIR", "varchar(4)", 0)
-        ("INCDT_ST_NAME", "varchar(35)", 0)
-        ("INCDT_ST_NUM", "varchar(7)", 0)
-        ("INCDT_ST_PRETYPE", "varchar(15)", 0)
-        ("INCDT_ST_TYPE", "varchar(4)", 0)
-        ("INCDT_STATE", "varchar(25)", 0)
-        ("INCDT_SUFF", "varchar(2)", 0)
-        ("INCDT_TIME", "varchar(8)", 0)
-        ("INCDT_TYPE", "varchar(40)", 0)
-        ("INCDT_ZIP_CODE", "varchar(6)", 0)
-        ("INCDT_ZIP_PLUS_4", "varchar(11)", 0)
-        ("INDY_DESCR", "varchar(20)", 0)
-        ("INDY_ID", "varchar(4)", 0)
-        ("INT_EXT_EMP_FLAG", "varchar(1)", 0)
-        ("INTER_CMPNY_TERM02_NAME", "varchar(28)", 0)
-        ("INTRA_FUND_TRANS_AMT", "money", 1)
-        ("INTRA_FUND_TRANS_FLAG", "varchar(1)", 0)
-        ("INV_NUM", "varchar(40)", 0)
-        ("INVALID INPUT", "nvarchar(100)", 1)
-        ("INVALID INPUT ERROR DESCRIPTION", "nvarchar(1000)", 1)
-        ("ITEM_ADDR_LINE_1", "varchar(200)", 0)
-        ("ITEM_ADDR_LINE_2", "varchar(200)", 0)
-        ("ITEM_ADDR_LINE_3", "varchar(200)", 0)
-        ("ITEM_APT_LOT", "varchar(20)", 0)
-        ("ITEM_CITY", "varchar(20)", 0)
-        ("ITEM_CNTY", "varchar(20)", 0)
-        ("ITEM_CTRY", "varchar(20)", 0)
-        ("ITEM_DESCR", "varchar(255)", 1)
-        ("ITEM_EXMPT_FLAG", "varchar(1)", 0)
-        ("ITEM_GIS_CITY", "varchar(20)", 0)
-        ("ITEM_GIS_CMPLT_MATCH_ADDR", "varchar(200)", 1)
-        ("ITEM_GIS_LAT", "varchar(38)", 1)
-        ("ITEM_GIS_LOCATR_NAME", "varchar(40)", 0)
-        ("ITEM_GIS_LONG", "varchar(38)", 1)
-        ("ITEM_GIS_MATCH_SCORE", "varchar(10)", 1)
-        ("ITEM_GIS_PREFIX", "varchar(12)", 1)
-        ("ITEM_GIS_ST_NAME", "varchar(60)", 1)
-        ("ITEM_GIS_ST_NUM", "varchar(12)", 1)
-        ("ITEM_GIS_ST_PRETYPE", "varchar(40)", 1)
-        ("ITEM_GIS_ST_TYPE", "varchar(40)", 1)
-        ("ITEM_GIS_SUFF", "varchar(12)", 1)
-        ("ITEM_GIS_X", "varchar(21)", 1)
-        ("ITEM_GIS_Y", "varchar(17)", 0)
-        ("ITEM_GIS_ZIP", "varchar(5)", 0)
-        ("ITEM_IN_CITY_FLAG", "varchar(1)", 0)
-        ("ITEM_KEY", "int", 0)
-        ("ITEM_PREFIX", "varchar(2)", 0)
-        ("ITEM_SERV_LVL", "varchar(40)", 0)
-        ("ITEM_ST", "varchar(100)", 0)
-        ("ITEM_ST_DIR", "varchar(4)", 0)
-        ("ITEM_ST_NAME", "varchar(35)", 0)
-        ("ITEM_ST_NUM", "varchar(13)", 1)
-        ("ITEM_ST_PRETYPE", "varchar(15)", 0)
-        ("ITEM_ST_TYPE", "varchar(4)", 0)
-        ("ITEM_STAT", "varchar(40)", 0)
-        ("ITEM_STAT_CHG_DTE", "datetime", 0)
-        ("ITEM_STATE", "varchar(25)", 0)
-        ("ITEM_SUFF", "varchar(2)", 0)
-        ("ITEM_TYPE", "varchar(40)", 0)
-        ("ITEM_ZIP_CODE", "varchar(13)", 1)
-        ("ITEM_ZIP_PLUS_4", "varchar(11)", 0)
-        ("JV_CUST_FLAG", "varchar(1)", 0)
-        ("LANG_ID", "varchar(1)", 0)
-        ("LAST_CUST_CONN_DTE", "datetime", 0)
-        ("LAST_CUST_CUTOFF_DTE", "datetime", 0)
-        ("LAST_CUST_DISCONN_DTE", "datetime", 0)
-        ("LAST_METER_INSPECT_DTE", "datetime", 0)
-        ("LICENSE_PLATE_EXP_MTH", "varchar(3)", 0)
-        ("LICENSE_PLATE_EXP_YR", "varchar(4)", 0)
-        ("LICENSE_PLATE_NUM", "varchar(10)", 0)
-        ("LICENSE_PLATE_TYPE", "varchar(20)", 0)
-        ("LOAD_DTE", "datetime", 0)
-        ("LOAD_DTE_TIME", "datetime", 0)
-        ("LOAD_TIME", "varchar(8)", 0)
-        ("LOGICAL_SYS", "varchar(10)", 0)
-        ("MAN_TRANS_FLAG", "varchar(1)", 0)
-        ("MEDICAID_PAYER_CODE", "varchar(40)", 0)
-        ("MEDICARE_PAYER_CODE", "varchar(40)", 0)
-        ("MIN", "varchar(5)", 0)
-        ("MSTR_REC_CNTRL_DEL_BLK", "varchar(1)", 0)
-        ("MSTR_SUBDIV_ID", "varchar(10)", 0)
-        ("MSTR_TRANS_TYPE", "varchar(20)", 0)
-        ("MUNIC_UTIL_DISTR_CODE", "varchar(13)", 1)
-        ("MUNIC_UTIL_DISTR_DESCR", "varchar(50)", 0)
-        ("NAICS_DET_CODE", "varchar(6)", 0)
-        ("NAICS_DET_NAME", "varchar(40)", 0)
-        ("NAICS_DIV_CODE", "varchar(2)", 0)
-        ("NAICS_DIV_NAME", "varchar(40)", 0)
-        ("NAICS_INDY_CODE", "varchar(5)", 0)
-        ("NAICS_INDY_GRP_CODE", "varchar(4)", 0)
-        ("NAICS_INDY_GRP_NAME", "varchar(40)", 0)
-        ("NAICS_INDY_NAME", "varchar(40)", 0)
-        ("NAICS_MAJ_GRP_CODE", "varchar(3)", 0)
-        ("NAICS_MAJ_GRP_NAME", "varchar(40)", 0)
-        ("NODE_FLAG", "varchar(1)", 0)
-        ("NUM_OF_ACRES", "varchar(13)", 1)
-        ("ON_ADMIN_HOLD_FLAG", "varchar(1)", 0)
-        ("ONE_TIME_ACCT_DESCR", "varchar(5)", 0)
-        ("ORIG_ASSIGNED_VEND", "varchar(120)", 1)
-        ("ORIG_BILL_NAME", "varchar(120)", 1)
-        ("ORIG_CUST_KEY", "int", 0)
-        ("ORIG_INV_NUM", "varchar(40)", 0)
-        ("ORIGIN_LOC", "varchar(120)", 0)
-        ("OWNER_IS_CUST_FLAG", "varchar(1)", 0)
-        ("OWNER_RENTER", "varchar(1)", 0)
-        ("OWNERSHIP_EFF_DTE", "datetime", 0)
-        ("PAY_BLK", "varchar(1)", 0)
-        ("PAY_METH", "varchar(15)", 0)
-        ("PAYROLL_PER", "int", 0)
-        ("PER_END_DTE", "date", 1)
-        ("PERMIT_EXP_DTE", "datetime", 0)
-        ("PERMIT_IS_CURR_AT_TIME_OF_INCDT_FLAG", "varchar(1)", 0)
-        ("PERMIT_ISSUE_DTE", "datetime", 0)
-        ("PERMIT_NAME", "varchar(120)", 0)
-        ("PERMIT_NUM", "int", 0)
-        ("PERSON_IN_CHRG", "varchar(20)", 0)
-        ("PERSON_IN_CHRG_ID", "varchar(8)", 0)
-        ("PHN", "varchar(30)", 0)
-        ("PL_STMNT_ACCT_TYPE", "varchar(2)", 0)
-        ("PLANT_ID", "varchar(4)", 0)
-        ("PLANT_NAME", "varchar(30)", 0)
-        ("PMAM_ADJMT_TO", "varchar(20)", 1)
-        ("PMAM_ADJMT_TYPE", "varchar(50)", 1)
-        ("PMAM_ID", "varchar(20)", 0)
-        ("POST_DTE_KEY", "int", 1)
-        ("PRKG_METER_NUM", "varchar(8)", 0)
-        ("PRKG_METER_VIO_FLAG", "varchar(1)", 0)
-        ("PROP_CLASS_CODE", "varchar(13)", 1)
-        ("PROP_CLASS_DESCR", "varchar(50)", 0)
-        ("PT_AGE", "varchar(3)", 0)
-        ("PT_GNDR", "varchar(10)", 0)
-        ("QTRLY_PAY_FLAG", "varchar(1)", 0)
-        ("RECEIVABLE_1ST_PAY_DTE", "datetime", 1)
-        ("RECEIVABLE_CURR_BILLING_TO_DTE", "datetime", 1)
-        ("RECEIVABLE_CURR_DELINQ_DTE", "datetime", 0)
-        ("RECEIVABLE_CURR_DUE_DTE", "datetime", 0)
-        ("RECEIVABLE_CURR_ISSUE_DTE", "datetime", 0)
-        ("RECEIVABLE_CURR_TO_DTE", "datetime", 1)
-        ("RECEIVABLE_EVER_TRANS_FLAG", "varchar(1)", 1)
-        ("RECEIVABLE_FNL_PAY_DTE", "datetime", 1)
-        ("RECEIVABLE_HAS_LTR_FLAG", "varchar(1)", 0)
-        ("RECEIVABLE_HAS_NOTE_FLAG", "varchar(1)", 0)
-        ("RECEIVABLE_HAS_PEND_LTR_FLAG", "varchar(1)", 0)
-        ("RECEIVABLE_KEY", "int", 0)
-        ("RECEIVABLE_LITIGATION_DTE", "datetime", 1)
-        ("RECEIVABLE_MSTR_STAT", "varchar(40)", 1)
-        ("RECEIVABLE_MSTR_STAT_CHG_DTE", "datetime", 1)
-        ("RECEIVABLE_ORIG_BILLING_TO_DTE", "datetime", 1)
-        ("RECEIVABLE_ORIG_DELINQ_DTE", "datetime", 1)
-        ("RECEIVABLE_ORIG_DUE_DTE", "datetime", 1)
-        ("RECEIVABLE_ORIG_ISSUE_DTE", "datetime", 1)
-        ("RECEIVABLE_ORIG_TO_DTE", "datetime", 1)
-        ("RECEIVABLE_SETTLEMENT_DTE", "datetime", 1)
-        ("RECEIVABLE_STAT", "varchar(40)", 0)
-        ("RECEIVABLE_STAT_CHG_DTE", "datetime", 0)
-        ("RECEIVABLE_VERS_BILLING_TO_DTE", "datetime", 0)
-        ("RECEIVABLE_VERS_DELINQ_DTE", "datetime", 0)
-        ("RECEIVABLE_VERS_DUE_DTE", "datetime", 0)
-        ("RECEIVABLE_VERS_ISSUE_DTE", "datetime", 0)
-        ("RECEIVABLE_VERS_TO_DTE", "datetime", 0)
-        ("REG_HOLDER_FLAG", "varchar(1)", 0)
-        ("REGION_ID", "varchar(3)", 0)
-        ("REGION_NAME", "varchar(20)", 0)
-        ("REINSTATEMENT_DTE", "datetime", 1)
-        ("RELE_REAL_COVER_ELIG", "varchar(1)", 0)
-        ("REND_PENALTY_JURIS_CODE", "varchar(13)", 1)
-        ("REND_PENALTY_JURIS_DESCR", "varchar(50)", 0)
-        ("RESOLVE_DESCR", "varchar(128)", 0)
-        ("RESOLVE_DTE", "datetime", 1)
-        ("RESOLVE_RSN", "varchar(40)", 1)
-        ("RESOLVED_BY", "varchar(120)", 0)
-        ("REVERSAL_DTE", "datetime", 0)
-        ("RM_EMP_MSTR_KEY", "varchar(16)", 1)
-        ("RM_LOAD_DTE", "datetime", 0)
-        ("RM_LOAD_TIME", "varchar(8)", 0)
-        ("ROW_CHG_RSN", "varchar(100)", 1)
-        ("RSN_INCDT_NOT_BILLED", "varchar(40)", 0)
-        ("SAP_BUS_ID", "varchar(20)", 0)
-        ("SCHOOL_JURIS_CODE", "varchar(22)", 1)
-        ("SCHOOL_JURIS_DESCR", "varchar(50)", 0)
-        ("SCND_TEL_NUM", "varchar(16)", 0)
-        ("SEN_CITIZEN_FLAG", "varchar(1)", 0)
-        ("SIC_CODE", "varchar(8)", 0)
-        ("SIC_DIV_CODE", "varchar(20)", 0)
-        ("SIC_DIV_NAME", "varchar(40)", 0)
-        ("SIC_INDY_GRP_CODE", "varchar(3)", 0)
-        ("SIC_INDY_GRP_NAME", "varchar(40)", 0)
-        ("SIC_MAJ_GRP_CODE", "varchar(2)", 0)
-        ("SIC_MAJ_GRP_NAME", "varchar(40)", 0)
-        ("SIC_NAME", "varchar(40)", 0)
-        ("SIG_FLAG", "varchar(1)", 0)
-        ("SMART_CM_ID", "varchar(20)", 0)
-        ("SMARTCM_IS_ADJMT", "varchar(1)", 1)
-        ("SMARTCM_IS_FEE", "varchar(1)", 1)
-        ("SMARTCM_IS_PAY", "varchar(1)", 1)
-        ("SMARTCM_OTHER_CRITERIA", "varchar(50)", 1)
-        ("SRC_CARRIER_KEY", "varchar(40)", 0)
-        ("SRC_CARRIER_PROCEDURE_KEY", "varchar(40)", 0)
-        ("SRC_SYS", "varchar(40)", 0)
-        ("SRC_SYS_ID", "varchar(120)", 0)
-        ("SRC_SYS_MOD_DTE", "datetime", 1)
-        ("SRC_SYS_TRANS_ID", "varchar(40)", 1)
-        ("SRC_SYS_VEH_ID", "varchar(32)", 1)
-        ("ST", "varchar(60)", 0)
-        ("STATE_CORP_CHTR_ID", "varchar(20)", 0)
-        ("STATE_FISC_PER", "varchar(15)", 0)
-        ("STATE_FISC_PER_NUM", "int", 0)
-        ("STATE_FISC_QTR", "varchar(15)", 1)
-        ("STATE_FISC_QTR_NUM", "int", 0)
-        ("STATE_FISC_YR", "varchar(15)", 1)
-        ("STATE_SALES_TAX_ID", "varchar(20)", 0)
-        ("SUBSTANTIAL_ERR_PENALTY", "varchar(1)", 0)
-        ("SUSPD_PERMIT_DTE", "datetime", 0)
-        ("SUSPD_PERMIT_RSN", "varchar(50)", 0)
-        ("SYS_LOAD_KEY", "int", 0)
-        ("T2_ID", "varchar(20)", 0)
-        ("T2_TRANS_MISC_ITEM_CODE", "varchar(20)", 0)
-        ("T2_TRANS_MISC_ITEM_DESCR", "varchar(50)", 0)
-        ("T2_TRANS_ORIG_OBJ_TYPE_ID", "varchar(10)", 0)
-        ("T2_TRANS_PARSED_DESCR", "varchar(50)", 0)
-        ("T2_TRANS_RSN", "varchar(50)", 0)
-        ("T2_TRANS_SCENARIO", "varchar(50)", 0)
-        ("T2_TRANS_TYPE_CODE", "varchar(20)", 0)
-        ("T2_TRANS_TYPE_DESCR", "varchar(50)", 0)
-        ("TAX_DEFERRAL_END_DTE", "datetime", 0)
-        ("TAX_DEFERRAL_START_DTE", "datetime", 0)
-        ("TAX_NUM_1", "varchar(16)", 0)
-        ("TAX_NUM_2", "varchar(11)", 0)
-        ("TAX_ROLL_CODE", "varchar(13)", 1)
-        ("TAX_ROLL_DESCR", "varchar(50)", 0)
-        ("TAXABLE_PROP_LGL_DESCR_1", "varchar(40)", 0)
-        ("TAXABLE_PROP_LGL_DESCR_2", "varchar(40)", 0)
-        ("TAXABLE_PROP_LGL_DESCR_3", "varchar(40)", 0)
-        ("TAXABLE_PROP_LGL_DESCR_4", "varchar(40)", 0)
-        ("TAXABLE_PROP_LGL_DESCR_5", "varchar(40)", 0)
-        ("TAXABLE_PROP_ROLL_TYPE", "varchar(50)", 0)
-        ("TIME_KEY", "int", 0)
-        ("TOWING_CMPNY", "varchar(40)", 0)
-        ("TRADING_PRN_ID", "varchar(6)", 0)
-        ("TRADING_PRN_NAME", "varchar(30)", 0)
-        ("TRANS_AMT", "money", 1)
-        ("TRANS_CNT", "int", 1)
-        ("TRANS_DTE_KEY", "int", 0)
-        ("TXP_SERV_LVL", "varchar(120)", 0)
-        ("TXP_TYPE", "varchar(40)", 0)
-        ("TYPE_OF_ALM_SITE", "varchar(1)", 0)
-        ("UNDER_APPEAL_FLAG", "varchar(1)", 0)
-        ("UNIQ_VEND_NAME", "varchar(120)", 1)
-        ("UNK_CUST_AT_BILL_FLAG", "varchar(1)", 1)
-        ("VAC_FLAG", "varchar(1)", 0)
-        ("VALID_FROM_DTE", "datetime", 0)
-        ("VALID_TO_DTE", "datetime", 0)
-        ("VEH", "varchar(40)", 0)
-        ("VEH_COLOR", "varchar(40)", 0)
-        ("VEH_ID_NUM", "varchar(24)", 0)
-        ("VEH_MAKE", "varchar(40)", 0)
-        ("VEH_MODEL", "varchar(40)", 0)
-        ("VEH_MODEL_YR", "varchar(4)", 0)
-        ("VEH_OWNER_ID", "varchar(32)", 0)
-        ("VEH_OWNER_NAME", "varchar(120)", 0)
-        ("VEH_TYPE", "varchar(40)", 0)
-        ("VEND_BILLER_FLAG", "varchar(1)", 1)
-        ("VEND_COLLR_FLAG", "varchar(1)", 1)
-        ("VEND_CUST_ID", "varchar(10)", 0)
-        ("VEND_CUST_NAME", "varchar(40)", 0)
-        ("VEND_FULL_NAME", "varchar(120)", 0)
-        ("VEND_GRP_KEY", "varchar(10)", 0)
-        ("VEND_ID", "varchar(10)", 0)
-        ("VEND_KEY", "int", 0)
-        ("VEND_NAME", "varchar(40)", 0)
-        ("VEND_NAME_01", "varchar(40)", 0)
-        ("VEND_NAME_02", "varchar(40)", 0)
-        ("VEND_NAME_03", "varchar(40)", 0)
-        ("VEND_NAME_04", "varchar(40)", 0)
-        ("VERS_ASSIGNED_VEND", "varchar(120)", 1)
-        ("VERS_BEG_DTE", "datetime", 0)
-        ("VERS_END_DTE", "datetime", 0)
-        ("VIO_CODE", "varchar(20)", 0)
-        ("VOID_CODE", "varchar(10)", 0)
-        ("VOID_DESCR", "varchar(50)", 0)
-        ("VOID_FLAG", "varchar(1)", 0)
-        ("WK_IN_CAL_YR", "int", 0)
-        ("WKND_FLAG", "varchar(1)", 0)
-        ("WORK_STAT", "varchar(50)", 0)
-        ("WRITE_OFF_FLAG", "varchar(1)", 0)
-        ("WTR_ACCT_NUM_OF_UNITS", "int", 0)
-        ("WTR_ACCT_ORIG_USE_TYPE", "varchar(120)", 0)
-        ("WTR_ACCT_PROP_USE_TYPE", "varchar(120)", 0)
-        ("WTR_METER_NUM", "varchar(50)", 0)
-        ("ZIP", "varchar(10)", 0) |]
-//"(4) F# FieldDefaults.fsx"
-    let fieldDefault = [|
-        ("LOAD_DTE"                            , "GETDATE()"   )
-        ("LOAD_TIME"                           , "CONVERT(VARCHAR(8),GETDATE(),108)")
-        ("VERS_ASSIGNED_VEND"                  , "'CoH'")
-        ("MEDICARE_PAYER_CODE"                 , "'(SYS) UNKNOWN'")
-        ("MEDICAID_PAYER_CODE"                 , "'(SYS) UNKNOWN'")
-        ("CARRIER_FIN_GRP"                     , "'(SYS) UNKNOWN'")
-        ("CARRIER_FIN_CLASS"                   , "'(SYS) UNKNOWN'")
-        ("CARRIER_GRP"                         , "'(SYS) UNKNOWN'")
-        ("CARRIER_NAME"                        , "'(SYS) UNKNOWN'")
-        ("SRC_CARRIER_CODE"                    , "'(SYS) UNKNOWN'")
-        ("CARRIER_PROCEDURE_CODE"              , "'(SYS) UNKNOWN'")
-        ("CARRIER_PROCEDURE_DESCR"             , "'(SYS) UNKNOWN'")
-        ("CARRIER_PROCEDURE_TYPE"              , "'(SYS) UNKNOWN'")
-        ("CARRIER_PROCEDURE_BILL_CODE"         , "'(SYS) UNKNOWN'")
-        ("VEH"                                 , "'(SYS) UNKNOWN'")
-        ("EMS_INCDT_CAT"                       , "'(SYS) UNKNOWN'")
-        ("ACTV_CARRIER_FIN_GRP"                , "'(SYS) UNKNOWN'")
-        ("ACTV_CARRIER_FIN_CLASS"              , "'(SYS) UNKNOWN'")
-        ("ACTV_CARRIER"                        , "'(SYS) UNKNOWN'")
-        ("NAICS_DET_CODE"                      , "'*'")
-        ("NAICS_DIV_CODE"                      , "'*'")
-        ("SIC_MAJ_GRP_CODE"                    , "'*'")
-        ("DEC_CUST_FLAG"                       , "'*'")
-        ("CUST_PREFIX"                         , "'*'")
-        ("CUST_SUFF"                           , "'*'")
-        ("CUST_GIS_PREFIX"                     , "'*'")
-        ("CUST_GIS_SUFF"                       , "'*'")
-        ("ALLOC_TRANS_FLAG"                    , "'*'")
-        ("SMARTCM_OTHER_CRITERIA"              , "'*'")
-        ("SMARTCM_IS_FEE"                      , "'*'")
-        ("SMARTCM_IS_ADJMT"                    , "'*'")
-        ("SMARTCM_IS_PAY"                      , "'*'")
-        ("PERMIT_IS_CURR_AT_TIME_OF_INCDT_FLAG", "'*'")
-        ("PRKG_METER_VIO_FLAG"                 , "'*'")
-        ("INCDT_PREFIX"                        , "'*'")
-        ("INCDT_SUFF"                          , "'*'")
-        ("INCDT_IN_CITY_FLAG"                  , "'*'")
-        ("INCDT_GIS_PREFIX"                    , "'*'")
-        ("INCDT_GIS_SUFF"                      , "'*'")
-        ("ITEM_EXMPT_FLAG"                     , "'*'")
-        ("ITEM_PREFIX"                         , "'*'")
-        ("ITEM_SUFF"                           , "'*'")
-        ("ITEM_GIS_PREFIX"                     , "'*'")
-        ("ITEM_GIS_SUFF"                       , "'*'")
-        ("FIRE_ALM_AGING_RST_FLAG"             , "'*'")
-        ("AD_VAL_VET_FLAG"                     , "'*'")
-        ("AD_VAL_DISABLED_FLAG"                , "'*'")
-        ("AD_VAL_OVER_66_FLAG"                 , "'*'")
-        ("AD_VAL_HOMESTEAD_FLAG"               , "'*'")
-        ("QTRLY_PAY_FLAG"                      , "'*'")
-        ("SRC_CARRIER_KEY"                     , "'***'")
-        ("SRC_CARRIER_PROCEDURE_KEY"           , "'***'")
-        ("COLL_PERSON_ID"                      , "'***'")
-        ("T2_ID"                               , "'***'")
-        ("PMAM_ID"                             , "'***'")
-        ("SMART_CM_ID"                         , "'***'")
-        ("HCTO_AD_VAL_ID"                      , "'***'")
-        ("COLL_PERSON_COH_EMP_NUM"             , "'***'")
-        ("CUST_EMAIL_ADDR"                     , "'***'")
-        ("CUST_PHN_NUM_1"                      , "'***'")
-        ("CUST_FAX_NUM"                        , "'***'")
-        ("FED_TAX_ID"                          , "'***'")
-        ("BUS_CONT_PERSON_NAME"                , "'***'")
-        ("STATE_CORP_CHTR_ID"                  , "'***'")
-        ("STATE_SALES_TAX_ID"                  , "'***'")
-        ("SAP_BUS_ID"                          , "'***'")
-        ("NAICS_INDY_CODE"                     , "'***'")
-        ("NAICS_INDY_GRP_CODE"                 , "'***'")
-        ("NAICS_MAJ_GRP_CODE"                  , "'***'")
-        ("SIC_INDY_GRP_CODE"                   , "'***'")
-        ("SIC_DIV_CODE"                        , "'***'")
-        ("DL_ISSUE_STATE"                      , "'***'")
-        ("DL_NUM"                              , "'***'")
-        ("CUST_ADDR_LINE_1"                    , "'***'")
-        ("CUST_ADDR_LINE_2"                    , "'***'")
-        ("CUST_ADDR_LINE_3"                    , "'***'")
-        ("CUST_ST_NUM"                         , "'***'")
-        ("CUST_ST_PRETYPE"                     , "'***'")
-        ("CUST_ST_NAME"                        , "'***'")
-        ("CUST_ST_TYPE"                        , "'***'")
-        ("CUST_SERV_LVL"                       , "'***'")
-        ("CUST_CITY"                           , "'***'")
-        ("CUST_STATE"                          , "'***'")
-        ("CUST_CTRY"                           , "'***'")
-        ("CUST_ST_DIR"                         , "'***'")
-        ("CUST_ST"                             , "'***'")
-        ("CUST_CNTY"                           , "'***'")
-        ("CUST_APT_LOT"                        , "'***'")
-        ("CUST_GIS_MATCH_SCORE"                , "'***'")
-        ("CUST_GIS_ST_NUM"                     , "'***'")
-        ("CUST_GIS_ST_PRETYPE"                 , "'***'")
-        ("CUST_GIS_ST_NAME"                    , "'***'")
-        ("CUST_GIS_ST_TYPE"                    , "'***'")
-        ("CUST_GIS_CITY"                       , "'***'")
-        ("CUST_GIS_ZIP"                        , "'***'")
-        ("CUST_GIS_X"                          , "'***'")
-        ("CUST_GIS_Y"                          , "'***'")
-        ("CUST_ZIP_CODE"                       , "'***'")
-        ("CUST_ZIP_PLUS_4"                     , "'***'")
-        ("CUST_GIS_LOCATR_NAME"                , "'***'")
-        ("SIC_CODE"                            , "'***'")
-        ("NAICS_DET_NAME"                      , "'***'")
-        ("NAICS_INDY_NAME"                     , "'***'")
-        ("NAICS_INDY_GRP_NAME"                 , "'***'")
-        ("NAICS_MAJ_GRP_NAME"                  , "'***'")
-        ("NAICS_DIV_NAME"                      , "'***'")
-        ("SIC_NAME"                            , "'***'")
-        ("SIC_INDY_GRP_NAME"                   , "'***'")
-        ("SIC_MAJ_GRP_NAME"                    , "'***'")
-        ("SIC_DIV_NAME"                        , "'***'")
-        ("CUST_PHN_NUM_2"                      , "'***'")
-        ("CUST_PHN_NUM_3"                      , "'***'")
-        ("CUST_PAR_ID"                         , "'***'")
-        ("CUST_PAR_NAME"                       , "'***'")
-        ("COH_EMP_NUM"                         , "'***'")
-        ("RM_LOAD_TIME"                        , "'***'")
-        ("RM_EMP_MSTR_KEY"                     , "'***'")
-        ("PAY_METH"                            , "'***'")
-        ("DET_TRANS_CODE"                      , "'***'")
-        ("T2_TRANS_TYPE_CODE"                  , "'***'")
-        ("T2_TRANS_TYPE_DESCR"                 , "'***'")
-        ("T2_TRANS_RSN"                        , "'***'")
-        ("T2_TRANS_PARSED_DESCR"               , "'***'")
-        ("T2_TRANS_MISC_ITEM_CODE"             , "'***'")
-        ("T2_TRANS_MISC_ITEM_DESCR"            , "'***'")
-        ("T2_TRANS_SCENARIO"                   , "'***'")
-        ("T2_TRANS_ORIG_OBJ_TYPE_ID"           , "'***'")
-        ("PMAM_ADJMT_TO"                       , "'***'")
-        ("PMAM_ADJMT_TYPE"                     , "'***'")
-        ("DIGITECH_TRANS_TYPE_DET"             , "'***'")
-        ("RSN_INCDT_NOT_BILLED"                , "'***'")
-        ("VIO_CODE"                            , "'***'")
-        ("TOWING_CMPNY"                        , "'***'")
-        ("BOOT_SERIAL_NUM"                     , "'***'")
-        ("PRKG_METER_NUM"                      , "'***'")
-        ("INCDT_SEQ_NUM"                       , "'***'")
-        ("INCDT_ADDR_LINE_1"                   , "'***'")
-        ("INCDT_ADDR_LINE_2"                   , "'***'")
-        ("INCDT_ADDR_LINE_3"                   , "'***'")
-        ("INCDT_ST_NUM"                        , "'***'")
-        ("INCDT_ST_PRETYPE"                    , "'***'")
-        ("INCDT_ST_NAME"                       , "'***'")
-        ("INCDT_ST_TYPE"                       , "'***'")
-        ("INCDT_SERV_LVL"                      , "'***'")
-        ("INCDT_CITY"                          , "'***'")
-        ("INCDT_STATE"                         , "'***'")
-        ("INCDT_CTRY"                          , "'***'")
-        ("INCDT_ST_DIR"                        , "'***'")
-        ("INCDT_ST"                            , "'***'")
-        ("INCDT_CNTY"                          , "'***'")
-        ("INCDT_APT_LOT"                       , "'***'")
-        ("INCDT_GIS_MATCH_SCORE"               , "'***'")
-        ("INCDT_GIS_ST_NUM"                    , "'***'")
-        ("INCDT_GIS_ST_PRETYPE"                , "'***'")
-        ("INCDT_GIS_ST_NAME"                   , "'***'")
-        ("INCDT_GIS_ST_TYPE"                   , "'***'")
-        ("INCDT_GIS_CITY"                      , "'***'")
-        ("INCDT_GIS_ZIP"                       , "'***'")
-        ("INCDT_GIS_X"                         , "'***'")
-        ("INCDT_GIS_Y"                         , "'***'")
-        ("INCDT_ZIP_CODE"                      , "'***'")
-        ("INCDT_ZIP_PLUS_4"                    , "'***'")
-        ("INCDT_GIS_LOCATR_NAME"               , "'***'")
-        ("BLK_NUM"                             , "'***'")
-        ("TXP_ID"                              , "'***'")
-        ("TXP_SERV_LVL"                        , "'***'")
-        ("TXP_TYPE"                            , "'***'")
-        ("ORIGIN_LOC"                          , "'***'")
-        ("DEST_LOC"                            , "'***'")
-        ("ITEM_STAT"                           , "'***'")
-        ("ITEM_ADDR_LINE_1"                    , "'***'")
-        ("ITEM_ADDR_LINE_2"                    , "'***'")
-        ("ITEM_ADDR_LINE_3"                    , "'***'")
-        ("ITEM_ST_NUM"                         , "'***'")
-        ("ITEM_ST_PRETYPE"                     , "'***'")
-        ("ITEM_ST_NAME"                        , "'***'")
-        ("ITEM_ST_TYPE"                        , "'***'")
-        ("ITEM_SERV_LVL"                       , "'***'")
-        ("ITEM_CITY"                           , "'***'")
-        ("ITEM_STATE"                          , "'***'")
-        ("ITEM_CTRY"                           , "'***'")
-        ("ITEM_ST_DIR"                         , "'***'")
-        ("ITEM_ST"                             , "'***'")
-        ("ITEM_CNTY"                           , "'***'")
-        ("ITEM_APT_LOT"                        , "'***'")
-        ("ITEM_GIS_MATCH_SCORE"                , "'***'")
-        ("ITEM_GIS_ST_NUM"                     , "'***'")
-        ("ITEM_GIS_ST_PRETYPE"                 , "'***'")
-        ("ITEM_GIS_ST_NAME"                    , "'***'")
-        ("ITEM_GIS_ST_TYPE"                    , "'***'")
-        ("ITEM_GIS_CITY"                       , "'***'")
-        ("ITEM_GIS_ZIP"                        , "'***'")
-        ("ITEM_GIS_X"                          , "'***'")
-        ("ITEM_GIS_Y"                          , "'***'")
-        ("ITEM_ZIP_CODE"                       , "'***'")
-        ("ITEM_ZIP_PLUS_4"                     , "'***'")
-        ("ITEM_GIS_LOCATR_NAME"                , "'***'")
-        ("HCAD_ACCT_STAT"                      , "'***'")
-        ("AD_VAL_ACCT_LVL_ID"                  , "'***'")
-        ("COLL_LGL_COND"                       , "'***'")
-        ("COLL_LAWSUIT_NUM"                    , "'***'")
-        ("GL_ACCT_ID"                          , "'0000247130'")
-        ("INCDT_TIME"                          , "'00:00:00'")
-        ("FUND_ID"                             , "'1000'")
-        ("EMS_INCDT"                           , "'***'")
-        ("DISPATCH_NUM"                        , "'100073'")
-        ("FUND_CNTR_ID"                        , "'1200030003'")
-        ("CONTR_ID"                            , "'4600012363'")
-        ("PT_AGE"                              , "'***'")
-        ("BUS_AREA_ID"                         , "'6400'")
-        ("RECEIVABLE_STAT"                     , "'ACTIVE'")
-        ("DET_TRANS_DESCR"                     , "'Base Amount Billed'")
-        ("MSTR_TRANS_TYPE"                     , "'Billed'")
-        ("CUST_NAME"                           , "'***'")
-        ("ORIG_BILL_NAME"                      , "'***'")
-        ("COLL_PERSON_TYPE"                    , "'COH Contractor'")
-        ("EMP_NAME"                            , "'***'")
-        ("ITEM_TYPE"                           , "'***'")
-        ("ITEM_DESCR"                          , "'***'")
-        ("INCDT_TYPE"                          , "'***'")
-        ("INCDT_CAT"                           , "'***'")
-        ("DIV_LONG_NAME"                       , "'***'")
-        ("INCDT_DESCR"                         , "'***'")
-        ("EMP_TYPE"                            , "'Employee'")
-        ("FUNC_AREA_ID"                        , "'GEGO-00-00000000'")
-        ("DEPT_LONG_NAME"                      , "'***'")
-        ("CUST_TYPE"                           , "'Individual'")
-        ("PT_GNDR"                             , "'***'")
-        ("COLL_PERSON_NAME"                    , "'Employee'")
-        ("DIGITECH_ID"                         , "'***'")
-        ("CARRIER_SRC"                         , "'***'")
-        ("CARRIER_PROCEDURE_SRC"               , "'***'")
-        ("CUST_IS_VEND_FLAG"                   , "'N'")
-        ("JV_CUST_FLAG"                        , "'N'")
-        ("MAN_TRANS_FLAG"                      , "'N'")
-        ("DERIVED_TRANS_FLAG"                  , "'N'")
-        ("INTRA_FUND_TRANS_FLAG"               , "'N'")
-        ("ADJ_FLAG"                            , "'N'")
-        ("UNK_CUST_AT_BILL_FLAG"               , "'N'")
-        ("BILLING_HOLD_FLAG"                   , "'N'")
-        ("SIG_FLAG"                            , "'N'")
-        ("RECEIVABLE_MSTR_STAT"                , "'Open'")
-        ("DIGITECH_TRANS_TYPE"                 , "'PROCS'")
-        ("INT_EXT_EMP_FLAG"                    , "'Y'")
-        ("CONFI_CUST_FLAG"                     , "'Y'")
-        ("CUST_IN_CITY_FLAG"                   , "'Y'")
-        ("BILLED_FLAG"                         , "'Y'")
-        ("ITEM_IN_CITY_FLAG"                   , "'Y'")
-        ("RECEIVABLE_EVER_TRANS_FLAG"          , "'Y'")
-        ("CUST_PAR_KEY"                        , "1")
-        ("TRANS_CNT"                           , "1")
-        ("SRC_SYS_MOD_DTE"                     , "'1900-01-01'")
-        ("RM_LOAD_DTE"                         , "'1900-01-01'")
-        ("ITEM_STAT_CHG_DTE"                   , "'1900-01-01'")
-        ("RECEIVABLE_STAT_CHG_DTE"             , "'1900-01-01'")
-        ("FIRE_ORIG_ISSUE_DTE"                 , "'1900-01-01'")
-        ("RECEIVABLE_MSTR_STAT_CHG_DTE"        , "'1900-01-01'")
-        ("AD_VAL_TAX_DEFERRAL_START_DTE"       , "'1900-01-01'")
-        ("AD_VAL_TAX_DEFERRAL_END_DTE"         , "'1900-01-01'")
-        ("AD_VAL_EFF_DTE_OF_OWNERSHIP"         , "'1900-01-01'")
-        ("3348_ATTY_FEE_DTE"                   , "'1900-01-01'")
-        ("3308_ATTY_FEE_DTE"                   , "'1900-01-01'")
-        ("3307_ATTY_FEE_DTE"                   , "'1900-01-01'")
-        ("RECEIVABLE_VERS_DELINQ_DTE"          , "'1900-01-01'")
-        ("RECEIVABLE_VERS_DUE_DTE"             , "'1900-01-01'")
-        ("RECEIVABLE_VERS_TO_DTE"              , "'1900-01-01'")
-        ("RECEIVABLE_VERS_BILLING_TO_DTE"      , "'1900-01-01'")
-        ("INCDT_DTE"                           , "'1900-01-01'")
-        ("RECEIVABLE_VERS_ISSUE_DTE"           , "'1900-01-01'")
-        ("INTRA_FUND_TRANS_AMT"                , "NULL"        )
-        ("RECEIVABLE_1ST_PAY_DTE"              , "'1900-01-01'")
-        ("RECEIVABLE_FNL_PAY_DTE"              , "'1900-01-01'")
-        ("RECEIVABLE_LITIGATION_DTE"           , "'1900-01-01'")
-        ("RECEIVABLE_SETTLEMENT_DTE"           , "'1900-01-01'")
-        ("REINSTATEMENT_DTE"                   , "'1900-01-01'")
-        ("SRC_SYS_TRANS_ID"                    , "'***'"       )
+        let iterV : ('a -> unit) -> Val<'a> -> unit = //f v = toView v |> View.Get f
+            fun     f               va      ->
+                match va with
+                | Constant  a ->          f  a                  
+                | Dynamic  wa -> View.Get f wa 
+                | DynamicV va ->          f va.Value 
     
-        ("ALLOWABLE_NO_CHRG_INCDTS"            , "0"           )
-        ("ALM_INSTL_CMPNY"                     , "'***'"       )
-        ("ALM_INSTL_DTE"                       , "'1900-01-01'")
-        ("ALM_MNT_CMPNY"                       , "'***'"       )
-        ("ALM_REG_KEY"                         , "'***'"       )
-        ("ALM_TYPE"                            , "'*'"         )
-        ("APPLICTN_RECV_DTE"                   , "'1900-01-01'")
-        ("APPRAISAL_DISTR_ACCT_NUM"            , "'***'"       )
-        ("CC_JURIS_DESCR"                      , "'***'"       )
-        ("CITY_RFPD_JURIS_DESCR"               , "'***'"       )
-        ("CURR_FIRE_ALM_PERMIT_FLAG"           , "'*'"         )
-        ("CURR_WTR_ACCT_FLAG"                  , "'*'"         )
-        ("CUST_ID"                             , "'***'"       )
-        ("DELINQ_DTE"                          , "'1900-01-01'")
-        ("DTE"                                 , "'1900-01-01'")
-        ("ESC_CAND_FLAG"                       , "'*'"         )
-        ("EXCL_TYPE"                           , "'***'"       )
-        ("FIRE_ALM_PERMIT_ACTV_FLAG"           , "'*'"         )
-        ("FIRE_ALM_PERMIT_NUM"                 , "'***'"       )
-        ("FIRE_ALM_PURPOSE"                    , "'***'"       )
-        ("INV_NUM"                             , "'***'"       )
-        ("LAST_CUST_CONN_DTE"                  , "'1900-01-01'")
-        ("LAST_CUST_CUTOFF_DTE"                , "'1900-01-01'")
-        ("LAST_CUST_DISCONN_DTE"               , "'1900-01-01'")
-        ("LAST_METER_INSPECT_DTE"              , "'1900-01-01'")
-        ("LICENSE_PLATE_EXP_MTH"               , "'***'"       )
-        ("LICENSE_PLATE_EXP_YR"                , "'***'"       )
-        ("LICENSE_PLATE_NUM"                   , "'***'"       )
-        ("LICENSE_PLATE_TYPE"                  , "'***'"       )
-        ("MUNIC_UTIL_DISTR_DESCR"              , "'***'"       )
-        ("ON_ADMIN_HOLD_FLAG"                  , "'*'"         )
-        ("OWNERSHIP_EFF_DTE"                   , "'1900-01-01'")
-        ("OWNER_IS_CUST_FLAG"                  , "'*'"         )
-        ("OWNER_RENTER"                        , "'*'"         )
-        ("PERMIT_EXP_DTE"                      , "'1900-01-01'")
-        ("PERMIT_ISSUE_DTE"                    , "'1900-01-01'")
-        ("PERMIT_NAME"                         , "'***'"       )
-        ("PERMIT_NUM"                          , "0"           )
-        ("PROP_CLASS_DESCR"                    , "'***'"       )
-        ("RECEIVABLE_HAS_LTR_FLAG"             , "'*'"         )
-        ("RECEIVABLE_HAS_NOTE_FLAG"            , "'*'"         )
-        ("RECEIVABLE_HAS_PEND_LTR_FLAG"        , "'*'"         )
-        ("REG_HOLDER_FLAG"                     , "'*'"         )
-        ("REND_PENALTY_JURIS_DESCR"            , "'***'"       )
-        ("RESOLVED_BY"                         , "'***'"       )
-        ("RESOLVE_DESCR"                       , "'***'"       )
-        ("SCHOOL_JURIS_DESCR"                  , "'***'"       )
-        ("SEN_CITIZEN_FLAG"                    , "'*'"         )
-        ("SRC_SYS"                             , "'***'"       )
-        ("SRC_SYS_ID"                          , "'***'"       )
-        ("SUBSTANTIAL_ERR_PENALTY"             , "'*'"         )
-        ("SUSPD_PERMIT_DTE"                    , "'1900-01-01'")
-        ("SUSPD_PERMIT_RSN"                    , "'***'"       )
-        ("TAXABLE_PROP_LGL_DESCR_1"            , "'***'"       )
-        ("TAXABLE_PROP_LGL_DESCR_2"            , "'***'"       )
-        ("TAXABLE_PROP_LGL_DESCR_3"            , "'***'"       )
-        ("TAXABLE_PROP_LGL_DESCR_4"            , "'***'"       )
-        ("TAXABLE_PROP_LGL_DESCR_5"            , "'***'"       )
-        ("TAXABLE_PROP_ROLL_TYPE"              , "'***'"       )
-        ("TAX_DEFERRAL_END_DTE"                , "'1900-01-01'")
-        ("TAX_DEFERRAL_START_DTE"              , "'1900-01-01'")
-        ("TAX_ROLL_DESCR"                      , "'***'"       )
-        ("TYPE_OF_ALM_SITE"                    , "'*'"         )
-        ("UNDER_APPEAL_FLAG"                   , "'*'"         )
-        ("VAC_FLAG"                            , "'*'"         )
-        ("VEH_COLOR"                           , "'***'"       )
-        ("VEH_ID_NUM"                          , "'***'"       )
-        ("VEH_MAKE"                            , "'***'"       )
-        ("VEH_MODEL"                           , "'***'"       )
-        ("VEH_MODEL_YR"                        , "'***'"       )
-        ("VEH_OWNER_ID"                        , "'***'"       )
-        ("VEH_OWNER_NAME"                      , "'***'"       )
-        ("VEH_TYPE"                            , "'***'"       )
-        ("VOID_CODE"                           , "'***'"       )
-        ("VOID_DESCR"                          , "'***'"       )
-        ("VOID_FLAG"                           , "'*'"         )
-        ("WORK_STAT"                           , "'***'"       )
-        ("WRITE_OFF_FLAG"                      , "'*'"         )
-        ("WTR_ACCT_NUM_OF_UNITS"               , "0"           )
-        ("WTR_ACCT_ORIG_USE_TYPE"              , "'***'"       )
-        ("WTR_ACCT_PROP_USE_TYPE"              , "'***'"       )
-        ("WTR_METER_NUM"                       , "'***'"       )
+        let toView v =
+            match v with
+            | Constant  a -> View.Const a
+            | Dynamic  wa -> wa
+            | DynamicV va -> va.View
     
-    |]
-//"(4) F# SlowlyChangingDimensions.fsx"
-    open System.Text.RegularExpressions
-    open Microsoft.FSharp.Reflection
+        let bindV : ('a -> Val<'b>) -> Val<'a> -> Val<'b> =
+            fun     f                  v       -> 
+                match v with
+                | Constant  a -> f a
+                | Dynamic  wa -> wa      |> View.Bind (f >> toView) |> Dynamic 
+                | DynamicV va -> va.View |> View.Bind (f >> toView) |> Dynamic 
     
-    module Option =
-        let defaultValue: 'a -> 'a option -> 'a = 
-            fun           dv    aO        ->
-                match aO with
-                | None   -> dv
-                | Some v -> v
+        let inline map2V f = // : ('a -> 'b -> 'c) -> Val<'a> -> Val<'b> -> Val<'c> =
+            //fun     f                ->
+            let inline swap f a b = f b a
+            let inline fv vb = bindV (swap (f >> mapV) vb)
+            swap fv
     
-    let padName: int -> string -> string =
-             fun len    name   -> name.PadRight len
+        let inline map3V f3 v1 v2 v3    = map2V f3 v1 v2    |> map2V (|>) v3
+        let inline map4V f3 v1 v2 v3 v4 = map3V f3 v1 v2 v3 |> map2V (|>) v4
+        
+        let tagDoc: ('a -> Doc) -> Val<'a> -> Doc =
+            fun     tag            va      ->
+                match va with
+                | Constant  a -> tag   a
+                | Dynamic  wa -> wa      |> View.Map tag |> Doc.EmbedView
+                | DynamicV va -> va.View |> View.Map tag |> Doc.EmbedView
     
-    let pad4 = padName 40
-    let pad2 = padName 20
+        let tagElt: ('a -> Elt) -> Val<'a> -> Doc =
+            fun     tag            va     ->
+                match va with
+                | Constant  a -> tag   a :> Doc
+                | Dynamic  wa -> wa     |> View.Map tag |> Doc.EmbedView
+                | DynamicV va -> va.View |> View.Map tag |> Doc.EmbedView
     
-    let defaultValue v opt = match opt with
-                             | Some x -> x
-                             | None   -> v
-    
-    let aNumeral (s : string) = if s.StartsWith "A#" then s.[2..] else s
-    
-    let toString (x:'a) = 
-        match FSharpValue.GetUnionFields(x, typeof<'a>) with
-        | case, _ -> case.Name
-        |> aNumeral
-    
-    let fromString<'a> (s:string) =
-        match FSharpType.GetUnionCases typeof<'a> |> Array.filter (fun case -> case.Name = s) with
-        |[|case|] -> Some(FSharpValue.MakeUnion(case,[||]) :?> 'a)
-        |_ -> None
-    
-    type sqlObjectType = | PROCEDURE | VIEW | TRIGGER
-    with
-         member this.Name      = toString this
-         member this.Condition = match    this with
-                                 | PROCEDURE -> "IN ( N'P', N'PC' )"
-                                 | VIEW      -> "=    N'V' "
-                                 | TRIGGER   -> "=    N'TR'"
-    
-    let sqlDropCreate: sqlObjectType -> string -> string =
-                   fun sqlType          name   -> sprintf """
-    IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'%s') AND type %s)
-        DROP %s %s;
-    GO
-    -- Machine-generated-code, DO NOT MODIFY HERE
-    -- %s 'HPL', '2017-03-01'
-    CREATE %s %s
-    """                                                name         sqlType.Condition 
-                                                       sqlType.Name name 
-                                                       name 
-                                                       sqlType.Name name
+        let attrV att       va      =
+                match va with
+                | Constant  a -> Attr.Create  att   a
+                | Dynamic  wa -> Attr.Dynamic att  wa
+                | DynamicV va -> Attr.Dynamic att  va.View
     
     
-    let regexIdentifier = Regex @"^[\p{L}_][\p{L}\p{N}@$#_]{0,127}$|^\[.+\]$"
-                                                    
-    let isIdentifier: string -> bool =
-                  fun txt    -> regexIdentifier.IsMatch txt
+        type HelperType = HelperType with
+            static member inline (&>) (HelperType, a : string      ) = Constant  a
+            static member (&>) (HelperType, a : bool        ) = Constant  a
+            static member (&>) (HelperType, a : int         ) = Constant  a
+            static member (&>) (HelperType, a : float       ) = Constant  a
+            static member (&>) (HelperType, a : Doc         ) = Constant  a
+            static member (&>) (HelperType, va: Val<string> ) =          va
+            static member (&>) (HelperType, va: Val<bool  > ) =          va
+            static member (&>) (HelperType, va: Val<int   > ) =          va
+            static member (&>) (HelperType, va: Val<float > ) =          va
+            static member (&>) (HelperType, va: Val<Doc   > ) =          va
+            static member (&>) (HelperType, va: Val<_     > ) =          va
+            static member (&>) (HelperType, vr: IRef<_    > ) = DynamicV vr
+            static member (&>) (HelperType, vw: View<_    > ) = Dynamic  vw
     
-    let nameS fName = 
-        if isIdentifier fName 
-        then fName 
-        else sprintf "[%s]" fName
+        [< Inline @"(
+                typeof($v) == 'function' ? {$:2, $0:$v} // View
+                :   typeof($v) == 'object'
+                          ? typeof($v.$) != 'undefined' // Val
+                                ? $v 
+                                : typeof($v.Id) == 'number' || typeof($v.i) == 'number' || typeof($v.RView == 'function')// Var
+                                     ? {$:1, $0:$v}
+                                     : typeof($v.docNode) != 'undefined'
+                                         ? {$:0, $0:$v} // Doc
+                                         : {$:2, $0:$v} // View?
+                          : {$:0, $0:$v}) // other
+                                         " >]
+        let fixit0 v = Constant v
+        let fixit2 v = let result = fixit0 v
+                       result
+                       
+        [< Direct "TestWebSharper.HtmlNode.Val.fixit2($v)" >]
+        //[< Inline >]
+        let inline fixit v = HelperType &> v
     
-    type TargetField
-    with
-         member this.Name = toString this
+        [< Inline >]
+        let inline bindIRef0 (f: 'a->IRef<'b>) (view: View<'a>) = 
+            let contentVar = Var.Create Unchecked.defaultof<'b>
+            let changingIRefO : IRef<'b> option ref = ref None
+        
+            contentVar.View |> View.Sink (fun v -> !changingIRefO |> Option.iter (fun r -> if r.Value <> v then r.Value <- v))
+        
+            view |> View.Bind (fun cur ->
+                let r = f cur
+                changingIRefO    := Some r
+                contentVar.Value <- r.Value
+                r.View
+            ) |> View.Sink (fun v -> contentVar.Value <- v)
+            contentVar
+        
+        let inline toDoc       v           = toView      (fixit v ) |> Doc.EmbedView
+        [< Inline >]
+        let inline bindIRef f  v           = bindIRef0 f (fixit v   |> toView)
+        let inline iter     f  v           = iterV     f (fixit v )
+        let inline bind     f  v           = bindV     f (fixit v )
+        let inline map      f  v           = mapV      f (fixit v )
+        let inline map2     f  v1 v2       = map2V     f (fixit v1) (fixit v2)
+        let inline map3     f  v1 v2 v3    = map3V     f (fixit v1) (fixit v2) (fixit v3)
+        let inline map4     f  v1 v2 v3 v4 = map4V     f (fixit v1) (fixit v2) (fixit v3) (fixit v4)
+        let inline sink     f  v           = fixit v |> toView |> View.Sink f
     
-    type FinTransViewField
-    with
-         member this.Name = toString this
+# 1 @"(4) F# type HtmlNode =.fsx"
+    [<NoComparison ; NoEquality>]
+    type HtmlNode =
+        | HtmlElement   of name: string * children: HtmlNode seq
+        | HtmlAttribute of name: string * value:    Val<string>
+        | HtmlText      of Val<string>
+        | HtmlEmpty
+        | SomeDoc       of Doc
+        | SomeAttr      of Attr
+        
+    let addClass    (classes:string) (add:string) = classes.Split ' ' |> Set.ofSeq |> Set.union  (Set.ofSeq <| add.Split ' ') |> String.concat " "
+    let removeClass (classes:string) (rem:string) = classes.Split ' ' |> Set.ofSeq |> Set.remove               rem            |> String.concat " "
     
-    type Field =
-        | SurrogateKey   of TargetField
-        | BusinessKey    of FinTransViewField
-        | SourceDate     of FinTransViewField
-        | IntraDayOrder  of  FinTransViewField
-        | SCD2BeginDate  of TargetField
-        | SCD2EndDate    of TargetField
-        | SCD2Current    of TargetField
-        | ChangeReason   of TargetField
-        | SCD2           of FinTransViewField * scd1:TargetField option * scd0:TargetField option /// Version  value
-        | SCD1           of FinTransViewField * scd0:TargetField option                           /// Current  value
-        | SCD0           of FinTransViewField                               /// SCD0 without accompanying SCD1 or 2
-    with member this.Name0 = 
+    let callAddClass = addClass "a" "b" // so that WebSharper.Collections.js is included
+    
+    let inline chooseAttr node = 
+        match node with
+        | HtmlAttribute (name, value   ) when name <> "class" && name <> "style" 
+                                         -> Some <| Val.attrV name value
+        | SomeAttr             value     -> Some <|                value
+        | _                              -> None
+    
+    let chooseThisAttr this node =
+        match node with
+        | HtmlAttribute (att, value) when att = this -> Some value
+        | _                                          -> None
+    
+    let concat s a b = a + s + b
+    let groupAttr name sep children = 
+        children 
+        |> Seq.choose (chooseThisAttr name)
+        |> (fun ss -> if ss |> Seq.isEmpty 
+                      then None 
+                      else ss |> Seq.reduce (Val.map2 <| concat sep ) |> Val.attrV name |> Some)
+    
+    let inline getAttrsFromSeq children =
+        children 
+        |> Seq.choose chooseAttr
+        |> Seq.append (List.choose id [ children |> groupAttr "class" " " ; children |> groupAttr "style" "; " ])
+    
+    let rec chooseNode node =
+        match node with
+        | HtmlElement(name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
+        | HtmlText    vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
+        | SomeDoc     doc             -> Some <| doc
+        | _                           -> None
+    
+    let getAttrChildren attr =
+        Seq.tryPick (function 
+                    | HtmlAttribute(a, v) when a = attr -> Some v 
+                    | _                                 -> None)
+        >> Option.defaultValue (Constant "")
+    
+    let mapHtmlElement f element =
+        match element with
+        | HtmlElement(name, children) -> f name  children
+        | _                           -> element
+    
+    let getAttr attr element =
+        match element with
+        | HtmlElement(_, children) -> children
+        | _                        -> seq []
+        |> getAttrChildren attr
+    
+    let getClass = getAttr "class"
+    let getStyle = getAttr "style"
+    
+    let replaceAttribute att (children: HtmlNode seq) newVal =
+        HtmlAttribute(att, newVal)
+        :: (children
+            |> Seq.filter (function HtmlAttribute(old, _) when old = att -> false | _ -> true)
+            |> Seq.toList
+           )
+    
+    let replaceAtt att node newVal = mapHtmlElement (fun n ch -> HtmlElement(n, replaceAttribute att ch newVal)) node
+    
+    type HtmlNode with
+        member inline this.toDoc = 
             match this with
-            | SurrogateKey   tfield
-            | SCD2BeginDate  tfield
-            | SCD2EndDate    tfield
-            | ChangeReason   tfield
-            | SCD2Current    tfield        -> tfield.Name
-            | BusinessKey    sfield
-            | SourceDate     sfield
-            | IntraDayOrder  sfield
-            | SCD2          (sfield, _, _) 
-            | SCD1          (sfield, _   ) 
-            | SCD0           sfield        -> sfield.Name
-         member this.Name = this.Name0 |> nameS
+            | HtmlAttribute _
+            | HtmlEmpty       -> Doc.Empty
+            | _               -> chooseNode this |> Option.defaultValue Doc.Empty
+        member inline   this.Class       clas = Val.fixit clas |> replaceAtt "class" this
+        member inline   this.AddChildren add  = mapHtmlElement (fun n ch -> HtmlElement(n, Seq.append add ch )) this
     
-    let strOption: string -> string option =
-               fun txt    -> match txt.Trim() with
-                             | "" -> None
-                             | f  -> Some f
-    
-    let tfldOption: TargetField -> TargetField option =
-                fun fld         -> match fld with | Nil  -> None | _ -> Some fld
-    
-    let sfldOption: FinTransViewField -> FinTransViewField option =
-                fun fld         -> match fld with | Nil_ -> None | _ -> Some fld
-    
-    let SurrogateKey  name           : Field =  name                   |> SurrogateKey 
-    let BusinessKey   name           : Field =  name                   |> BusinessKey  
-    let SourceDate    name           : Field =  name                   |> SourceDate   
-    let IntraDayOrder name           : Field =  name                   |> IntraDayOrder   
-    let SCD2BeginDate name           : Field =  name                   |> SCD2BeginDate
-    let SCD2EndDate   name           : Field =  name                   |> SCD2EndDate  
-    let SCD2Current   name           : Field =  name                   |> SCD2Current  
-    let ChangeReason  name           : Field =  name                   |> ChangeReason  
-    let SCD0          name           : Field =  name                   |> SCD0         
-    let SCD1          name      scd0 : Field = (name, tfldOption scd0) |> SCD1         
-    let SCD2          name scd1 scd0 : Field = (name, tfldOption scd1                   
-                                                    , tfldOption scd0) |> SCD2
+    let renderDoc = chooseNode >> Option.defaultValue Doc.Empty
         
-    let fieldNames      :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SCD2         (_, Some scd1, Some scd0) -> [ f.Name ; scd1.Name ; scd0.Name ]
-                                    | SCD2         (_, _        , Some scd0) -> [ f.Name             ; scd0.Name ]
-                                    | SCD1         (_,            Some scd0) -> [ f.Name             ; scd0.Name ]
-                                    | _                                      -> [ f.Name                         ]
+# 1 @"(4) F# let inline atr att v = Val.attrV  att (Val.fixit v).fsx"
+    let inline atr att v = Val.attrV  att (Val.fixit v)
+    let inline tag tag v = Val.tagDoc tag (Val.fixit v)
     
-    let fieldSource     :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SurrogateKey  _
-                                    | SCD2BeginDate _
-                                    | SCD2EndDate   _
-                                    | ChangeReason  _
-                                    | SCD2Current   _            -> []
-                                    | _                          -> [ f.Name ]
+    let inline _class       v = atr "class"       v
+    let inline _type        v = atr "type"        v
+    let inline _style       v = atr "style"       v
+    let inline _placeholder v = atr "placeholder" v
+    let inline textV        v = tag  Html.text    v
     
-    let fieldTarget    :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SurrogateKey  tfield
-                                    | SCD2BeginDate tfield
-                                    | SCD2EndDate   tfield
-                                    | ChangeReason  tfield
-                                    | SCD2Current   tfield                   -> [ tfield.Name            ]
-                                    | SCD2         (_, Some scd1, Some scd0) -> [ scd1  .Name ; scd0.Name]
-                                    | SCD2         (_, _        , Some scd0) -> [               scd0.Name]
-                                    | SCD1         (_,            Some scd0) -> [               scd0.Name]
-                                    | _                                      -> []
+    let inline htmlElement   name ch = HtmlElement  (name, ch           )
+    let inline htmlAttribute name v  = HtmlAttribute(name, Val.fixit v  )
+    let inline htmlText      txt     = HtmlText     (      Val.fixit txt)
+    let inline someElt       elt     = SomeDoc      (elt :> Doc         )    
+      
+    let inline ul          ch = htmlElement   "ul"          ch
+    let inline li          ch = htmlElement   "li"          ch
+    let inline br          ch = htmlElement   "br"          ch
+    let inline hr          ch = htmlElement   "hr"          ch
+    let inline h1          ch = htmlElement   "h1"          ch
+    let inline h2          ch = htmlElement   "h2"          ch
+    let inline h3          ch = htmlElement   "h3"          ch
+    let inline h4          ch = htmlElement   "h4"          ch
+    let inline h5          ch = htmlElement   "h5"          ch
+    let inline h6          ch = htmlElement   "h6"          ch
+    let inline div         ch = htmlElement   "div"         ch
+    let inline img         ch = htmlElement   "img"         ch
+    let inline span        ch = htmlElement   "span"        ch
+    let inline form        ch = htmlElement   "form"        ch
+    let inline table       ch = htmlElement   "table"       ch
+    let inline thead       ch = htmlElement   "thead"       ch
+    let inline th          ch = htmlElement   "th"          ch
+    let inline tr          ch = htmlElement   "tr"          ch
+    let inline td          ch = htmlElement   "td"          ch
+    let inline tbody       ch = htmlElement   "tbody"       ch
+    let inline label       ch = htmlElement   "label"       ch
+    let inline button      ch = htmlElement   "button"      ch
+    let inline script      sc = htmlElement   "script"      sc
+    let inline styleH      st = htmlElement   "style"       st
+    let inline fieldset    ch = htmlElement   "fieldset"    ch
+    let inline link        sc = htmlElement   "link"        sc
+    let inline iframe      at = htmlElement   "iframe"      at
+         
+    let inline href        v  = htmlAttribute "href"        v
+    let inline rel         v  = htmlAttribute "rel"         v
+    let inline src         v  = htmlAttribute "src"         v
+    let inline ``class``   v  = htmlAttribute "class"       v
+    let inline ``type``    v  = htmlAttribute "type"        v
+    let inline width       v  = htmlAttribute "width"       v
+    let inline title       v  = htmlAttribute "title"       v
+    let inline Id          v  = htmlAttribute "id"          v
+    let inline frameborder v  = htmlAttribute "frameborder" v
     
-    let fieldAlias      :  Field -> string =
-                       fun f     -> match f with 
-                                    | SurrogateKey  _ -> "SurrogateKey_ "
-                                    | BusinessKey   _ -> "BusinessKey_  "
-                                    | SourceDate    _ -> "SourceDate_   "
-                                    | IntraDayOrder _ -> "IntraDayOrder_"
-                                    | SCD2BeginDate _ -> "SourceDate_   "
-                                    | ChangeReason  _
-                                    | SCD2Current   _ 
-                                    | SCD2EndDate   _ -> "" 
-                                    | _               -> f.Name
-    let fieldAliasValue :  Field -> string -> string = 
-                       fun f        v      -> sprintf "%s = %s" (pad4 (fieldAlias f)) v
+    let inline classIf cls v = ``class`` <| Val.map (fun b -> if b then cls else "") (Val.fixit v)
     
-    let fieldSelectTable:  Field -> string list =
-                       fun f     -> match f with 
-                                    | SurrogateKey  _ -> [ fieldAliasValue f f.Name ]
-                                    | BusinessKey   _ -> [ fieldAliasValue f f.Name ]
-                                    | SCD2BeginDate _ -> [ fieldAliasValue f f.Name ]
-                                    | SourceDate    _ 
-                                    | IntraDayOrder _
-                                    | ChangeReason  _
-                                    | SCD2Current   _ 
-                                    | SCD2EndDate   _ -> [] 
-                                    | _               -> [ f.Name ]
+    let inline ``xclass`` v  = 
+        match Val.fixit v with
+        | Constant c  -> Attr.Class        c       
+        | Dynamic  cw -> Attr.DynamicClass "class_for_view_not_implemented" cw      ((<>)"")
+        | DynamicV cv -> Attr.DynamicClass cv.Value                         cv.View ((<>)"")
+        |> SomeAttr
     
-    let fieldSelectSource: (string -> string) -> Field -> string list =
-                       fun transform             f     ->
-                                    match f with 
-                                    | SurrogateKey  _ -> [ fieldAliasValue f "NULL"  ]
-                                    | BusinessKey   _ -> [ fieldAliasValue f f.Name ]
-                                    | SourceDate    _ -> [ fieldAliasValue f f.Name ]
-                                    | IntraDayOrder _
-                                    | SCD2BeginDate _
-                                    | ChangeReason  _
-                                    | SCD2Current   _ 
-                                    | SCD2EndDate   _ -> []
-                                    | _               -> [ transform f.Name ]
+    let style2pairs (ss:string) : (string * string) [] =
+        ss.Split(';') 
+        |> Array.map   (fun s -> s.Split(':') ) 
+        |> Array.filter(fun d -> d.Length = 2 )
+        |> Array.map   (fun d -> d.[0].Trim(), d.[1].Trim() )
     
-    let fieldSelectTogether1: (string -> string) -> Field -> string list =
-                       fun    transform             f     ->
-                                    match f with 
-                                    | SurrogateKey  _ -> [ fieldAlias f |> transform ]
-                                    | BusinessKey   _ -> [ fieldAlias f              ]
-                                    | SourceDate    _ -> [ fieldAlias f              ]
-                                    | IntraDayOrder _
-                                    | SCD2BeginDate _ 
-                                    | ChangeReason  _
-                                    | SCD2Current   _ 
-                                    | SCD2EndDate   _ -> []
-                                    | _               -> [ transform f.Name ]
+    let string2Styles = style2pairs >> Array.map (fun (n, v) -> Attr.Style n v |> SomeAttr)
     
-    let fieldInsert     :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SourceDate    _ 
-                                    | IntraDayOrder _
-                                    | SurrogateKey  _ -> []
-                                    | _               -> fieldNames f
+    let inline style     v  = htmlAttribute "style"    v
+    let inline style1  n v  = Val.fixit v |> Val.toView |> Attr.DynamicStyle n |> SomeAttr
     
-    let fieldValues     :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SourceDate    _ 
-                                    | IntraDayOrder _
-                                    | SurrogateKey  _ -> []
-                                    | _               -> fieldNames f |> List.map (sprintf "S.%s")
+    let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
     
-    let fieldUpdate     :  Field -> string list =
-                       fun f     -> match f with 
-                                    | SourceDate    _ 
-                                    | IntraDayOrder _
-                                    | BusinessKey   _
-                                    | SurrogateKey  _ -> []
-                                    | _               -> fieldNames f |> List.map (fun n -> sprintf "T.%s = S.%s" (pad4 n) n)
+    let inline bindHElem hElem v  = Doc.BindView (hElem >> renderDoc)  (Val.toView <| Val.fixit v)            |> SomeDoc
     
-    let fieldSCD2Equal   : Field -> string list =
-                       fun f     -> match f with 
-                                    | SCD2 _ -> [ sprintf "S.%s = P.%s" ( pad4 f.Name) f.Name ]
-                                    | _      -> []
-                                    
-    let fieldSCD2        : Field -> string list =
-                       fun f     -> match f with 
-                                    | SCD2 _             -> [ sprintf "S.%s" f.Name ]
-                                    | _                  -> []
     
-    let fieldSCD0        : Field -> string list =
-                       fun f     -> match f with 
-                                    | SCD1(_,    Some scd0) 
-                                    | SCD2(_, _, Some scd0) -> [ sprintf "%s = FIRST_VALUE(S.%s) OVER (PARTITION BY S.BusinessKey_ ORDER BY S.NRec_)" (pad4 scd0.Name) f.Name ]
-                                    | SCD0 _                -> [ sprintf "%s = FIRST_VALUE(S.%s) OVER (PARTITION BY S.BusinessKey_ ORDER BY S.NRec_)" (pad4 f.Name   ) f.Name ]
-                                    | _                     -> []
+    let createIFrame f =
+        let cover = Var.Create true
+        div [ style           "position: relative; overflow: hidden; height: 100%; width: 100%;" 
+              iframe 
+                [ style       "position: absolute; width:100%; height:100%;"
+                  frameborder "0"
+                  SomeAttr <| on.afterRender f
+                  SomeAttr <| on.mouseLeave (fun _ _ -> cover.Value <- true)
+                ]
+              div 
+                [ style       "position: absolute;"
+                  classIf     "iframe-cover" (Val.map id cover)               
+                  SomeAttr <| on.mouseEnter (fun _ _ -> Input.Mouse.MousePressed 
+                                                        |> View.Get (fun pressed -> if not pressed then cover.Value <- false))
+                ]          
+              styleH [ htmlText ".iframe-cover { top:0; left:0; right:0; bottom:0; background: blue; opacity: 0.04; z-index: 2; }" ]
+            ]
     
-    let fieldSCD1        : Field -> string list =
-                       fun f     -> match f with 
-                                    | SCD2(_, Some scd1, _) -> [ sprintf "%s = LAST_VALUE(S.%s ) OVER (PARTITION BY S.BusinessKey_ ORDER BY S.NRec_ ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)" (pad4 scd1.Name) f.Name ]
-                                    | SCD1 _                -> [ sprintf "%s = LAST_VALUE(S.%s ) OVER (PARTITION BY S.BusinessKey_ ORDER BY S.NRec_ ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)" (pad4 f.Name   ) f.Name ]
-                                    | _                     -> []
+# 1 @"(4) F# LoadFiles.fsx"
+    [< Inline "CIPHERSpaceLoadFiles($files, $cb)" >]
+    let LoadFiles (files: string []) (cb: unit -> unit) : unit = X<_>
+# 1 @" F# open HtmlNode.fsx"
+open HtmlNode
+# 1 @" F# module Template =.fsx"
+[<JavaScript>]
+module Template =
+# 1 @"(4) F# type Button = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type Button = {
+        _class  : Val<string>
+        _type   : Val<string>
+        style   : Val<string>
+        text    : Val<string>
+        onClick : Dom.Element -> Dom.MouseEvent -> unit
+        disabled: Val<bool>
+        id      : string
+    } with
+      static member inline New txt = 
+          { _class   = Val.fixit "btn" 
+            _type    = Val.fixit "button" 
+            style    = Val.fixit "" 
+            text     = Val.fixit txt
+            onClick  = fun _ _ -> ()
+            disabled = Val.fixit false
+            id       = ""
+          }
+      member        this.Render     =         
+        button [ ``type``  <| this._type
+                 ``class`` <| this._class
+                 Id        <| this.id  
+                 style     <| this.style
+                 SomeAttr  <| attr.disabledDynPred (View.Const "") (this.disabled |> Val.toView)
+                 SomeAttr  <| on.click <@ this.onClick @>
+                 HtmlText  <| this.text 
+               ]
+      member inline this.Id          id   = { this with id       = id             }
+      member inline this.Class       clas = { this with _class   = Val.fixit clas }
+      member inline this.Type        typ  = { this with _type    = Val.fixit typ  }
+      member inline this.Style       sty  = { this with style    = Val.fixit sty  }
+      member inline this.Text        txt  = { this with text     = Val.fixit txt  }
+      member inline this.Disabled    dis  = { this with disabled = Val.fixit dis  }
+      member inline this.OnClick     f    = { this with onClick  = f              }
+# 1 @"(4) F# type Input = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type Input = {
+        _type       : Val<string>
+        _class      : Val<string>
+        style       : Val<string>
+        placeholder : Val<string>
+        id          : string
+        var         : IRef<string>
+        prefix      : HtmlNode
+        suffix      : HtmlNode
+        content     : Attr seq
+        prefixAdded : bool
+        suffixAdded : bool
+    } with
+      static member  New(var) = { _class      = Val.fixit "form-control" 
+                                  _type       = Val.fixit "text" 
+                                  style       = Val.fixit "" 
+                                  placeholder = Val.fixit "Enter text:"
+                                  id          = ""
+                                  content     = []
+                                  prefix      = HtmlEmpty
+                                  prefixAdded = false
+                                  suffix      = HtmlEmpty
+                                  suffixAdded = false
+                                  var         = var   
+                                }
+      static member  New(v)   = Input.New(Var.Create v)
+      member        this.Render    =         
+        let groupClass det = match det with HtmlText _  -> "input-group-addon" | _ -> "input-group-btn"
+        div [
+            if this.prefixAdded || this.suffixAdded then
+                yield ``class`` "input-group"
+            if this.prefixAdded then
+                yield  span     [ ``class`` <| groupClass this.prefix 
+                                  this.prefix       ]
+            yield Doc.Input ([_type            this._type
+                              _class           this._class
+                              _style           this.style
+                              attr.id          this.id  
+                              _placeholder     this.placeholder ] |> Seq.append this.content)
+                              this.var
+                  :> Doc |> SomeDoc
+            if this.suffixAdded then
+                yield  span     [ ``class`` <| groupClass this.suffix 
+                                  this.suffix       ]
+          ]
+      member inline this.Class       clas = { this with _class      = Val.fixit clas                  }
+      member inline this.Type        typ  = { this with _type       = Val.fixit typ                   }
+      member inline this.Style       sty  = { this with style       = Val.fixit sty                   }
+      member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc                   }
+      member inline this.Id          id   = { this with id          =       id                        }
+      member inline this.Content     c    = { this with content     =       c                         }
+      member inline this.Prefix      p    = { this with prefix      =       p    ; prefixAdded = true }
+      member inline this.Suffix      s    = { this with suffix      =       s    ; suffixAdded = true }
+      member inline this.SetVar      v    = { this with var         = v                               }
+      member inline this.Var              = this.var
+# 1 @"(4) F# type Hoverable = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type Hoverable = {
+        hover      : IRef<bool>
+        content    : HtmlNode seq
+    } with
+      static member  New   = 
+        let hover      = Var.Create false
+        { 
+            hover      = hover     
+            content    = []
+        }
+      static member  Demo  = 
+        let hover      = Var.Create false
+        { 
+            hover      = hover     
+            content    = [ style "flex-flow: column;"
+                         ]
+        }
+      member        this.Render          =
+        [ classIf "hovering" this.hover
+          SomeAttr <| on.mouseEnter (fun _ _ -> this.hover.Value <- true )
+          SomeAttr <| on.mouseLeave (fun _ _ -> this.hover.Value <- false)
+        ] 
+        |> Seq.append  this.content
+        |> div
+      member inline this.Content    c = { this with content    =       c }
     
-    type SQLTableView = {
-        db       : string option
-        schema   : string option
-        sqlObject: string
-        where    : string option
-        parms    : string option
+# 1 @"(4) F# type TextArea = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type TextArea = {
+        _class      : Val<string>
+        placeholder : Val<string>
+        title       : Val<string>
+        id          : string
+        var         : IRef<string>
+    } with
+      static member  New(var) = { _class      = Val.fixit "form-control"
+                                  placeholder = Val.fixit "Enter text:"
+                                  title       = Val.fixit ""
+                                  id          = ""
+                                  var         = var   
+                                }
+      static member  New(v)   = TextArea.New(Var.Create v)
+      member        this.Render    =    
+        someElt 
+        <| Doc.InputArea
+            [ 
+              _class       this._class
+              attr.id      this.id  
+              atr "title"  this.title
+              _placeholder this.placeholder ]
+            this.var
+      member inline this.Class       clas = { this with _class      = Val.fixit clas }
+      member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc  }
+      member inline this.Title       ttl  = { this with title       = Val.fixit ttl  }
+      member inline this.Id          id   = { this with id          =       id       }
+      member inline this.SetVar      v    = { this with var         = v              }
+      member inline this.Var              = this.var
+    
+# 1 @"(4) F# let codeMirrorIncludes =.fsx"
+    let codeMirrorIncludes =
+       [| "/EPFileX/codemirror/scripts/codemirror/codemirror.js"             
+    //      "/EPFileX/codemirror/scripts/intellisense.js"                      
+    //      "/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js"
+    //      "/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js"    
+          "/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js"            
+          "/EPFileX/codemirror/scripts/addon/search/searchcursor.js"          
+          "/EPFileX/codemirror/scripts/addon/search/search.js"          
+          "/EPFileX/codemirror/scripts/addon/search/jump-to-line.js"          
+          "/EPFileX/codemirror/scripts/addon/dialog/dialog.js"          
+          "/EPFileX/codemirror/scripts/addon/edit/matchbrackets.js"          
+          "/EPFileX/codemirror/scripts/addon/selection/active-line.js"       
+          "/EPFileX/codemirror/scripts/addon/display/fullscreen.js"          
+    //      "/EPFileX/codemirror/scripts/codemirror/mode/markdown.js"                 
+       |]
+# 1 @"(4) F# type CodeMirror = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type CodeMirror = {
+        _class      : Val<string>
+        id          : string
+        var         : IRef<string>
+        onChange    : (unit -> unit)
+    } with
+    
+      [< Inline "CodeMirror($elt, {
+    	    theme        : 'rubyblue'
+    	  , lineNumbers  : true
+    	  , matchBrackets: true
+          , extraKeys    : {
+    		    Tab  : function (cm) { cm.replaceSelection('    ', 'end'); }
+    		  , 'F11': function (cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }
+            }
+    })"    >]
+      static member SetupEditor elt                               : CodeMirror = X<_>
+      [< Inline "$this.getValue()"              >]
+      member this.GetValue()                                      : string     = X<_>
+      [< Inline "$this.setValue($v)"            >]
+      member this.SetValue (v:string)                             : unit       = X<_>
+      [< Inline "$this.getDoc().clearHistory()" >]
+      member this.ClearHistory()                                  : unit       = X<_>
+      [< Inline "$this.on($event, $f)"          >]
+      member this.On(event: string, f:(CodeMirror * obj) -> unit) : unit     = X<_>
+    
+      static member  New(var) = 
+          { _class   = Val.fixit "" 
+            id       = ""
+            var      = var 
+            onChange = ignore
+          }
+      static member  New(v)   = CodeMirror.New(Var.Create v)
+      member        this.Render    =
+        div [ 
+              ``class``            this._class
+              SomeAttr <| attr.id  this.id 
+              style "position: relative; height: 300px"
+              div [
+                    style "height: 100%; width: 100%; position: absolute;"
+                    SomeAttr <| on.afterRender (fun el ->
+                      LoadFiles codeMirrorIncludes
+                        (fun () ->                       
+                           let editor = CodeMirror.SetupEditor el
+                           editor.On("change", fun (cm, change) -> 
+                               let v = editor.GetValue() 
+                               if this.var.Value <> v then this.var.Value <- v; this.onChange() )
+                           this.var.View |> View.Sink (fun v -> if editor.GetValue() <> v then editor.SetValue v ; editor.ClearHistory())
+                        )
+                    )    
+                  ]
+              link [ href "/EPFileX/codemirror/content/editor.css"                   ; ``type`` "text/css" ; rel "stylesheet" ]
+              link [ href "/EPFileX/codemirror/content/codemirror.css"               ; ``type`` "text/css" ; rel "stylesheet" ]
+              link [ href "/EPFileX/codemirror/content/theme/rubyblue.css"           ; ``type`` "text/css" ; rel "stylesheet" ]
+              link [ href "/EPFileX/codemirror/scripts/addon/display/fullscreen.css" ; ``type`` "text/css" ; rel "stylesheet" ]
+              link [ href "/EPFileX/codemirror/scripts/addon/dialog/dialog.css"      ; ``type`` "text/css" ; rel "stylesheet" ]
+         ]
+      member inline this.Class    clas = { this with _class    = Val.fixit clas }
+      member inline this.Id       id   = { this with id        =       id       }
+      member inline this.SetVar   v    = { this with var       = v              }
+      member inline this.OnChange f    = { this with onChange  = f              }
+      member inline this.Var           = this.var
+    
+# 1 @"(4) F# type SplitterBar = {.fsx"
+    [<NoComparison ; NoEquality>]
+    type SplitterBar = {
+        value            : IRef<float>
+        min              : Val<float>
+        max              : Val<float>
+        vertical         : Val<bool>
+        node             : HtmlNode
+        after            : bool
+        mutable dragging : bool
+        mutable startVer : bool 
+        mutable startP   : float 
+        mutable start    : float 
+        mutable size     : float 
+        mutable domElem  : Dom.Element option
     }
-    with member this.Reference   : string =
-                                   match this.db, this.schema with
-                                   | None   , None    -> sprintf "%s"
-                                   | Some db, None    -> sprintf "%s..%s"   (nameS db)
-                                   | Some db, Some sc -> sprintf "%s.%s.%s" (nameS db) (nameS sc)
-                                   | None   , Some sc -> sprintf "%s.%s"               (nameS sc)
-                                   <| nameS this.sqlObject
-         member this.Call        : string =
-                                   match this.parms with
-                                   | None    -> sprintf "%s"
-                                   | Some ps -> fun r -> sprintf "%s(%s)" r ps
-                                   <| this.Reference
-         member this.FromWhere   : string =
-                                   match this.where with
-                                   | None    -> sprintf "%s"
-                                   | Some wh -> fun c -> sprintf "%s WHERE %s " c wh
-                                   <| this.Call
-    
-         static member New: string -> string ->  string  -> string -> string -> SQLTableView =
-                        fun db        schema     sobject    where     parms  -> {
-                                                                                    db        = strOption db
-                                                                                    schema    = strOption schema
-                                                                                    sqlObject = sobject.Trim()
-                                                                                    where     = strOption where 
-                                                                                    parms     = strOption parms
-                                                                                }
-    
-    let indent : string  -> string =
-             fun content -> content.Split[| '\n' |] |> String.concat "\n    "
-    
-    let indent2: string  -> string =
-             fun content -> "    " + (indent content)
-    
-    type SQLWith = { 
-        name   : string 
-        content: string 
-    }
-    with override this.ToString()  = sprintf "%s as (\n%s\n)" this.name this.content
-         static member New: string -> string  -> SQLWith =
-                        fun name      content -> { name = name.Trim() ; content = indent2 content }
-    
-    let sqlSelectP: string -> string -> string seq -> string =
-        fun         select    from      fields     -> 
-            fields 
-            |> String.concat "\n     , "
-            |> sprintf "%s %s\n  FROM %s" select <| from
-    
-    let sqlSelect : string -> string seq -> string = sqlSelectP "SELECT"
-    let sqlSelectD: string -> string seq -> string = sqlSelectP "SELECT Distinct"
-    
-    let sqlProcedure: string -> string  -> string  -> string=
-                  fun name      parms      content -> 
-                      sqlDropCreate PROCEDURE name
-                      |> sprintf "%s %s\n as \n %s \nGO" <| parms <| content
-    
-    let bSurrogateKey  = function | SurrogateKey  _ -> true | _ -> false
-    let bBusinessKey   = function | BusinessKey   _ -> true | _ -> false
-    let bSourceDate    = function | SourceDate    _ -> true | _ -> false
-    let bIntraDayOrder = function | IntraDayOrder _ -> true | _ -> false
-    let bSCD2BeginDate = function | SCD2BeginDate _ -> true | _ -> false
-    let bSCD2EndDate   = function | SCD2EndDate   _ -> true | _ -> false
-    let bChangeReason  = function | ChangeReason  _ -> true | _ -> false
-    let bSCD2Current   = function | SCD2Current   _ -> true | _ -> false
-    let bSCD2          = function | SCD2          _ -> true | _ -> false
-    
-    type Dimension( tableBase : SQLTableView
-                  , source    : SQLTableView
-                  , fields    : Field  seq
-                  , snowflakes: string seq
-                  , extra     : Printf.StringFormat<_>) =
-         let isSnowflaked   = snowflakes |> Seq.isEmpty |> not
-         let countF filter  = fields |> Seq.filter filter |> Seq.length
-         let cSurrogateKey  = countF bSurrogateKey 
-         let cBusinessKey   = countF bBusinessKey  
-         let cSourceDate    = countF bSourceDate   
-         let cIntraDayOrder = countF bIntraDayOrder
-         let cSCD2BeginDate = countF bSCD2BeginDate
-         let cSCD2EndDate   = countF bSCD2EndDate  
-         let cChangeReason  = countF bChangeReason  
-         let cSCD2Current   = countF bSCD2Current  
-         let cSCD2          = countF bSCD2
-         let table          = if isSnowflaked then { tableBase with sqlObject = "SV_" + tableBase.sqlObject } else tableBase
-         let duplicates     = fields |> Seq.collect fieldNames |> Seq.countBy (fun n -> n.Trim().ToUpper()) |> Seq.choose (fun (n, i) -> if i > 1 then sprintf "Field %s appears more than once" n |> Some else None) |> Seq.toList
-         let errors         = [
-                                 if              cSurrogateKey  = 0 then yield "A SurrogateKey  must be specified"
-                                 if              cBusinessKey   = 0 then yield "A BusinessKey   must be specified"
-                                 if cSCD2 > 0 && cSourceDate    = 0 then yield "A SourceDate    must be specified"
-                                 if cSCD2 > 0 && cIntraDayOrder = 0 then yield "A IntraDayOrder must be specified"
-                                 if cSCD2 > 0 && cSCD2BeginDate = 0 then yield "A SCD2BeginDate must be specified"
-                                 if cSCD2 > 0 && cSCD2EndDate   = 0 then yield "A SCD2EndDate   must be specified"
-                                 if              cSurrogateKey  > 1 then yield "Only 1 SurrogateKey  can be specified"
-                                 if              cBusinessKey   > 1 then yield "Only 1 BusinessKey   can be specified"
-                                 if              cSourceDate    > 1 then yield "Only 1 SourceDate    can be specified"
-                                 if              cIntraDayOrder > 1 then yield "Only 1 IntraDayOrder can be specified"
-                                 if              cSCD2BeginDate > 1 then yield "Only 1 SCD2BeginDate can be specified"
-                                 if              cSCD2EndDate   > 1 then yield "Only 1 SCD2EndDate   can be specified"
-                                 if              cSCD2Current   > 1 then yield "Only 1 SCD2Current   can be specified"
-                                 if              cChangeReason  > 1 then yield "Only 1 ChangeReason  can be specified"
-                                 if cSCD2 = 0 && cSourceDate    = 1 then yield "No SCD2 fields, SourceDate    cannot be specified"
-                                 if cSCD2 = 0 && cIntraDayOrder = 1 then yield "No SCD2 fields, IntraDayOrder cannot be specified"
-                                 if cSCD2 = 0 && cSCD2BeginDate = 1 then yield "No SCD2 fields, SCD2BeginDate cannot be specified"
-                                 if cSCD2 = 0 && cSCD2EndDate   = 1 then yield "No SCD2 fields, SCD2EndDate   cannot be specified"
-                                 if cSCD2 = 0 && cSCD2Current   = 1 then yield "No SCD2 fields, SCD2Current   cannot be specified"
-                              ] @ duplicates
-         do if not errors.IsEmpty then failwith (errors |> String.concat "\n")
-         let find  : (Field -> bool) -> string =
-                 fun  ft             -> fields |> Seq.find ft |> fun f -> f.Name
-         let surrogateKey   = find bSurrogateKey
-         let businessKey    = find bBusinessKey
-         let sourceDateO    = if cSourceDate    = 1 then find bSourceDate    |> Some else None
-         let intraDayOrderO = if cIntraDayOrder = 1 then find bIntraDayOrder |> Some else None
-         let sCD2BeginDateO = if cSCD2BeginDate = 1 then find bSCD2BeginDate |> Some else None
-         let sCD2EndDateO   = if cSCD2EndDate   = 1 then find bSCD2EndDate   |> Some else None
-         let sCD2CurrentO   = if cSCD2Current   = 1 then find bSCD2Current   |> Some else None
-         let changeReasonO  = if cChangeReason  = 1 then find bChangeReason  |> Some else None 
-         let procedureName  = sprintf "GENERIC.SP_LOAD_%s" table.sqlObject
-         let lastOfDay    n = sprintf "%s = LAST_VALUE(%s) OVER (PARTITION BY %s, %s ORDER BY %s ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)" (pad4 n) n businessKey (sourceDateO |> Option.defaultValue "") (intraDayOrderO |> Option.defaultValue "")
-         let together1    n = sprintf "%s = LAST_VALUE(%s) OVER (PARTITION BY BusinessKey_, SourceDate_ ORDER BY SurrogateKey_ ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)" (pad4 n) n 
     with
-         new(table, source, fields            ) = Dimension(table, source, fields, []        , "%s")
-         new(table, source, fields, snowflakes) = Dimension(table, source, fields, snowflakes, "%s")
-         member this.TableReference     = table    .Reference
-         member this.TableBase          = tableBase
-         member this.Fields: (Field -> string list) -> string seq =
-                         fun chooser                  -> fields |> Seq.sort |> Seq.collect chooser
-         member this.AllFields          = this.Fields <| fieldNames
-         member this.FinTransViewFields = this.Fields <| fieldSource
-         member this.TargetFields       = this.Fields <| fieldTarget
-         member this.Existing           = this.Fields <| fieldSelectTable
-         member this.Source             = this.Fields <| fieldSelectSource    (if cSCD2 > 0 then lastOfDay else id)
-         member this.Together1          = this.Fields <| fieldSelectTogether1 (if cSCD2 > 0 then together1 else id)
-         member this.Together2          = [
-                                            sprintf "NRec_  = ROW_NUMBER() OVER (PARTITION BY BusinessKey_ ORDER BY %s)" <| if cSCD2 > 0 then "SourceDate_, ISNULL(SurrogateKey_, 2147483647)" else "ISNULL(SurrogateKey_, 2147483647)"
-                                            "*"
-                                          ]
-         member this.NewRec             = if cSCD2 > 0 then 
-                                              this.Fields fieldSCD2Equal
-                                              |> String.concat "\n                 AND "  
-                                              |> sprintf "NewRec_ = IIF (%s, 0, 1)"
-                                           else          "NewRec_ = IIF (P.BusinessKey_ is NULL                  , 1, 0) "
-         member this.Ordered            = [
-                                            yield                    "S.SurrogateKey_ "
-                                            yield                    "S.BusinessKey_  "
-                                            yield                    "S.NRec_         "
-                                            yield                    this.NewRec      
-                                            if cSCD2 > 0 then yield  "S.SourceDate_   "
-                                            yield!                   this.Fields fieldSCD2
-                                            yield!                   this.Fields fieldSCD1
-                                            yield!                   this.Fields fieldSCD0
-                                          ]
-         member this.SCD2Records        = [
-                                            "SCD2Record_ = SUM(NewRec_    ) OVER (PARTITION BY BusinessKey_ ORDER BY NRec_ ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
-                                            "NextDate_   = MAX(SourceDate_) OVER (PARTITION BY BusinessKey_ ORDER BY NRec_ ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING)"
-                                            "LastRec_    = MAX(NRec_      ) OVER (PARTITION BY BusinessKey_)"
-                                            "*"
-                                          ]
-         member this.VersBeg            = [
-                                            sCD2BeginDateO.Value |> pad4 |> sprintf "%s = MIN(SourceDate_) OVER (PARTITION BY BusinessKey_, SCD2Record_)"
-                                            sCD2EndDateO  .Value |> pad4 |> sprintf "%s = DATEADD(d, -1, MAX(IIF(NRec_ = LastRec_, '9999-12-31', NextDate_)) OVER (PARTITION BY BusinessKey_, SCD2Record_))"
-                                            "*"
-                                          ]
-         member this.RKeys              = [
-                                            if sCD2CurrentO.IsSome then 
-                                               yield sCD2CurrentO.Value  |> pad4 |> sprintf "%s = IIF(%s = '9999-12-30', 'Y', 'N')"                       <| sCD2EndDateO.Value
-                                            yield    surrogateKey        |> pad4 |> sprintf "%s = MAX(SurrogateKey_) OVER (PARTITION BY BusinessKey_ %s)" <| if sCD2BeginDateO.IsSome  then  ", " + sCD2BeginDateO.Value else ""
-                                            yield    businessKey         |> pad4 |> sprintf "%s = BusinessKey_"
-                                            if changeReasonO.IsSome then
-                                               yield changeReasonO.Value |> pad4 |> sprintf "%s = '---'"
-                                            yield    "*"
-                                          ]
-         member this.fromTogether2      = "    Together2 S
-     LEFT JOIN Together2 P ON P.BusinessKey_ = S.BusinessKey_
-                          AND P.NRec_        = S.NRec_ - 1"
-         member this.Withs              =
-             [
-                 yield    SQLWith.New "Existing     " <| sqlSelect  table .FromWhere              this.Existing 
-                 yield    SQLWith.New "Source       " <| sqlSelectD source.FromWhere              this.Source   
-                 yield    SQLWith.New "Together0    " <| "SELECT *  FROM Existing UNION ALL SELECT * FROM Source"
-                 yield    SQLWith.New "Together1    " <| sqlSelectD "Together0"                   this.Together1
-                 yield    SQLWith.New "Together2    " <| sqlSelect  "Together1          "         this.Together2
-                 yield    SQLWith.New "Ordered      " <| sqlSelect  this.fromTogether2            this.Ordered     
-                 if cSCD2 > 0 then                                  
-                    yield SQLWith.New "SCD2Records  " <| sqlSelect  "Ordered            "         this.SCD2Records 
-                    yield SQLWith.New "VersBeg      " <| sqlSelect  "SCD2Records        "         this.VersBeg     
-                    yield SQLWith.New "RKeys        " <| sqlSelect  "VersBeg            "         this.RKeys     
-                 else                                               
-                    yield SQLWith.New "RKeys        " <| sqlSelect  "Ordered            "         this.RKeys     
-             ]
-         member this.LastWith           = this.Withs |> Seq.last
-         member this.SelectIntoTemp     = if isSnowflaked then sprintf "    , NewSurrogateKey_ = NEXT VALUE FOR Seq_%s\n" this.TableBase.sqlObject else ""
-                                          |> sprintf "SELECT * \n%s   INTO #TEMP\n  FROM %s \n WHERE NewRec_ = 1" <| this.LastWith.name                                       
-         member this.Insert             = this.Fields fieldInsert
-                                          |> String.concat "\n, "
-                                          |> sprintf "   INSERT(%s %s)" (if isSnowflaked then sprintf "%s\n," surrogateKey  else "")
-                                          |> indent  |> indent
-         member this.Values             = this.Fields fieldValues
-                                          |> String.concat "\n, "
-                                          |> sprintf "   VALUES(%s %s)\n" (if isSnowflaked then "NewSurrogateKey_\n," else "")
-                                          |> indent  |> indent
-         member this.Update             = this.Fields fieldUpdate
-                                          |> String.concat "\n, "
-                                          |> indent |> indent
-         member this.WhenNotMatched     = sprintf "WHEN NOT MATCHED BY TARGET THEN\n%s\n%s" 
-                                          <| this.Insert            <| this.Values
-         member this.WhenMatched        = (fun f -> if f <> "" then sprintf "WHEN MATCHED THEN\nUPDATE SET %s" f else f)
-                                          <| this.Update
-         member this.Merge              = sprintf "MERGE %s AS T\nUSING #TEMP AS S\nON (T.%s = S.%s)\n%s\n%s;" 
-                                          <| this.TableReference 
-                                          <| surrogateKey        <| surrogateKey
-                                          <| this.WhenNotMatched
-                                          <| this.WhenMatched
-         member this.Query              = this.Withs
-                                          |> List.map (fun w -> w.ToString())
-                                          |> String.concat ", "
-                                          |> sprintf "WITH %s"
-                                          |> sprintf "%s \n%s; \n%s" <| this.SelectIntoTemp <| this.Merge
-         member this.Procedure          = this.Query
-                                          |> sprintf "BEGIN\n  EXEC GENERIC.Log @SOURCE, '%s', 'Started Merge', '';\n  %s\n END\n" procedureName
-                                          |> sqlProcedure procedureName "@SOURCE VARCHAR(30), @CURRENT_DTE DATE = NULL" 
-         member this.ProcedureName      = procedureName
-         member this.SurrogateKey       = surrogateKey
-         member this.BusinessKey        = businessKey
-         member this.SourceDateO        = sourceDateO
-         member this.SCD2BeginDateO     = sCD2BeginDateO
-         member this.SCD2EndDateO       = sCD2EndDateO  
-         member this.TableName          = table.sqlObject
-         member this.Verification       = sCD2BeginDateO 
-                                          |> Option.map (fun b ->
-                                                let e = sCD2EndDateO.Value
-                                                sprintf " AND (D.%s BETWEEN X.%s AND X.%s  OR D.%s BETWEEN X.%s AND X.%s ) " b b e  e b e
-                                             )
-                                          |> defaultValue ""
-                                          |> sprintf "SELECT * \n  FROM %s D \n WHERE EXISTS(SELECT * \n         FROM %s X \n      WHERE X.%s <> D.%s AND X.%s = D.%s %s) \n ORDER BY %s %s" 
-                                                table.Reference table.Reference
-                                                surrogateKey    surrogateKey    
-                                                businessKey     businessKey
-                                          <| businessKey <| ""
-         member this.Snowflakes         = snowflakes
-                                          
-                                        
-    type FactField = 
-        | Fact   of FinTransViewField
-        | OField of TargetField * value: string
+        static member New = 
+            {
+                value    = Var.Create 30.0
+                min      = Val.fixit  10.0
+                max      = Val.fixit  75.0
+                vertical = Val.fixit  true  
+                node     = div [ ``class`` "Splitter" ]
+                after    = true
+                dragging = false
+                startVer = true
+                startP   = 0.0
+                start    = 0.0
+                size     = 0.0
+                domElem  = None
+            }
+        member        this.GetValue = this.value |> Val.map2 max this.min |> Val.map2 min this.max
+        member        this.Render   =
+            let mouseCoord (ev: Dom.MouseEvent) = if this.startVer then float ev.ClientX else float ev.ClientY
+            let size () : float =
+                match this.domElem with
+                | None    -> 100.0
+                | Some el -> 
+                 el.ParentElement.GetBoundingClientRect() 
+                 |> fun r -> 
+                     match this.startVer, this.after with
+                     | true , true  ->  r.Width  
+                     | true , false -> -r.Width 
+                     | false, true  ->  r.Height
+                     | false, false -> -r.Height
+            let drag (ev: Dom.Event) =
+                ev :?> Dom.MouseEvent
+                |> mouseCoord
+                |> fun m   -> (m - this.start) * 100.0 / this.size + this.startP
+                |> fun v   -> this.value.Value <- v // ; JS.Inline("console.log($0)", this)
+               
+            let rec finishDragging (_: Dom.Event) =
+                if this.dragging then
+                    this.dragging <- false
+                    JS.Window.RemoveEventListener("mousemove", drag          , false) 
+                    JS.Window.RemoveEventListener("mouseup"  , finishDragging, false) 
+                    //printfn "mouseup"
+            let startDragging _ (ev: Dom.MouseEvent) =
+                if not this.dragging then
+                    Val.map2 (fun startP dirV ->
+                        this.dragging <- true
+                        this.startVer <- dirV
+                        this.startP   <- startP
+                        this.start    <- mouseCoord ev
+                        this.size     <- size()
+                        JS.Window.AddEventListener("mousemove", drag          , false) 
+                        JS.Window.AddEventListener("mouseup"  , finishDragging, false) 
+                        ev.PreventDefault()
+                    ) this.GetValue this.vertical
+                    |> Val.iter id
+            this.node
+              .AddChildren [
+                SomeAttr <| on.mouseDown startDragging
+                SomeAttr <| on.afterRender (fun el -> this.domElem <- Some el)
+              ]  
+        member inline this.Value       v = this.value.Value    <- v    ; this
+        member inline this.Node     node = { this with node         = node                        }
+        member inline this.Min         v = { this with min          = Val.fixit v                 }
+        member inline this.Max         v = { this with max          = Val.fixit v                 }
+        member inline this.Vertical    v = { this with vertical     = Val.fixit v                 }
+        member inline this.Horizontal  v = { this with vertical     = Val.fixit v |> Val.map not  }
+        member inline this.Var         v = { this with value        =           v                 }
+        member inline this.Vertical   () = { this with vertical     = Val.fixit true              }
+        member inline this.Horizontal () = { this with vertical     = Val.fixit false             }
+        member inline this.Before        = { this with after        =           false             }
+        member inline this.After         = { this with after        =           true              }
+# 1 @" F# module RunCode =.fsx"
+[<JavaScript>]
+module RunCode =
+# 1 @"(4) F# module EditorRpc =.fsx"
+#r @"ZafirTranspiler.dll"
+    module EditorRpc =
+        let callRPC asy callback =
+            Async.StartWithContinuations(asy, callback, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))
     
-    let OField: TargetField -> string -> FactField = 
-            fun fld            value  -> (fld, value.Trim()) |> OField
+        let checkSource  callback          source = CIPHERPrototype.Editor.checkSource  source          |> callRPC <| callback
+        let methods      callback line col source = CIPHERPrototype.Editor.methods      source line col |> callRPC <| callback
+        let declarations callback line col source = CIPHERPrototype.Editor.declarations source line col |> callRPC <| callback
+        let translate    callback minified source = CIPHERPrototype.Editor.translate    source minified |> callRPC <| callback
+        let evaluate     callback          source = CIPHERPrototype.Editor.evaluate     source          |> callRPC <| callback
     
-    [< NoComparison >]
-    type DimRef =
-        | DimRef of Dimension * SurrogateKey: TargetField option * BusinesKey: FinTransViewField option
+    let completeJS js = 
+      """
+        CIPHERSpaceLoadFileGlobalFileRef = null;
+        CIPHERSpaceLoadFile = function (filename, callback) {
+            if (filename.slice(-3) == ".js" || filename.slice(-4) == ".fsx" || filename.slice(-3) == ".fs") { //if filename is a external JavaScript file
+                var fileRef = null;
+                var pre = document.querySelector('script[src="' + filename + '"]')
+                if (!pre) {
+                    fileRef = document.createElement('script')
+                    fileRef.setAttribute("type", "text/javascript")
+                    fileRef.setAttribute("src", filename)
+                }
+                else callback();
+            }
+            else if (filename.slice(-4) == ".css") { //if filename is an external CSS file
+                var pre = document.querySelector('script[src="' + filename + '"]')
+                if (!pre) {
+                    fileRef = document.createElement("link")
+                    fileRef.setAttribute("rel", "stylesheet")
+                    fileRef.setAttribute("type", "text/css")
+                    fileRef.setAttribute("href", filename)
+                }
+                else callback();
+            }
+            else if (filename.slice(-5) == ".html") { //if filename is an external HTML file
+                var pre = document.querySelector('script[src="' + filename + '"]')
+                if (!pre) {
+                    fileRef = document.createElement("link")
+                    fileRef.setAttribute("rel", "import")
+                    fileRef.setAttribute("type", "text/html")
+                    fileRef.setAttribute("href", filename)
+                }
+                else callback();
+            }
+            if (!!fileRef) {
+                CIPHERSpaceLoadFileGlobalFileRef = fileRef;
+    			fileRef.onload = function () { fileRef.onload = null;  callback(); }
+                document.getElementsByTagName("head")[0].appendChild(fileRef);
+            }
+        }
+        CIPHERSpaceLoadFiles = function (files, callback) {
+            var newCallback = callback
+            if (!!CIPHERSpaceLoadFileGlobalFileRef && !!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {
+                var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;
+                CIPHERSpaceLoadFileGlobalFileRef.onload = null;
+                newCallback = function () {
+                    callback();
+                    oldCallback();
+                }
+            }
+            var i = 0;
+            loadNext = function () {
+                if (i < files.length) {
+                    var file = files[i];
+                    i++;
+                    CIPHERSpaceLoadFile(file, loadNext);
+                }
+                else newCallback();
+            };
+            loadNext();
+    	}
+        CIPHERSpaceLoadFiles(['https://code.jquery.com/jquery-3.1.1.min.js'], function() {}); 
+    	CIPHERSpaceLoadFilesDoAfter = function (callback) {
+    		var newCallback = callback
+    		if (!!CIPHERSpaceLoadFileGlobalFileRef) {
+    			if (!!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {
+    				var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;
+    				CIPHERSpaceLoadFileGlobalFileRef.onload = null;
+    				newCallback = function () {
+    					oldCallback();
+    					callback();
+    				}
+    			}
+    		}
+    		else CIPHERSpaceLoadFileGlobalFileRef = {};
+    		CIPHERSpaceLoadFileGlobalFileRef.onload = newCallback;
+    	}
+    
+    CIPHERSpaceLoadFilesDoAfter(function() { 
+      if (typeof IntelliFactory !=='undefined')
+        IntelliFactory.Runtime.Start();
+      for (key in window) { 
+        if (key.startsWith("StartupCode$")) 
+          try { window[key].$cctor(); } catch (e) {} 
+      } 
+    })
+                     """ + js
+    
+    let compile fThen fFail code =
+        EditorRpc.translate 
+            <| (fun (jsO, msgs) ->
+                 jsO
+                 |> Option.map completeJS
+                 |> function
+                 | Some js -> fThen  msgs   js
+                 | None    -> fFail  msgs
+                )
+            <| false <| code
+    
+# 1 @"(4) F# type RunNode(nodeName, clearNode bool) =.fsx"
+    type RunNode(nodeName, ?clearNode: bool) =
+      let bClearNode    = defaultArg clearNode true
+      let createBaseNode () =
+          let el = JS.Document.CreateElement "div"
+          el.SetAttribute("id", nodeName)
+          JS.Document.Body.AppendChild el |> ignore
+          el
+      let baseNode = 
+          match JS.Document.GetElementById nodeName with
+          | null -> createBaseNode()
+          | node -> node
+      let runNode =
+          match baseNode.ShadowRoot with
+          | null -> let e = JS.Document.CreateElement "div"
+                    baseNode.AttachShadow(Dom.ShadowRootInit(Dom.ShadowRootMode.Open)).AppendChild e |> ignore
+                    e?style <- "height: 100%; width: 100%;"
+                    e
+          | root -> root.FirstChild :?> Dom.Element
+      do if bClearNode then runNode.InnerHTML <- ""
     with
-         member this.Dim                = match this with                                      DimRef (dim, _   , _) -> dim
-         member this.FactSurrogateKey   = match this with | DimRef (dim, Some key, _) -> key.Name | DimRef (dim, None, _) -> dim.SurrogateKey
-         member this.FactBusinessKey    = match this with | DimRef (dim, _, Some key) -> key.Name | DimRef (dim, _, None) -> dim.BusinessKey
-         member this.FinTransViewFields = match this with | DimRef (dim, sKO, bKO) -> seq [ yield! bKO |> Option.map (fun f -> f.Name) |> Option.toList ; yield! dim.FinTransViewFields ]
-         member this.TargetFields       = match this with | DimRef (dim, sKO, bKO) -> seq [ yield! sKO |> Option.map (fun f -> f.Name) |> Option.toList ; yield! dim.TargetFields       ]
-         static member New dim                             = DimRef(dim, None             , None            )
-         static member New(dim, surrogateKey             ) = DimRef(dim, Some surrogateKey, None            )
-         static member New(dim, surrogateKey, businessKey) = DimRef(dim, Some surrogateKey, Some businessKey)
-    let dimension: Dimension -> TargetField -> FinTransViewField -> DimRef = 
-               fun dim          surroK         businK      -> DimRef (dim, tfldOption surroK, sfldOption businK)
+      new(?clearNode: bool) = RunNode("TestNode", defaultArg clearNode true)
+      member this.RunNode   = runNode
+# 1 @"(4) F# AddBootstrap.fsx"
+      member this.AddBootstrap =
+        JS.Document.CreateElement "div"
+        |> fun el -> 
+            el.InnerHTML <- 
+                @"<script src='http://code.jquery.com/jquery-3.1.1.min.js' type='text/javascript' charset='UTF-8'></script>
+                <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' type='text/javascript' charset='UTF-8'></script>
+                <link type='text/css' rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+                <link type='text/css' rel='stylesheet' href='/EPFileX/css/main.css'>
+                "
+            runNode.AppendChild el |> ignore
+        this
+# 1 @"(4) F# RunDoc.fsx"
+      member inline this.RunDoc  doc  = doc  :> Doc       |> Doc.Run this.RunNode
+# 1 @"(4) F# RunHtml.fsx"
+      member inline this.RunHtml node = node |> renderDoc |> this.RunDoc
+# 1 @"(4) F# RunHtmlPlusFree.fsx"
+      member        this.RunHtmlPlusFree node =
+        let freeHtml    = Var.Create ""
+        let freeCSS     = Var.Create ""
+        let freeFS      = Var.Create ""
+        let freeJS      = Var.Create ""
+        let freeMsgs    = Var.Create ""
+        let sendMsg msg = 
+            freeMsgs.Value  <- 
+                match freeMsgs.Value, msg with
+                | null, m 
+                | ""  , m
+                | m   , null
+                | m   , ""   -> m
+                | m1  , m2   -> m1 + "\n" + m2
+        let runJS () =
+            sendMsg "Running JavaScript..."
+            try JS.Eval(freeJS.Value) |> (fun v -> sendMsg "Done!"; v.ToString())
+            with e -> sendMsg "Failed!"; e.ToString()
+            |> sendMsg
+        let runFS () =
+            freeMsgs.Value <- "Compiling to JavaScript..."
+            freeJS.Value   <- ""
+            compile (fun msgs js -> freeJS.Value <- js ; runJS() ) sendMsg freeFS.Value
+        div [ style "height: 100%"
+              node
+              Template.Button.New("Eval F#").Style("vertical-align:top").OnClick(fun _ _ -> runFS()                        ).Render  
+              someElt <| Doc.InputArea [ attr.placeholder "F#:"         ; attr.title "Add F# code and invoke with Eval F#" ] freeFS
+              someElt <| Doc.InputArea [ attr.placeholder "HTML:"       ; attr.title "Enter HTML tags and text"            ] freeHtml 
+              someElt <| Doc.InputArea [ attr.placeholder "CSS:"        ; attr.title "Test your CSS styles dynamically"    ] freeCSS 
+              someElt <| Doc.InputArea [ attr.placeholder "JavaScript:" ; attr.title "Add JS code and invoke with Eval JS" ] freeJS
+              Template.Button.New("Eval JS").Style("vertical-align:top").OnClick(fun _ _ -> freeMsgs.Value <- "" ; runJS() ).Render  
+              someElt <| Doc.InputArea [ attr.placeholder "Output:"     ; attr.title "Messages"                            ] freeMsgs
+              SomeDoc <| tag Doc.Verbatim (Val.map2 (sprintf "%s<style>%s</style>") freeHtml freeCSS)
+        ]
+        |> this.RunHtml
+# 1 @" F# module CodeEditor =.fsx"
+[<JavaScript>]
+module CodeEditor =
+
+# 1 @"(4) F# type CodeSnippetId = CodeSnippetId of System.Guid.fsx"
+    type CodeSnippetId = CodeSnippetId of System.Guid        
+    with static member New = CodeSnippetId <| System.Guid.NewGuid()
     
-    type FactTable( table  : SQLTableView
-                  , source : SQLTableView
-                  , dims   : DimRef    seq
-                  , fields : FactField seq
-                  , extra  : Printf.StringFormat<_>) =
-         let procedureName  = sprintf "GENERIC.SP_LOAD_%s" table.sqlObject
-    with 
-         member this.SourceFields   = fields 
-                                      |> Seq.map (function 
-                                                  | Fact f       -> f.Name
-                                                  | OField(_, f) -> f
-                                                 )
-                                      |> Seq.append (dims |> Seq.collect (function dimR -> dimR.FinTransViewFields))
-                                      |> Seq.distinct
-         member this.TargetFields   = fields 
-                                      |> Seq.collect (function 
-                                                      | Fact f       -> []
-                                                      | OField(f, _) -> [ f.Name ]
-                                                     )
-                                      |> Seq.append (dims |> Seq.collect (function dimR -> dimR.TargetFields))
-                                      |> Seq.distinct
-         member this.Keys           = dims |> Seq.mapi(fun i dim -> sprintf "D%d.%s" i dim.Dim.SurrogateKey)
-         member this.Joins          = dims 
-                                      |> Seq.mapi(fun i dim -> 
-                                                        dim.Dim.SourceDateO
-                                                        |> Option.map (fun v -> sprintf " AND S.%s BETWEEN D%d.%s AND D%d.%s" v i dim.Dim.SCD2BeginDateO.Value i dim.Dim.SCD2EndDateO.Value)
-                                                        |> defaultValue ""
-                                                        |> sprintf "%s D%d ON D%d.%s = S.%s %s" (pad2 dim.Dim.TableBase.Reference) i i (pad2 dim.Dim.BusinessKey) (pad2 dim.FactBusinessKey)
-                                                 )
-                                      |> Seq.toList                                                                 
-         member this.From           = sprintf "%s S" source.FromWhere
-                                      :: this.Joins
-                                      |> String.concat "\n LEFT JOIN "
-         member this.Query          = fields 
-                                      |> Seq.map (function 
-                                                  | Fact   f     -> sprintf "S.%s"    f.Name
-                                                  | OField(f, v) -> sprintf "%s = %s" (pad2 f.Name) v
-                                                 )
-                                      |> Seq.append this.Keys 
-                                      |> sqlSelect this.From
-         member this.InsertFields   = fields 
-                                      |> Seq.map (function 
-                                                  | Fact f       -> f.Name
-                                                  | OField(f, _) -> f.Name
-                                                 )
-                                      |> Seq.append (dims |> Seq.map (fun dim -> dim.FactSurrogateKey))
-                                      |> String.concat "\n     , "
-         member this.Insert         = sprintf "INSERT INTO %s\n      (%s)\n%s" table.Reference this.InsertFields this.Query
-                                      |> sprintf extra
-         member this.Procedure      = sqlProcedure procedureName "@SOURCE VARCHAR(30), @FROM DATE = NULL, @TO DATE = NULL" this.Insert
+    let snippetName name (content: string) =
+        if name <> "" then name else 
+        content.Split([| '\n' |], System.StringSplitOptions.RemoveEmptyEntries)
+        |> Seq.map    (fun l -> l.Trim())
+        |> Seq.filter (fun l -> not (l.StartsWith("#") || l.StartsWith("[<") || l.StartsWith("//")))
+        |> Seq.tryHead
+        |> Option.defaultValue "<empty>"
     
-    let print: string -> unit =
-           fun txt    -> printf "\n\n%s\n\n" txt
+    type CodeSnippet = {
+        name         : string
+        content      : string
+        parent       : CodeSnippetId option
+        predecessors : CodeSnippetId list
+        companions   : CodeSnippetId list
+        id           : CodeSnippetId
+        expanded     : bool
+    } with
+        member this.Name = snippetName this.name this.content
     
-    let FinTransViewFields: FactTable -> Dimension seq -> string seq =
-        fun                 fTable       dims          -> 
-            fTable.SourceFields 
-            |> Seq.append     (dims |> Seq.collect (fun dim -> dim.FinTransViewFields))
-            |> Seq.filter     isIdentifier
-            |> Seq.distinctBy (fun f -> f.ToUpper())
-            |> Seq.sort
+    let codeSnippetsStorage = WebSharper.UI.Next.Storage.LocalStorage "CodeSnippets" Serializer.Typed<CodeSnippet>
+    let codeSnippets        = ListModel.CreateWithStorage<CodeSnippetId, CodeSnippet> (fun s -> s.id) codeSnippetsStorage
+    //    let codeSnippets        = ListModel.Create<CodeSnippetId, CodeSnippet> (fun s -> s.id) []
     
-    let targetFields: FactTable -> Dimension seq -> string seq =
-        fun           fTable       dims          -> 
-            fTable.TargetFields 
-            |> Seq.append     (dims |> Seq.collect (fun dim -> dim.TargetFields))
-            |> Seq.filter     isIdentifier
-            |> Seq.distinctBy (fun f -> f.ToUpper())
-            |> Seq.sort
+    let tryPickI f s = s |> Seq.indexed |> Seq.filter f |> Seq.tryHead
     
+    type CodeSnippet 
+        with
+        static member PickIO id = codeSnippets.Value |> tryPickI (fun (_, snp) -> snp.id = id)
+        static member FetchO id = codeSnippets.TryFindByKey id
+        static member FetchL id = CodeSnippet.FetchO id |> Option.toList
+        static member New(            pred    , cnt) = CodeSnippet.New("", None   , pred, [], cnt)
+        static member New(        pa, pred    , cnt) = CodeSnippet.New("", Some pa, pred, [], cnt)
+        static member New(        pa,           cnt) = CodeSnippet.New("", Some pa, []  , [], cnt)
+        static member New(                      cnt) = CodeSnippet.New("", None   , []  , [], cnt)
+        static member New(    nm, pa, pred, co, cnt) = CodeSnippet.New(codeSnippets.Length, nm, pa, pred, co, cnt)
+        static member New(od, nm, pa, pred, co, cnt) =
+            let newS =
+                {
+                    name         = nm
+                    content      = cnt
+                    parent       = pa
+                    predecessors = pred
+                    companions   = co
+                    id           = CodeSnippetId.New
+                    expanded     = true
+                }
+            match od, codeSnippets.Length with
+            | _, 0            -> codeSnippets.Append newS
+            | 0, _            -> codeSnippets.Set <| Seq.append [| newS |] codeSnippets.Value
+            | i, n when i < n -> codeSnippets.Value 
+                                    |> Seq.toArray
+                                    |> Array.splitAt od
+                                    |> fun (fst, snd) -> Array.append fst <| Array.append [| newS |] snd
+                                    |> codeSnippets.Set 
+            | _, _            -> codeSnippets.Append newS
+            newS
+        member this.UniquePredecesors() =
+            let rec preds (ins : CodeSnippetId list) outs : CodeSnippetId list =
+                match ins with
+                | []         -> outs
+                | hd :: rest -> List.collect id [ rest ; hd |> CodeSnippet.FetchL |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                                |> preds <| if outs |> Seq.contains hd then outs else hd::outs
+            preds [ this.id ] []
+        member this.Level() =
+            let rec level snp out = 
+                snp.parent
+                |> Option.bind CodeSnippet.FetchO
+                |> Option.map (fun p -> level p <| out + 1) 
+                |> Option.defaultValue out
+            level this 0
+        member this.NameSanitized =
+            //let illegal = System.IO.Path.GetInvalidFileNameChars()
+            let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
+                            '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
+                            '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
+                            '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
+                            '\\'  ; '/'|]
+            this.Name
+            |> String.filter (fun c -> not <| Array.contains c illegal)
+            |> (fun c -> "F# " + c + ".fsx")
+        member this.ContentIndented() =
+            let lvl = this.Level()
+            if lvl = 0 || lvl = 1 then this.content 
+            else this.content.Split('\n')
+                    |> Array.map (fun l -> if l.StartsWith "#" then l else  (String.replicate lvl "  ") + l)
+                    |> String.concat "\n"
+            |> sprintf "# 1 @\"%s %s\"\n%s" (if lvl = 0 || lvl = 1 then "" else sprintf"(%d)" (lvl * 2)) this.NameSanitized
+        member this.Code() =
+            let preds = this.UniquePredecesors() |> Seq.toArray
+            codeSnippets.Value
+            |> Seq.filter (fun snp -> preds |> Array.contains snp.id)
+            |> Seq.map    (fun snp -> snp.ContentIndented()         )
+            |> String.concat "\n"
+        member this.IsDescendantOf antId =
+            let rec isDescendantOf snp =
+                match snp.parent with
+                | None       -> false
+                | Some parId ->
+                if parId = antId then true else
+                CodeSnippet.FetchO parId
+                |> Option.map isDescendantOf
+                |> Option.defaultValue false
+            isDescendantOf this
     
-    let getDecl: string -> (string * bool) option =
-             fun fname  -> fieldDecl
-                           |> Seq.choose (fun (name, typeDecl, nullable) -> if name = fname.ToUpper() then (typeDecl, nullable = 1) |> Some else None)
-                           |> Seq.tryHead
-    
-    let getDefault: string -> string option =
-                fun fname  -> fieldDefault
-                              |> Array.tryPick (fun (name, value) -> if name = fname.ToUpper() then Some value else None)
-    
-    let convert fName v =
-        getDecl fName 
-        |> Option.map (fun (fType, nullable) -> fType.Trim())
-        |> Option.map (fun typeName -> sprintf "CONVERT(%s, %s)"  typeName v) 
-        |> Option.defaultValue v
-    
-    let applyDefault fName v =
-        getDecl fName 
-        |> Option.bind (fun (fType, nullable) ->
-               if nullable then None
-               else getDefault fName
-               |> Option.map (sprintf "ISNULL(%s, %s)" v)
-        )
-        |> Option.defaultValue v
-    
-    let equalField fName v =
-        fName
-        |> nameS
-        |> pad4 
-        |> sprintf "%s = %s"  <| v
-    
-    type FinTransViewField
-    with 
+# 1 @"(4) F# currentCodeSnippetId.fsx"
+    let missingVar  = Var.Create ""
+    let missing find lens k =
+        match find k with
+        | Some _ -> lens k
+        | None   -> missingVar.Lens (fun _ -> "") (fun _ _ -> "")
         
-        member this.Convert      v = convert      this.Name v
-        member this.applyDefault v = applyDefault this.Name v
-        member this.equal        v = equalField   this.Name v
-        member this.DefaultO       = getDefault   this.Name
+    let currentCodeSnippetId  = Var.Create <| CodeSnippetId.New
     
-    let cast: FinTransViewField -> string -> string =
-          fun field                value  ->
-              value
-              |> field.Convert
-              |> field.applyDefault 
-              |> field.equal
+    let refresh       = Var.Create()
+    let refreshView b = refresh.Value <- b
     
-    type QueryField(target: FinTransViewField, value: string) =
-        let name = target.Name
-    with
-        member this.Entry = cast target value
-        member this.Name  = name
+    let currentCodeSnippetO = Val.map2 (fun k () -> codeSnippets.TryFindByKey k) currentCodeSnippetId refresh
     
-    let vwField: FinTransViewField -> string -> QueryField = 
-             fun fld                  value  -> QueryField(fld, value.Trim())
+    let curSnippetNameOf k = missing codeSnippets.TryFindByKey <| codeSnippets.LensInto (fun s -> s.Name   ) (fun s n -> { s with name    = n }) <| k
+    let curSnippetCodeOf k = missing codeSnippets.TryFindByKey <| codeSnippets.LensInto (fun s -> s.content) (fun s n -> { s with content = n }) <| k
+        
+    type Position =
+        | Below
+        | Right
+        | Tab
+        | NewBrowser
+        
+    let positionTxt v =
+        match v with
+        | Below      -> "Below"
+        | Right      -> "Right"
+        | Tab        -> "In Tab"
+        | NewBrowser -> "New Browser"
+        
+    let position = Var.Create Below
     
+    let directionVertical    = 
+        Val.map (fun pos -> 
+            match pos with
+            | Right -> true
+            | _     -> false
+        ) position
+        
+        
+# 1 @"(4) F# CodeEditorMain.fsx"
+    let noSelection cur = CodeSnippet.FetchO cur = None
+    let noSelectionVal  = Val.map noSelection currentCodeSnippetId
     
-    let inline getUnionNames typ =
-        Microsoft.FSharp.Reflection.FSharpType.GetUnionCases typ
-        |> Seq.map (fun e -> e.Name |> aNumeral)
-        |> Seq.filter ((<>)"Nil_")
-        |> Seq.sort
-        |> Seq.toArray
+    let dirty    = Var.Create false 
+    let codeFS   = Var.Create ""
+    let codeJS   = Var.Create ""
+    let codeMsgs = Var.Create ""
+    let sendMsg msg = 
+        codeMsgs.Value  <- 
+            match codeMsgs.Value, msg with
+            | null, m 
+            | ""  , m
+            | m   , null
+            | m   , ""   -> m
+            | m1  , m2   -> m1 + "\n" + m2
     
-    let finTransViewFieldNames = getUnionNames typeof<FinTransViewField>
-    let targetFieldNames   = getUnionNames typeof<TargetField>
+    do Val.sink (fun m -> 
+        JS.Window.Onbeforeunload <- 
+            if m then System.Action<Dom.Event>(fun (e:Dom.Event) -> e?returnValue  <- "Changes you made may not be saved.")
+            else null
+        ) dirty 
     
-    let missingFields: QueryField seq -> string[] =
-        fun            fields         -> 
-            finTransViewFieldNames
-            |> Array.filter (fun e -> fields |> Seq.exists (fun f -> f.Name = e) |> not)
+    let setDirty() = dirty.Value <- true
+    let setClean() = dirty.Value <- false
     
-    let allFields() = missingFields (seq[])
-                      |> Seq.sort
-                      |> String.concat "\n        , "
+    let getFSCode () =
+        CodeSnippet.FetchO currentCodeSnippetId.Value 
+        |> Option.iter (fun snp -> codeFS.Value <- snp.Code())
     
-    let setDefault: string -> string =
-                fun field  -> getDefault    field 
-                              |> Option.defaultValue "(NULL)" 
-                              |> convert    field
-                              |> equalField field
-    
-    type FactView(name: SQLTableView, source: SQLTableView, fields: QueryField seq) =
-        let fieldsCached = fields |> Seq.toArray
-        let getFieldValue fName =
-            fieldsCached 
-            |> Array.tryFind      (fun q -> q.Name    = fName)
-            |> Option.map         (fun q -> q.Entry          )
-            |> Option.defaultWith (fun _ -> setDefault  fName)
-    with
-         member this.Query = finTransViewFieldNames 
-                             |> Array.map  getFieldValue
-                             |> String.concat "\n        , "
-                             |> sprintf "SELECT %s\n FROM %s;\n" <| source.FromWhere
-                             |> sprintf "%s\n as %s; \nGO" (sqlDropCreate VIEW name.Call)
-    
-    let missingDefaults() =
-        finTransViewFieldNames 
-        |> Seq.map    (fun n -> n, getDecl n, getDefault n)
-        |> Seq.filter (fun (n, typeO, defO) -> 
-             match typeO, defO with
-             | None               , _
-             | Some (_    , false), None -> true
-             | _                         -> false
+    let evalIFrameJS success failure js =
+        createIFrame (fun frame ->
+            try
+                 let window   = frame?contentWindow
+                 let eval   s = JS.Apply window "eval" [| s |]
+                 eval js           |> success
+            with e -> e.ToString() |> failure
         )
-        |> Seq.map     (fun (n, typO, _) ->
-            (n, typO, 
-                match typO with
-                | Some("int"       , _) -> "0"
-                | Some("varchar(1)", _)
-                | Some("varchar(2)", _) -> "'*'"
-                | Some("date"      , _) 
-                | Some("datetime"  , _) -> "'1900-01-01'"
-                | _                     -> "'***'"
+        |> RunCode.RunNode().RunHtml
+    
+    let evalWindowJS success failure js =
+        let window       = JS.Apply JS.Window "open" [| JS.Window.Location.Origin + "/Main.html" |]
+        match window with
+        | null -> failure "could not open new browser. Popup blocker may be active."
+        | _    ->
+        600 
+        |> JS.SetTimeout (fun () -> 
+            try
+                 let eval   s = JS.Apply window   "eval" [| s |]
+                 printfn "Evaluating..."
+                 JS.Apply window   "focus" [|  |]
+                 eval js           |> success
+            with e -> e.ToString() |> failure)
+        |> ignore
+                                   
+    let runJS msgs js =
+        sendMsg "Running JavaScript..."
+        match position.Value with
+        | NewBrowser -> evalWindowJS
+        | _          -> evalIFrameJS
+        <| (fun res  -> sendMsg "Done!"   ; sendMsg res ; sendMsg msgs) 
+        <| (fun res  -> sendMsg "Failed!" ; sendMsg res ; sendMsg msgs)
+        <| js
+    
+    let processSnippet msg processCode =
+        CodeSnippet.FetchO currentCodeSnippetId.Value 
+        |> Option.iter (fun snp -> 
+            codeMsgs.Value <- msg
+            codeJS.Value   <- ""
+            let code = snp.Code()
+            codeFS.Value   <- code
+            processCode       code
+        )
+    
+    let compileSnippet fThen fFail = 
+        processSnippet "Compiling to JavaScript..." (RunCode.compile (fun msgs js -> codeJS.Value <- js ; fThen msgs js) fFail)
+    
+    let compileRun  () = compileSnippet runJS                                               sendMsg
+    let justCompile () = compileSnippet (fun msgs _ -> sendMsg "Compiled!" ; sendMsg msgs)  sendMsg
+    let evaluateFS  () = 
+        processSnippet "Evaluating F# code..." (RunCode.EditorRpc.evaluate (fun (vO, msgs) -> vO |> Option.defaultValue "" |> ((+) (msgs + "\n")) |> sendMsg))
+    
+    let reorderSnippet toId fromId =
+        let trySnippet id = tryPickI (fun (_, snp) -> snp.id = id) 
+        let moving, others = codeSnippets.Value |> Seq.toArray |> Array.partition (fun snp -> snp.id = fromId || snp.IsDescendantOf fromId)
+        match trySnippet fromId moving, trySnippet toId others with
+        | Some(_, snp), Some(ti, tsn) ->
+            [| others.[0..ti - 1] ; moving ; others.[ti..] |]
+            |> Array.collect id
+            |> codeSnippets.Set
+            codeSnippets.UpdateBy (fun c -> Some { c with parent = tsn.parent }) snp.id
+        | _ -> ()
+        setDirty()
+        refreshView()
+    
+    let indentCodeIn () =
+        CodeSnippet.PickIO currentCodeSnippetId.Value
+        |> Option.iter (fun (j, snp) ->
+            let rec doPriorUntil f i =
+                if i < 0 then () else
+                if codeSnippets.Value |> Seq.item i |> f then () else
+                doPriorUntil f (i - 1)
+            j - 1 |> doPriorUntil (fun pri ->
+                if pri.parent = snp.parent 
+                then codeSnippets.UpdateBy (fun c -> Some { c with parent = Some pri.id }) snp.id
+                     true
+                else false
             )
+            setDirty()
+            refreshView()
         )
     
-    let missingDecls () =
-        fieldDecl
-        |> Array.filter(fun (n, typ, nullable) -> Seq.exists ((=)n) finTransViewFieldNames |> not)
-        |> Array.filter(fun (n, typ, nullable) -> Seq.exists ((=)n) finTransViewFieldNames |> not)
+    let indentCodeOut () =
+        CodeSnippet.FetchO currentCodeSnippetId.Value
+        |> Option.iter (fun snp ->
+            let newP = snp.parent
+                       |> Option.bind CodeSnippet.FetchO
+                       |> Option.bind (fun p -> p.parent)
+            codeSnippets.UpdateBy (fun c -> Some { c with parent = newP }) snp.id
+            setDirty()
+            refreshView()
+        )
+    
+    let mutable draggedId   = CodeSnippetId.New
+    let inline  draggable v = htmlAttribute "draggable"    v
+    
+    
+# 1 @"(4) F# let listEntry code =.fsx"
+    let isDirectPredecessor pre curO =
+        curO
+        |> Option.map (fun snp -> snp.predecessors |> List.contains pre)
+        |> Option.defaultValue false
+    
+    let curPredecessors =
+        Val.map (   Option.map          (fun (snp:CodeSnippet) -> snp.UniquePredecesors())
+                  >> Option.defaultValue [])  currentCodeSnippetO  
+    
+    let isIndirectPredecessor pre predecessors = predecessors |> List.contains pre
         
-    
-    let inline str4 s = s |> sprintf "%A" |> pad4 
-    let inline str2 s = s |> sprintf "%A" |> pad2 
-    
-    (*          
-    (*keep*)#load "BetterFSI.fsx"  // <<<==== Execute first in F# Interactive
-    Do __SOURCE_FILE__ __LINE__ //
-    Do __SOURCE_FILE__ __LINE__ //  missingDecls()    |> Seq.iter (printfn "%A")
-    Do __SOURCE_FILE__ __LINE__ //  missingDefaults() |> Seq.iter (printfn "%A")
-    Do __SOURCE_FILE__ __LINE__ //  missingDefaults() |> Seq.iter (fun (n, _, d) -> printfn "(%s, %s)" (str4 n) (str2 d))
-    Do __SOURCE_FILE__ __LINE__ //  finTransViewFieldNames |> Seq.filter (fun a -> a.StartsWith "A#" ) |>
-    *)
-    
-//"(4) F# dimReceivable.fsx"
-    let dimReceivable = 
-        Dimension(
-            table  = SQLTableView.New "         " "       " "DIM_RECEIVABLE        " "SRC_SYS_ID LIKE @SOURCE + '%'" ""
-          , source = SQLTableView.New "         " "       " "FINTRANS              " "" ""
-          , snowflakes =
-                     [
-                        "DIM_RECEIVABLE_AD_VAL_RECEIVABLE_DET"
-                        "DIM_RECEIVABLE_BOOT_TOW_DET"
-                        "DIM_RECEIVABLE_EMS_RECEIVABLE_DET"
-                        "DIM_RECEIVABLE_FIRE_ALM_CIT_DET"
-                        "DIM_RECEIVABLE_PRKG_CONTRA_DET"
-                     ]
-          , fields = [
-                        BusinessKey    SRC_SYS_ID                     
-                        SourceDate     DTE
-                        IntraDayOrder  INTRA_DAY_ORDER
-                        ChangeReason   ROW_CHG_RSN
-                        
-                        SurrogateKey   RECEIVABLE_KEY                    
-                        SCD2BeginDate  VERS_BEG_DTE                       
-                        SCD2EndDate    VERS_END_DTE                       
-                        SCD2Current    CURR_VERS_FLAG           
-    
-    ////////////                       SCD2                              SCD1                             SCD0        
-    ////////////                       ---------                         -------                          ------
-                        SCD2           RECEIVABLE_STAT                   Nil                              Nil
-                        SCD2           RECEIVABLE_STAT_CHG_DTE           Nil                              Nil
-                        SCD2           RECEIVABLE_VERS_ISSUE_DTE         RECEIVABLE_CURR_ISSUE_DTE        RECEIVABLE_ORIG_ISSUE_DTE            
-                        SCD2           RECEIVABLE_VERS_DUE_DTE           RECEIVABLE_CURR_DUE_DTE          RECEIVABLE_ORIG_DUE_DTE              
-                        SCD2           RECEIVABLE_VERS_DELINQ_DTE        RECEIVABLE_CURR_DELINQ_DTE       RECEIVABLE_ORIG_DELINQ_DTE           
-                        SCD2           RECEIVABLE_VERS_TO_DTE            RECEIVABLE_CURR_TO_DTE           RECEIVABLE_ORIG_TO_DTE               
-                        SCD2           RECEIVABLE_VERS_BILLING_TO_DTE    RECEIVABLE_CURR_BILLING_TO_DTE   RECEIVABLE_ORIG_BILLING_TO_DTE       
-                        SCD2           VERS_ASSIGNED_VEND                CURR_ASSIGNED_VEND               ORIG_ASSIGNED_VEND              
-                        SCD2           RECEIVABLE_MSTR_STAT              Nil                              Nil
-                        SCD2           RECEIVABLE_MSTR_STAT_CHG_DTE      Nil                              Nil
-    
-    ////////////                       SCD1                              SCD0                    
-    ////////////                       ---------                         -------                        
-                        SCD1           INV_NUM                           ORIG_INV_NUM                   
-                        SCD1           RECEIVABLE_EVER_TRANS_FLAG        Nil
-                        SCD1           RECEIVABLE_LITIGATION_DTE         Nil
-                        SCD1           RECEIVABLE_FNL_PAY_DTE            Nil
-                        SCD1           RECEIVABLE_1ST_PAY_DTE            Nil
-                        SCD1           RECEIVABLE_SETTLEMENT_DTE         Nil
-                        SCD1           FIRE_ALM_AGING_RST_FLAG           Nil
-                        SCD1           REINSTATEMENT_DTE                 Nil
-                        SCD1           FIRE_ORIG_ISSUE_DTE               Nil
-                        SCD1           ITEM_DESCR                        Nil
-                        SCD1           ORIG_BILL_NAME                    Nil
-                        SCD1           UNK_CUST_AT_BILL_FLAG             Nil
-    
-    ////////////                       SCD0                    
-    ////////////                       --------- 
-                        SCD0           LOAD_DTE                        
-                        SCD0           LOAD_TIME              
-                        
-                        SCD1           FLAG_DIM_RECEIVABLE_AD_VAL_RECEIVABLE_DET  Nil
-                        SCD1           ``A#3307_ATTY_FEE_DTE``                    Nil
-                        SCD1           ``A#3308_ATTY_FEE_DTE``                    Nil
-                        SCD1           ``A#3348_ATTY_FEE_DTE``                    Nil
-                        SCD1           AD_VAL_ACCT_LVL_ID                         Nil
-                        SCD1           AD_VAL_DISABLED_FLAG                       Nil
-                        SCD1           AD_VAL_EFF_DTE_OF_OWNERSHIP                Nil
-                        SCD1           AD_VAL_HOMESTEAD_FLAG                      Nil
-                        SCD1           AD_VAL_OVER_66_FLAG                        Nil
-                        SCD1           AD_VAL_TAX_DEFERRAL_END_DTE                Nil
-                        SCD1           AD_VAL_TAX_DEFERRAL_START_DTE              Nil
-                        SCD1           AD_VAL_VET_FLAG                            Nil
-                        SCD1           COLL_LAWSUIT_NUM                           Nil
-                        SCD1           COLL_LGL_COND                              Nil
-                        SCD1           HCAD_ACCT_STAT                             Nil
-                        SCD1           QTRLY_PAY_FLAG                             Nil
-                        SCD1           FLAG_DIM_RECEIVABLE_BOOT_TOW_DET           Nil
-                        SCD1           RECEIVABLE_HAS_LTR_FLAG                    Nil
-                        SCD1           RECEIVABLE_HAS_NOTE_FLAG                   Nil
-                        SCD1           RECEIVABLE_HAS_PEND_LTR_FLAG               Nil
-                        SCD1           RESOLVE_DESCR                              Nil
-                        SCD1           RESOLVE_DTE                                Nil
-                        SCD1           RESOLVE_RSN                                Nil
-                        SCD1           RESOLVED_BY                                Nil
-                        SCD1           FLAG_DIM_RECEIVABLE_EMS_RECEIVABLE_DET     Nil
-                        SCD1           ACTV_CARRIER                               Nil
-                        SCD1           ACTV_CARRIER_FIN_CLASS                     Nil
-                        SCD1           ACTV_CARRIER_FIN_GRP                       Nil
-                        SCD1           BILLING_HOLD_FLAG                          Nil
-                        SCD1           SIG_FLAG                                   Nil
-                        SCD1           FLAG_DIM_RECEIVABLE_FIRE_ALM_CIT_DET       Nil
-                        SCD1           VOID_CODE                                  Nil
-                        SCD1           VOID_DESCR                                 Nil
-                        SCD1           WORK_STAT                                  Nil
-                        SCD1           FLAG_DIM_RECEIVABLE_PRKG_CONTRA_DET        Nil
-                        SCD1           ESC_CAND_FLAG                              Nil
-                        SCD1           ON_ADMIN_HOLD_FLAG                         Nil
-                        SCD1           UNDER_APPEAL_FLAG                          Nil
-                        SCD1           VOID_FLAG                                  Nil
-                        SCD1           WRITE_OFF_FLAG                             Nil
-                     ]
+    let togglePredecessorForCur (pre:CodeSnippet) curO =
+        curO |> Option.iter (fun cur ->
+            if cur = pre || isIndirectPredecessor cur.id (pre.UniquePredecesors()) then () else
+            let preds = 
+                if cur.predecessors |> List.contains pre.id
+                then List.filter ((<>) pre.id)
+                else fun l -> pre.id :: l
+                <| cur.predecessors
+            codeSnippets.UpdateBy  (fun c -> Some { c with predecessors = preds }) cur.id
+            setDirty()
+            refreshView()
         )
-    dimReceivable
-    (*
-    open SlowlyChangingDimensions
-    print dimReceivable.Procedure
-    print dimReceivable.Verification
-    *)
+    
+    let toggleExpanded snp =
+        codeSnippets.UpdateBy  (fun c -> Some { c with expanded = not c.expanded }) snp.id
+        refreshView()
+    
+    let listEntry isParent isExpanded code =
+        Template.Hoverable.New
+            .Content( [ 
+                        ``class`` "code-editor-list-tile"
+                        classIf   "selected"              <| Val.map ((=)                   code.id) currentCodeSnippetId
+                        classIf   "direct-predecessor"    <| Val.map (isDirectPredecessor   code.id) currentCodeSnippetO
+                        classIf   "indirect-predecessor"  <| Val.map (isIndirectPredecessor code.id) curPredecessors
+                        draggable "true"
+                        SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                                              )
+                        SomeAttr <| on.drag    (fun _ _  ->                                              draggedId <- code.id)
+                        SomeAttr <| on.drop    (fun _ ev -> ev.PreventDefault() ; reorderSnippet code.id draggedId           )
+                        span    [ ``class`` "node"
+                                  classIf   "parent"   isParent
+                                  classIf   "expanded" isExpanded
+                                  SomeAttr <| on.click(fun _ _ -> if isParent then toggleExpanded code)
+                                  title    <| if isParent then (if isExpanded then "collapse" else "expand") else ""
+                                  htmlText <| if isParent then (if isExpanded then "v"        else ">"     ) else ""
+                                ]
+                        div     [ ``class`` "code-editor-list-text"
+                                  style1 "text-indent" (sprintf "%dem" <| code.Level())
+                                  htmlText <| Val.map2 snippetName (curSnippetNameOf code.id) (curSnippetCodeOf code.id)
+                                  SomeAttr <| on.click (fun _ _ -> currentCodeSnippetId.Value <- code.id)
+                                ]
+                        span    [ ``class``   "predecessor"
+                                  title       "toggle predecessor"
+                                  SomeAttr <| on.click(fun _ _ -> Val.iter (togglePredecessorForCur code) currentCodeSnippetO)
+                                  htmlText    "X"
+                                ]
+                        ])
+            .Render
+    
+    let listEntries snps =
+        snps
+        |> Seq.indexed
+        |> Seq.mapFold (fun expanded (i, snp) ->
+            if snp.parent |> Option.map (fun p -> Set.contains p expanded) |> Option.defaultValue true then 
+                let isParent    = codeSnippets |> Seq.tryItem (i + 1) |> Option.map (fun nxt -> nxt.parent = Some snp.id) |> Option.defaultValue false
+                let isExpanded  = isParent && snp.expanded
+                (listEntry isParent isExpanded snp |> Some, if isExpanded then Set.add snp.id expanded else expanded)
+            else  (None, expanded)
+        )  (Set [])
+        |> fst
+        |> Seq.choose (Option.map renderDoc)
+        |> Doc.Concat
+# 1 @"(4) F# let addCode () =.fsx"
+    let addCode () =
+        CodeSnippet.PickIO currentCodeSnippetId.Value
+        |> Option.map (fun (i, snp) -> CodeSnippet.New(i + 1, "", snp.parent, [], [], ""))
+        |> Option.defaultWith (fun _ -> CodeSnippet.New "")
+        |> fun n -> currentCodeSnippetId.Value <- n.id
+        setDirty()
+        refreshView()
+    
+    
+    let deleteCode () =
+        CodeSnippet.FetchO currentCodeSnippetId.Value
+        |> Option.iter (fun snp -> 
+            if JS.Confirm (sprintf "Do you want to delete %s?" snp.Name) then
+                currentCodeSnippetId.Value <- CodeSnippetId.New
+                codeSnippets.Remove snp
+                setDirty()
+                refreshView()
+        )
+        
+    let justFileName (f:string) = f.Split [| '/' ; '\\' |] |> Seq.last
+    
+    let fileName  = Var.Create ""
+    let emptyFile = Val.map (fun v -> v = "") fileName
+    
+    let loadTextFile element (f: string -> unit) =
+        let files = element |> FileList.OfElement 
+        if files.Length > 0 then
+            let  reader  = TextFileReader()
+            reader.Onload <- (fun e -> f e.Target?result)
+            reader.ReadAsText files.[0] 
+    
+    let fileInputElementId = "CodeEditorFileSel"
+    let loadFile (e: Dom.Element) =
+        if (not dirty.Value) || JS.Confirm "Changes have not been saved, do you really want to load?" then    
+          loadTextFile ((e.GetRootNode().FirstChild :?> Dom.Element).QuerySelector("#" + fileInputElementId))
+            (fun txt ->
+                try
+                    txt
+                    |> Json.Deserialize<CodeSnippet[]>
+                    |> codeSnippets.Set
+                    setClean()
+                    refreshView()
+                with e -> JS.Alert <| e.ToString()
+            )
+    
+    [< Inline "saveAs(new Blob([$txt], {type: 'text/plain;charset=utf-8'}), $name)" >]
+    let saveAs (txt:string) (name:string) = ()
+    
+    let downloadFile() =
+        codeSnippets.Value
+            |> Seq.toArray
+            |> Json.Serialize
+            |> saveAs <| match justFileName fileName.Value with | "" -> "snippets.fsjson" | fname -> fname
+        setClean()
+    
+    let loadFileElement =
+        Template.Input.New(fileName.Lens justFileName (fun prev n -> prev) )
+            .Prefix( label [ ``class`` "btn btn-primary" ; htmlText "Load File..." 
+                             Template.Input.New(fileName)
+                                     .Type("file")
+                                     .Style("display: none")
+                                     .Content([ on.change (fun el _ -> loadFile el   )
+                                                on.click  (fun el _ -> el?value <- "")
+                                              ])
+                                     .Id(fileInputElementId)
+                                     .Render 
+                            ]
+                    )
+    
+    let Do f = (fun _ _ -> f())
+# 1 @"(4) F# let styleEditor =.fsx"
+    let splitterV1 =
+        Template.SplitterBar.New.Value(20.0)
+          .Node(div [ ``class`` "sliderv"
+                      style "width : 5px; grid-column: 2  ; grid-row: 2/4; margin-left: -7px; border: 0px; padding: 0px;" ])
+    
+    let splitterV2 =
+        Template.SplitterBar.New.Value(50.0).Max(Val.map ((-) 92.0) splitterV1.GetValue)
+          .Node(div [ ``class`` "sliderv"
+                      style "width : 5px; grid-column: 3  ; grid-row: 3  ; margin-left: -7px; border: 0px; padding: 0px;" ])
+          
+    let splitterH3 =
+        Template.SplitterBar.New.Value(17.0).Horizontal().Before
+          .Node(div [ ``class`` "sliderh"
+                      style "height: 5px; grid-column: 2/4; grid-row: 3  ; margin-top : -7px; border: 0px; padding: 0px;" ])
+    
+    let styleEditorF sp1 sp2 sp3 =
+        sprintf """
+    div textarea {
+    font-family: monospace;
+    }
+    .code-editor-list-tile {
+    white-space: nowrap; 
+    border-style: solid none none;
+    border-color: white;
+    border-width: 1px;
+    background-color: #D8D8D8;
+    display: flex;
+    }
+    .code-editor-list-text{
+    padding: 1px 10px 1px 5px;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    }
+    
+    .code-editor-list-tile.direct-predecessor {
+    font-weight: bold;
+    }
+    .code-editor-list-tile.indirect-predecessor {
+    color: blue;
+    }
+    .code-editor-list-tile.selected {
+    background-color: #77F;
+    color: white;
+    }
+    .code-editor-list-tile.hovering {
+    background: lightgray;
+    }
+    .code-editor-list-tile.hovering.selected {
+    background:  blue;
+    }
+    .code-editor-list-tile>.predecessor {
+    font-weight: bold;
+    border-style: inset;
+    border-width: 1px;
+    text-align: center;
+    color: transparent;
+    }
+    .code-editor-list-tile.direct-predecessor>.predecessor {
+    color: blue;
+    }
+    
+    
+    .CodeEditor {
+        display: grid;
+        grid-template-columns: %f%% %f%% minmax(0px, 97%%);
+        grid-template-rows: 4%% minmax(0px, 96%%) %f%% 10%%;
+        grid-template-areas:
+        "header0 header   header"
+        "sidebar content1 content1"
+        "sidebar content2 content3"
+        "footer  footer   footer2";
+        color: #333;
+        height: 100%%;
+        grid-gap: 9px;
+        padding : 9px;
+    }
+    
+    .CodeEditor > :nth-child(2){  grid-area: header  ; overflow: hidden;               }
+#Snippets                  {  grid-area: sidebar ; overflow: auto  ;               }
+#Code                      {  grid-area: content1; overflow: auto  ;               }
+#Output                    {  grid-area: content2; overflow: auto  ; resize: none; }
+#JScript                   {  grid-area: content3; overflow: auto  ; resize: none; }
+#AllCode                   {  grid-area: footer2 ; overflow: auto                  }
+#Buttons                   {  grid-area: footer  ;                                 }
+    
+    
+#Buttons { 
+            display: grid;
+            grid-template-columns: repeat(8, 12.1%%);
+            bxackground-color: #eee;
+            padding : 5px;
+            grid-gap: 5px;
+    }
+    
+#Buttons > div       { grid-column: 4/6 }
+    
+    .CodeMirror {
+        height: 100%%;
+    }
+    
+    .sliderv {
+        background-color: #eef;
+        cursor: col-resize;
+    }
+    .sliderh {
+        background-color: #eef;
+        cursor: row-resize;   
+    }
+    .node {
+        background-color:white; 
+        width: 2ch; 
+        color: #A03; 
+        font-weight:bold; 
+        text-align: center;
+        font-family: arial;
+    }
+    
+        """ sp1 sp2 sp3
+            
+    let styleEditor = htmlText <| Val.map3 styleEditorF splitterV1.GetValue splitterV2.GetValue splitterH3.GetValue
+    
+# 1 @"(4) F# let CodeEditor() =.fsx"
+    let CodeEditor() =
+      div [ ``class`` "CodeEditor"
+            div [ Id "Snippets"
+                  codeSnippets.View
+                  |> View.SnapshotOn codeSnippets.Value refresh.View
+                  |> View.Map listEntries
+                  |> Doc.BindView id |> SomeDoc
+                ]                     
+            Template.Input     .New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:")                     .Render
+            Template.CodeMirror.New(Val.bindIRef curSnippetCodeOf currentCodeSnippetId).OnChange(setDirty ).Id("Code"   )            .Render.AddChildren([style1 "height" "100%"])
+            Template.TextArea  .New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 ).Id("Output" )            .Render
+            Template.TextArea  .New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        ).Id("AllCode")            .Render
+            Template.TextArea  .New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated").Id("JScript")            .Render
+            div [ Id "Buttons"
+                  Template.Button.New("Add code"              ).Class("btn btn-xs"     ).OnClick(Do addCode      )                          .Render
+                  Template.Button.New("<<"                    ).Class("btn btn-xs"     ).OnClick(Do indentCodeOut).Disabled(noSelectionVal) .Render
+                  Template.Button.New(">>"                    ).Class("btn btn-xs"     ).OnClick(Do indentCodeIn ).Disabled(noSelectionVal) .Render
+                  loadFileElement                                                                                                           .Render
+                  span []       
+                  Template.Button.New("Evaluate FS"           ).Class("btn btn-xs"     ).OnClick(Do evaluateFS   ).Disabled(noSelectionVal) .Render
+                  Template.Button.New("Get F# code ==>"       ).Class("btn btn-xs"     ).OnClick(Do getFSCode    ).Disabled(noSelectionVal) .Render
+           
+                  Template.Button.New("Delete code"           ).Class("btn btn-xs"     ).OnClick(Do deleteCode   ).Disabled(noSelectionVal) .Render
+                  span []       
+                  span []       
+                  Template.Button.New("Save as..."            ).Class("btn            ").OnClick(Do downloadFile )                          .Render.AddChildren([classIf "btn-primary" dirty])
+                  span []
+                  Template.Button.New("Compile WebSharper"    ).Class("btn btn-xs"     ).OnClick(Do justCompile  ).Disabled(noSelectionVal) .Render
+                  Template.Button.New("Run WebSharper in ..." ).Class("btn btn-xs").OnClick(Do compileRun ).Disabled(noSelectionVal) .Render
+                  Doc.Select [ attr.id "Position" ] positionTxt [ Below ; Right ; NewBrowser ] position |> someElt
+                ]
+            script [ src "/EPFileX/FileSaver/FileSaver.js" ; ``type`` "text/javascript" ] 
+            styleH [ styleEditor                                                        ]
+            splitterV1                                                                                                               .Render
+            splitterV2                                                                                                               .Render
+            splitterH3                                                                                                               .Render
+         ]
+    
+# 1 @"(4) F# CodeEditor page.fsx"
+    
+    
+    let style1h = "height : 5px; grid-column: 1/2  ; grid-row   : 2/3; margin-top : -7px; border: 0px; padding: 0px; background-color: #eef; cursor: row-resize"
+    let style2h = "height : 5px; grid-column: 1/2  ; grid-row   : 3/4; margin-top : -7px; border: 0px; padding: 0px; background-color: #eef; cursor: row-resize"
+    let style1v = "width  : 5px; grid-row   : 1/2  ; grid-column: 2/3; margin-left: -7px; border: 0px; padding: 0px; background-color: #eef; cursor: col-resize"
+    let style2v = "width  : 5px; grid-row   : 1/2  ; grid-column: 3/4; margin-left: -7px; border: 0px; padding: 0px; background-color: #eef; cursor: col-resize"
+    
+    let horizontalSplit : Printf.StringFormat<_> = """
+    body {
+        display              : grid;
+        grid-template-rows   : %f%% %f%% %f%%;
+        grid-template-columns: 100%%;
+        grid-gap             :   9px;   
+        height               : 100vh;
+        overflow             : hidden;
+    }
+    
+#CodeEditor              { grid-row   : 2; overflow: hidden; }
+#TestNode                { grid-row   : 3; overflow: auto  ; }
+    body > div:first-of-type { grid-row   : 1; overflow: hidden; }
+    body > div               { grid-column: 1;                   }
+                                   """
+    let verticalSplit : Printf.StringFormat<_> = """
+    body {
+        display              : grid;
+        grid-template-columns: %f%% %f%% %f%%;
+        grid-template-rows   : 100%%;
+        grid-gap             :   9px;   
+        height               : 100vh;
+        overflow             : hidden;
+    }
+    
+#CodeEditor              { grid-column: 2; overflow: hidden; }
+#TestNode                { grid-column: 3; overflow: auto  ; }
+    body > div:first-of-type { grid-column: 1; overflow: hidden; }
+    body > div               { grid-row   : 1;                   }
+                                   """
+    
+    let style1 =
+        directionVertical
+        |> Val.map (fun dir ->
+            if dir then style1v
+            else        style1h)
+    
+    let style2 = 
+        directionVertical
+        |> Val.map (fun dir ->
+            if dir then style2v
+            else        style2h)
+    
+    let styleSplit  = 
+        directionVertical
+        |> Val.map (fun dir ->
+            if dir then verticalSplit
+            else        horizontalSplit)
+    
+    let splitterMain1 =
+        Template.SplitterBar.New.Value( 0.0).Vertical(directionVertical).Min( 0.0).Max(35.0)
+          .Node(div [ style style1 ])
+    
+    let splitterMain2 =
+        Template.SplitterBar.New.Value(24.0).Vertical(directionVertical).Min( 0.5).Max(Val.map (fun pos -> if pos = NewBrowser then 0.1 else 50.0) position).Before
+          .Node(div [ style style2 ])
+    
+    let pageStyle =
+        Val.map3 (fun fmt v1 v2 -> 
+            sprintf fmt v1 (98.0 - v1 - v2) v2) 
+            styleSplit splitterMain1.GetValue splitterMain2.GetValue
+            
+    let addNodeById name (node:HtmlNode) =
+        match JS       .Document.GetElementById   name with
+        | null -> JS   .Document.CreateElement    "div"
+                  |> JS.Document.Body.AppendChild :?> Dom.Element
+        | node -> node
+        |> fun el -> 
+            Doc.RunReplace el (node.AddChildren [ Id name ] |> renderDoc)  
+            
+    RunCode.RunNode("CodeEditor").AddBootstrap.RunHtml <| CodeEditor()
+    addNodeById "pageStyle"                            <| styleH [ htmlText pageStyle ]
+    addNodeById "splitterMain1"                        <| splitterMain1.Render
+    addNodeById "splitterMain2"                        <| splitterMain2.Render
+              

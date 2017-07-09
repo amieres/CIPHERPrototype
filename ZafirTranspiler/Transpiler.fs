@@ -206,29 +206,29 @@ let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap.Wrapper<st
         use  toErase  = new tempFileName(src)
         let dll       = System.IO.Path.ChangeExtension(src, ".dll")
         let options   = [|
-                           yield! assemblies |> Seq.map ((+) "-r ") |> Seq.toArray 
+                           yield! [|
+                                  "IGNOREDfsc.exe"
+                                  "--noframework"
+                                  "--optimize-"
+                                  "--tailcalls-" 
+                                  "--target:library"
+                                  "--warn:3"
+                                  "--nowarn:76"
+                                  "--vserrors"
+                                  "--LCID:1033" 
+                                  "--utf8output" 
+                                  "--fullpaths"
+                                  "--flaterrors" 
+                                  "--subsystemversion:6.00"
+                                  "--highentropyva+"
+                                  "--site"
+                                  "--wsoutput:."
+                                  "-o:" + dll
+                                  "--project:project.xxx"
+                                  src 
+                                  |]
+                           yield! assemblies |> Seq.map ((+) "-r:") |> Seq.toArray 
                            yield! defines    |> Seq.map ((+) "-d:") |> Seq.toArray
-                           yield! [|  
-                            "IGNOREDfsc.exe"
-                            "--noframework"
-                            "--optimize-"
-                            "--tailcalls-" 
-                            "--target:library"
-                            "--warn:3"
-                            "--nowarn:76"
-                            "--vserrors"
-                            "--LCID:1033" 
-                            "--utf8output" 
-                            "--fullpaths"
-                            "--flaterrors" 
-                            "--subsystemversion:6.00"
-                            "--highentropyva+"
-                            "--site"
-                            "--wsoutput:."
-                            "-o:" + dll
-                            "--project:project.xxx"
-                            src 
-                           |]
                         |]
         return! compileMainW context options
     }
