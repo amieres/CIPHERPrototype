@@ -48,8 +48,8 @@ let fsharpInteractive = lazy ResourceAgent(20, (fun () -> startSession()), fun f
 
 let processFSI (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
     Wrap.wrapper {
-        let! choice, errors = fsharpInteractive.Value.Process(fun fsi -> 
-            async {
+        let! evalR = fsharpInteractive.Value.Process(fun fsi -> 
+            Wrap.wrapper {
               return
                 Seq.map (fun assem -> sprintf "#r @\"%s\"" assem) assemblies
                 |> Seq.append    <| [ code ]
@@ -57,6 +57,7 @@ let processFSI (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
                 |> fsi.EvalInteractionNonThrowing
             }
         )
+        let! choice, errors = evalR
         let  msgs = errors |> Seq.map fSharpError2TranspilerError |> Seq.toList
         let! res =
              match choice with

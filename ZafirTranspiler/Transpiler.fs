@@ -40,7 +40,8 @@ let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
     fun           context    config   -> Wrap.wrapper {
         do!  config.ProjectFile  = null       |> Result.failIfTrue  MustProvideProjectPath
         do!  config.AssemblyFile = null       |> Result.failIfTrue  MustProvideAssemblyOutputPath
-        let! errors, exitCode    = fsharpChecker.Value.Process(fun c -> c.Compile(config.CompilerArgs))
+        let! compilerOutput      = fsharpChecker.Value.Process(fun c -> c.Compile(config.CompilerArgs) |> Wrap.WAsync)
+        let! errors, exitCode    = compilerOutput
         let  fsErrors            = errors |> Array.map fSharpError2TranspilerError |> List.ofArray
         do!  (if exitCode = 0 then Result.succeedWithMsgs () else Result.failWithMsgs) <| fsErrors
         do!  File.Exists config.AssemblyFile  |> Result.failIfFalse (OutputAssemblyNotFound config.AssemblyFile)
@@ -88,7 +89,8 @@ let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
                 | _                                        -> null
             )
         System.AppDomain.CurrentDomain.add_AssemblyResolve(assemblyResolveHandler)
-        let! compiler    = (fun checker -> async.Return <| WebSharper.Compiler.FSharp.WebSharperFSharpCompiler (printfn "%s", checker)) |> fsharpChecker.Value.Process
+        let! compilerR   = (fun checker -> async.Return <| WebSharper.Compiler.FSharp.WebSharperFSharpCompiler (printfn "%s", checker) |> Wrap.WAsync) |> fsharpChecker.Value.Process
+        let! compiler    = compilerR
         let! comp        = compiler.Compile(refMeta, config.CompilerArgs, ".", config.ProjectFile) 
         let  wsErrors    = comp.Errors |> List.map webSharperError2TranspilerError
         do!  List.isEmpty comp.Errors |> Result.failIfFalse (ErrWebSharper <| sprintf "%A" comp.Errors)

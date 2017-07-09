@@ -489,6 +489,18 @@
  Builder.New=Runtime.Ctor(function()
  {
  },Builder);
+ Wrap.getAsyncWithDefault=function(f,wb)
+ {
+  return Concurrency.Delay(function()
+  {
+   var x;
+   x=Wrap.getAsyncR(wb);
+   return Concurrency.Bind(x,function(a)
+   {
+    return Concurrency.Return(Result.withError(f,a));
+   });
+  });
+ };
  Wrap.getAsyncR=function(wb)
  {
   var v,v$1,va;

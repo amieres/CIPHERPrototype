@@ -144,11 +144,13 @@ type editorDeclaration = {
 
 open WebSharper
 open Transpiler
+open Rop
 
 [<Rpc>]
 let checkSource source =
-   async {
-      let! _, check = checkFile ("test.fsx", source) |> fsharpChecker.Value.Process
+   Wrap.wrapper {
+      let! checkR   = (checkFile ("test.fsx", source)                  >> Wrap.WAsync) |> fsharpChecker.Value.Process
+      let! _, check = checkR
       return          check.Errors 
                       |> Array.map (fun err ->
                           { startLine   = err.StartLineAlternate - 1
@@ -158,21 +160,23 @@ let checkSource source =
                             message     = err.Message 
                           }
                       )
-   }
+   } |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
 [<Rpc>]
 let methods      source line col =
-   async {
-      let! mets = getMethodOverloads ("test.fsx", source) (line, col) |> fsharpChecker.Value.Process
+   Wrap.wrapper {
+      let! metsR = (getMethodOverloads ("test.fsx", source) (line, col) >> Wrap.WAsync) |> fsharpChecker.Value.Process
+      let! mets  = metsR
       return      mets 
                   |> List.map (fun (a, b) -> a + b)
                   |> List.toArray
-   }
+   }  |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
 [<Rpc>]
 let declarations source line col =
-   async {
-      let! decls = getDeclarations   ("test.fsx", source) (line, col) |> fsharpChecker.Value.Process
+   Wrap.wrapper {
+      let! declsR = (getDeclarations   ("test.fsx", source) (line, col) >> Wrap.WAsync) |> fsharpChecker.Value.Process
+      let! decls  = declsR
       return       decls 
                    |> List.map (fun (name, glyph, (sg, info)) -> 
                       {  name          = name
@@ -181,7 +185,7 @@ let declarations source line col =
                          documentation = info
                       }
                    ) |> List.toArray
-   }
+   } |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
 [<Rpc>]
 let translate    source minified = Transpiler.translate source minified

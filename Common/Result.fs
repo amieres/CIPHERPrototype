@@ -333,6 +333,11 @@ module Wrap =
         | WResult     v   -> async.Return                                    v
         | WAsyncR     vra -> vra
         
+    let getAsyncWithDefault f (wb: Wrapper<'T>) = 
+        async {
+            let!   vR = getAsyncR wb
+            return vR |> Result.withError f
+        }
 
 //    let call wb = wb |> getR Rop.notifyMessages
 

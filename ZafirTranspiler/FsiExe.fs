@@ -21,20 +21,21 @@ let (|CompiledMatch|_|) pattern input =
 type ShellExError =
     | ShellFailWithMessage       of string
     | ShellFinishedWithNoMessage 
+    | ShellCrashed               of string
 with interface ErrMsg with
         member this.ErrMsg    = 
             match this with 
             | ShellFailWithMessage msg   -> msg  
             | ShellFinishedWithNoMessage -> "warning - No output"
-            | msg                          -> sprintf "%A" msg
+            | ShellCrashed         msg   -> "Crashed " + msg
+            | msg                        -> sprintf "%A" msg
         member this.IsWarning =
             match this with 
             | ShellFinishedWithNoMessage -> true
             | _                          -> false 
 
 
-type ShellEx(program, args)               =
-    let startInfo                         = new ProcessStartInfo()
+type ShellEx(startInfo: ProcessStartInfo) =
     let proc                              = new Process()
     let bufferOutput                      = new StringBuilder()
     let bufferError                       = new StringBuilder()
@@ -42,16 +43,20 @@ type ShellEx(program, args)               =
         let v = sb.ToString()
         sb.Clear() |> ignore
         v
-    do  startInfo.FileName               <- program
-        startInfo.Arguments              <- args
-        startInfo.UseShellExecute        <- false
-        startInfo.RedirectStandardInput  <- true
+    do  startInfo.RedirectStandardInput  <- true
         startInfo.RedirectStandardOutput <- true
         startInfo.RedirectStandardError  <- true
+        startInfo.UseShellExecute        <- false
         proc.StartInfo                   <- startInfo
         proc.EnableRaisingEvents         <- true
-        proc.OutputDataReceived.AddHandler(DataReceivedEventHandler(fun sender args -> bufferOutput.Append(args.Data + "\n") |> ignore))
-        proc.ErrorDataReceived .AddHandler(DataReceivedEventHandler(fun sender args -> bufferError .Append(args.Data + "\n") |> ignore))
+        proc.OutputDataReceived.AddHandler(DataReceivedEventHandler(fun sender args -> try bufferOutput.Append(args.Data + "\n") |> ignore with _ -> () ))
+        proc.ErrorDataReceived .AddHandler(DataReceivedEventHandler(fun sender args -> try bufferError .Append(args.Data + "\n") |> ignore with _ -> () ))
+        proc.Exited            .AddHandler(System.EventHandler     (fun sender args -> try proc.Close()                                    with _ -> () ))
+    new (program, args) =             
+        let startInfo                         = new ProcessStartInfo()
+        do  startInfo.FileName               <- program
+            startInfo.Arguments              <- args
+        new ShellEx(startInfo)
     member this.Start() = 
         let r = proc.Start() 
         proc.BeginOutputReadLine()
@@ -67,17 +72,22 @@ type ShellEx(program, args)               =
         | ""  , bad -> Some( Result.fail                <| ShellFailWithMessage bad )
         | good, bad -> Some( Result.succeedWithMsg good <| ShellFailWithMessage bad )
     member this.Response()          = this.Response(this.Output(), this.Error())
-    member this.CheckForResult(res) = proc.OutputDataReceived |> Event.filter (fun evArgs -> evArgs.Data.Contains res)
-    member this.CheckForError (res) = proc.ErrorDataReceived  |> Event.filter (fun evArgs -> evArgs.Data.Contains res)
     member this.SendAndWait(send, wait, ?onError) =
+        let eventWait = 
+            if defaultArg onError false then proc.ErrorDataReceived else proc.OutputDataReceived
+            |> Event.choose (fun evArgs -> try evArgs.Data |> (fun v -> if v.Contains wait then Some <| Result.succeed v else None) with _ -> None)
+        let eventAll = Event.merge eventWait  (Event.map (fun _ -> Result.fail <| ShellCrashed startInfo.FileName) proc.Exited)
         Wrap.wrapper {
             do! Result.tryProtection()
-            this.Send send
-            let!   evArgs = Async.AwaitEvent <| (if defaultArg onError false then this.CheckForError else this.CheckForResult) wait            
+            async { 
+                do!    Async.Sleep 20 
+                this.Send send        } |> Async.Start
+            let!   waitedR = Async.AwaitEvent eventAll
+            let!   waited  = waitedR
             do!    Async.Sleep 200
             let!   res =
                    if defaultArg onError false then 
-                       this.Response(this.Output(), this.Error() |> fun msg -> msg.Split([| evArgs.Data |], System.StringSplitOptions.None) |> Array.head)
+                       this.Response(this.Output(), this.Error() |> fun msg -> msg.Split([| waited |], System.StringSplitOptions.None) |> Array.head)
                    else this.Response()
                    |> Option.defaultWith (fun () -> Result.succeedWithMsg "" ShellFinishedWithNoMessage)
             return res
@@ -87,14 +97,17 @@ type ShellEx(program, args)               =
         if not proc.HasExited then
             proc.WaitForExit()
         (proc.ExitCode, this.Output, this.Error)
+    member this.HasExited = try proc.HasExited with _ -> true
     interface System.IDisposable with
         member this.Dispose () = 
             proc.Dispose()
 
 type FsiExe() =
-    let shell    = new ShellEx(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", "--nologo --quiet")  // --noninteractive
-    let endToken = "xXxY" + "yYyhH"
-    do shell.Start() |> ignore
+    let startInfo                 = ProcessStartInfo(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", "--nologo --quiet")             
+    let shell                     = new ShellEx(startInfo)  // --noninteractive
+    let endToken                  = "xXxY" + "yYyhH"
+    do  startInfo.CreateNoWindow <- false
+        shell.Start() |> ignore
     member this.Eval txt =
         Wrap.wrapper {
             do! Result.tryProtection()
@@ -102,12 +115,16 @@ type FsiExe() =
             let! res = shell.SendAndWait(endToken + ";;", endToken, true)
             return res
         }
+    member this.IsAlive = not shell.HasExited
     interface System.IDisposable with
         member this.Dispose () = 
             (shell :> System.IDisposable).Dispose()
 
-type ResourceAgent<'T>(restartAfter:int, ctor: unit->'T, ?cleanup) =
+type ResourceAgent<'T>(restartAfter:int, ctor: unit->'T, ?cleanup, ?isAlive) =
     let mutable resource = ctor()
+    let respawn() =
+        cleanup |> Option.iter (fun clean -> clean resource) 
+        resource <- ctor()
     let agent    = 
         MailboxProcessor.Start(fun inbox ->
             async {
@@ -115,19 +132,20 @@ type ResourceAgent<'T>(restartAfter:int, ctor: unit->'T, ?cleanup) =
                  try
                      for i in 1 .. restartAfter do
                          let! work = inbox.Receive()
+                         isAlive |> Option.iter (fun alive -> if not (alive resource) then respawn())
                          do!  work resource
-                 finally
-                     cleanup |> Option.iter (fun clean -> clean resource) 
-                     resource <- ctor()
+                     respawn()
+                 with _ -> respawn() 
             }
         )
-    member x.Process work =
+    do agent.Error.AddHandler <| Handler (fun _ _ -> respawn())
+    member x.Process (work:'T -> Wrap.Wrapper<'a>) =
         agent.PostAndAsyncReply(
             fun reply checker ->
               async {
-                   let! res = work checker
+                   let! res = work checker |> Wrap.getAsyncR
                    reply.Reply res
-              }
+              } 
             )
 
 let getIndentFile input =
@@ -135,11 +153,11 @@ let getIndentFile input =
     | CompiledMatch "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent.Value, file.Value
     | _                                                         -> 0               , input
 
-let fsiExe = lazy ResourceAgent(20, (fun () -> new FsiExe()), fun fsi -> (fsi :> System.IDisposable).Dispose())
+let fsiExe = lazy ResourceAgent(20, (fun () -> new FsiExe()), (fun fsi -> (fsi :> System.IDisposable).Dispose()), fun fsi -> fsi.IsAlive)
 
 let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
     Wrap.wrapper {
-        let! res1 = fsiExe.Value.Process(fun fsi -> 
+        let! resR = fsiExe.Value.Process(fun fsi -> 
             Wrap.wrapper {
               do! Result.tryProtection()
               let! res =
@@ -148,8 +166,8 @@ let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> 
                 |> String.concat "\n" 
                 |> fsi.Eval
               return res
-            } |> Wrap.getAsyncR
+            }
         )
-        let!   res2 = res1
-        return res2
+        let! res = resR
+        return res
     }
