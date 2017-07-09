@@ -34,7 +34,7 @@ let webSharperError2TranspilerError: WebSharperError -> TranspilerError =
         |> ErrWebSharper
 
 let fsharpChecker = 
-    lazy ResourceAgent(20, fun _ -> FSharpChecker.Create(keepAssemblyContents = true) )
+    lazy ResourceAgent<_, unit>(20, fun _ -> FSharpChecker.Create(keepAssemblyContents = true) )
 
 let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
     fun           context    config   -> Wrap.wrapper {
@@ -189,8 +189,8 @@ let compileMainW: Context -> seq<string> -> Wrap.Wrapper<string> =
         }
     CompileToJsW context !wsArgs
 
-let compileW: Context -> string -> seq<string> -> Wrap.Wrapper<string> =
-  fun         context    code      assemblies  ->
+let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap.Wrapper<string> =
+  fun         context    code      assemblies     defines     ->
     Wrap.wrapper {
         do!  Result.tryProtection()
         let codeBase  = System.Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).LocalPath
@@ -205,8 +205,10 @@ let compileW: Context -> string -> seq<string> -> Wrap.Wrapper<string> =
         System.IO.File.WriteAllText(src, code2 |> Seq.map fst |> String.concat "\r\n" ) 
         use  toErase  = new tempFileName(src)
         let dll       = System.IO.Path.ChangeExtension(src, ".dll")
-        let options   = assemblies |> Seq.collect(fun e -> ["-r"; e]) |> Seq.toArray 
-                        |> Array.append [|  
+        let options   = [|
+                           yield! assemblies |> Seq.map ((+) "-r ") |> Seq.toArray 
+                           yield! defines    |> Seq.map ((+) "-d:") |> Seq.toArray
+                           yield! [|  
                             "IGNOREDfsc.exe"
                             "--noframework"
                             "--optimize-"
@@ -226,12 +228,13 @@ let compileW: Context -> string -> seq<string> -> Wrap.Wrapper<string> =
                             "-o:" + dll
                             "--project:project.xxx"
                             src 
+                           |]
                         |]
         return! compileMainW context options
     }
 
-let processJSW: string -> seq<string> -> Wrap.Wrapper<string> =
-  fun           fs        assemblies  ->
+let processJSW: string -> seq<string> -> seq<string> -> Wrap.Wrapper<string> =
+  fun           fs        assemblies     defines     ->
     Wrap.wrapper {
         let pu = P.PathUtility.VirtualPaths("/")
         let ctx : Resources.Context =
@@ -256,22 +259,31 @@ let processJSW: string -> seq<string> -> Wrap.Wrapper<string> =
                 RenderingCache = System.Collections.Concurrent.ConcurrentDictionary()
                 ResourceDependencyCache = System.Collections.Concurrent.ConcurrentDictionary()
             }
-        return! compileW ctx fs assemblies
+        return! compileW ctx fs assemblies defines
     }
 
-let processCode: (string -> seq<string> -> Wrap.Wrapper<string>) -> string -> Wrap.Wrapper<string> =
+type PreproDirective =
+| PrepoR      of string
+| PrepoDefine of string
+| PrepoLoad   of string
+| NoPrepo
+
+let processCode: (string -> seq<string> -> seq<string> -> Wrap.Wrapper<string>) -> string -> Wrap.Wrapper<string> =
   fun            processor                                          fsx    ->
-    let  quoted (line:string) = line.Trim().Split([| "\"" |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast
+    let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
+    let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
     let  prepro (line:string) = match true with 
-                                | true when line.StartsWith("#r"   ) -> ("//" + line, Some line)
-                                | true when line.StartsWith("#load") -> ("//" + line, None     )
-                                | _                                  -> (       line, None     ) 
+                                | true when line.StartsWith("#define") -> ("//" + line, line |> define |> PrepoDefine)
+                                | true when line.StartsWith("#r"     ) -> ("//" + line, line |> quoted |> PrepoR     )
+                                | true when line.StartsWith("#load"  ) -> ("//" + line, line |> quoted |> PrepoLoad  )
+                                | _                                    -> (       line,                   NoPrepo    ) 
     Wrap.wrapper {
         do!  Result.tryProtection()
         let  fsNass   = fsx.Split([| "\r\n"; "\n" ; "\r" |], System.StringSplitOptions.None) |> Seq.map prepro
         let  fs       = fsNass |> Seq.map fst |> String.concat "\r\n"
-        let  assembs  = fsNass |> Seq.choose snd |> Seq.choose quoted |> Seq.toList
-        return! processor fs assembs
+        let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.toList
+        let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toList
+        return! processor fs assembs defines
     }
 
 let getJSW: bool     -> string -> Wrap.Wrapper<string> =

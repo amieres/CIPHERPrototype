@@ -102,8 +102,8 @@ type ShellEx(startInfo: ProcessStartInfo) =
         member this.Dispose () = 
             proc.Dispose()
 
-type FsiExe() =
-    let startInfo                 = ProcessStartInfo(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", "--nologo --quiet")             
+type FsiExe(config) =
+    let startInfo                 = ProcessStartInfo(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", config |> String.concat " ")             
     let shell                     = new ShellEx(startInfo)  // --noninteractive
     let endToken                  = "xXxY" + "yYyhH"
     do  startInfo.CreateNoWindow <- false
@@ -120,32 +120,38 @@ type FsiExe() =
         member this.Dispose () = 
             (shell :> System.IDisposable).Dispose()
 
-type ResourceAgent<'T>(restartAfter:int, ctor: unit->'T, ?cleanup, ?isAlive) =
-    let mutable resource = ctor()
+type ResourceAgent<'T, 'C when 'C : equality>(restartAfter:int, ctor: 'C option ->'T, ?cleanup, ?isAlive, ?configuration: 'C) =
+    let mutable configuration = configuration
+    let mutable resource = ctor configuration
     let respawn() =
         cleanup |> Option.iter (fun clean -> clean resource) 
-        resource <- ctor()
+        resource <- ctor configuration
     let agent    = 
         MailboxProcessor.Start(fun inbox ->
             async {
                while true do
                  try
                      for i in 1 .. restartAfter do
-                         let! work = inbox.Receive()
+                         let! config, work = inbox.Receive()
                          isAlive |> Option.iter (fun alive -> if not (alive resource) then respawn())
+                         if config <> configuration then
+                            configuration <- config
+                            respawn()
                          do!  work resource
                      respawn()
                  with _ -> respawn() 
             }
         )
     do agent.Error.AddHandler <| Handler (fun _ _ -> respawn())
-    member x.Process (work:'T -> Wrap.Wrapper<'a>) =
-        agent.PostAndAsyncReply(
-            fun reply checker ->
-              async {
-                   let! res = work checker |> Wrap.getAsyncR
-                   reply.Reply res
-              } 
+    member x.Process (work:'T -> Wrap.Wrapper<'a>, ?config) =
+        agent.PostAndAsyncReply
+            (fun reply ->
+                 (config, fun resource ->
+                          async {
+                               let! res = work resource |> Wrap.getAsyncR
+                               reply.Reply res
+                          } 
+                 )
             )
 
 let getIndentFile input =
@@ -153,9 +159,10 @@ let getIndentFile input =
     | CompiledMatch "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent.Value, file.Value
     | _                                                         -> 0               , input
 
-let fsiExe = lazy ResourceAgent(20, (fun () -> new FsiExe()), (fun fsi -> (fsi :> System.IDisposable).Dispose()), fun fsi -> fsi.IsAlive)
+let fsiExe = lazy ResourceAgent<_, string> (20, (fun config -> new FsiExe(["--nologo" ; "--quiet" ; defaultArg config ""] )), (fun fsi -> (fsi :> System.IDisposable).Dispose()), fun fsi -> fsi.IsAlive)
 
-let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> =
+let processFsiExe (code:string) (assemblies: string seq) (defines: string seq) : Wrap.Wrapper<string> =
+    let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "
     Wrap.wrapper {
         let! resR = fsiExe.Value.Process(fun fsi -> 
             Wrap.wrapper {
@@ -167,7 +174,7 @@ let processFsiExe (code:string) (assemblies: string seq) : Wrap.Wrapper<string> 
                 |> fsi.Eval
               return res
             }
-        )
+        , config)
         let! res = resR
         return res
     }
