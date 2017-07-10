@@ -100,7 +100,7 @@ type ShellEx(startInfo: ProcessStartInfo) =
             try proc.Dispose() with _ -> ()
 
 type FsiExe(config) =
-    let startInfo                 = ProcessStartInfo(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", config |> String.concat " ")             
+    let startInfo                 = ProcessStartInfo(@"fsiAnyCPU.exe", config |> String.concat " ")             
     let shell                     = new ShellEx(startInfo)  // --noninteractive
     let endToken                  = "xXxY" + "yYyhH"
     do  startInfo.CreateNoWindow <- false
