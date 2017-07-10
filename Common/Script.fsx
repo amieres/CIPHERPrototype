@@ -7,6 +7,7 @@ namespace TestWebSharper
 #nowarn "1182"
 
 # 1 @" F# open WebSharper.fsx"
+#define WEBSHARPER
 #r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
 #r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
 
@@ -298,6 +299,7 @@ module HtmlNode =
     let inline Id          v  = htmlAttribute "id"          v
     let inline frameborder v  = htmlAttribute "frameborder" v
     let inline spellcheck  v  = htmlAttribute "spellcheck"  v
+    let inline draggable   v  = htmlAttribute "draggable"   v
     
     let inline classIf cls v = ``class`` <| Val.map (fun b -> if b then cls else "") (Val.fixit v)
     
@@ -342,6 +344,14 @@ module HtmlNode =
               styleH [ htmlText ".iframe-cover { top:0; left:0; right:0; bottom:0; background: blue; opacity: 0.04; z-index: 2; }" ]
             ]
     
+# 1 @"(4) F# let inline storeVar'T storeName (varIRef_) =.fsx"
+    [< Inline >]
+    let inline storeVar<'T> storeName (var:IRef<_>) =
+        JS.Window.LocalStorage.GetItem storeName |> fun v -> if v <> null then           var.Value <- Json.Deserialize<'T> v
+        Val.sink (fun v -> JS.Window.LocalStorage.SetItem (storeName, Json.Serialize v)) var
+    
+    [< Inline """(!$v)""">]
+    let isUndefined v = true
 # 1 @"(4) F# LoadFiles.fsx"
     [< Inline "CIPHERSpaceLoadFiles($files, $cb)" >]
     let LoadFiles (files: string []) (cb: unit -> unit) : unit = X<_>
@@ -606,9 +616,9 @@ module Template =
         mutable domElem  : Dom.Element option
     }
     with
-        static member New = 
+        static member New(var) = 
             {
-                value    = Var.Create 30.0
+                value    = var
                 min      = Val.fixit  10.0
                 max      = Val.fixit  75.0
                 vertical = Val.fixit  true  
@@ -621,6 +631,8 @@ module Template =
                 size     = 0.0
                 domElem  = None
             }
+        static member New(value)    = SplitterBar.New(Var.Create value)
+        member        this.Var      = this.value
         member        this.GetValue = this.value |> Val.map2 max this.min |> Val.map2 min this.max
         member        this.Render   =
             let mouseCoord (ev: Dom.MouseEvent) = if this.startVer then float ev.ClientX else float ev.ClientY
@@ -671,11 +683,11 @@ module Template =
         member inline this.Max         v = { this with max          = Val.fixit v                 }
         member inline this.Vertical    v = { this with vertical     = Val.fixit v                 }
         member inline this.Horizontal  v = { this with vertical     = Val.fixit v |> Val.map not  }
-        member inline this.Var         v = { this with value        =           v                 }
         member inline this.Vertical   () = { this with vertical     = Val.fixit true              }
         member inline this.Horizontal () = { this with vertical     = Val.fixit false             }
         member inline this.Before        = { this with after        =           false             }
         member inline this.After         = { this with after        =           true              }
+        
 # 1 @" F# module RunCode =.fsx"
 [<JavaScript>]
 module RunCode =
@@ -986,6 +998,10 @@ module CodeEditor =
         
     let currentCodeSnippetId  = Var.Create <| CodeSnippetId.New
     
+    [< Inline >]
+    let inline storeVarCodeEditor name = storeVar <| "CodeEditor." + name
+    storeVarCodeEditor "currentCodeSnippetId" currentCodeSnippetId
+    
     let refresh       = Var.Create()
     let refreshView b = refresh.Value <- b
     
@@ -1008,6 +1024,7 @@ module CodeEditor =
         | NewBrowser -> "New Browser"
         
     let position = Var.Create Below
+    storeVarCodeEditor "position" position
     
     let directionVertical    = 
         Val.map (fun pos -> 
@@ -1025,9 +1042,13 @@ module CodeEditor =
     let codeFS   = Var.Create ""
     let codeJS   = Var.Create ""
     let codeMsgs = Var.Create ""
-    let sendMsg msg = 
+    
+    storeVarCodeEditor "dirty" dirty
+    
+    let sendMsg msg =
+        if isUndefined msg then () else
         codeMsgs.Value  <- 
-            match codeMsgs.Value, msg with
+            match codeMsgs.Value, msg.ToString() with
             | null, m 
             | ""  , m
             | m   , null
@@ -1066,7 +1087,7 @@ module CodeEditor =
         |> JS.SetTimeout (fun () -> 
             try
                  let eval   s = JS.Apply window   "eval" [| s |]
-                 printfn "Evaluating..."
+                 //printfn "Evaluating..."
                  JS.Apply window   "focus" [|  |]
                  eval js           |> success
             with e -> e.ToString() |> failure)
@@ -1097,7 +1118,15 @@ module CodeEditor =
     let compileRun  () = compileSnippet runJS                                               sendMsg
     let justCompile () = compileSnippet (fun msgs _ -> sendMsg "Compiled!" ; sendMsg msgs)  sendMsg
     let evaluateFS  () = 
-        processSnippet "Evaluating F# code..." (RunCode.EditorRpc.evaluate (fun (vO, msgs) -> vO |> Option.defaultValue "" |> ((+) (msgs + "\n")) |> sendMsg))
+        processSnippet "Evaluating F# code..." 
+            (RunCode.EditorRpc.evaluate 
+              (function 
+               | None    , ""
+               | Some "" , ""   -> "Done!"
+               | None    , msgs -> msgs
+               | Some out, ""   ->               out
+               | Some out, msgs -> msgs + "\n" + out
+               >> sendMsg))
     
     let reorderSnippet toId fromId =
         let trySnippet id = tryPickI (fun (_, snp) -> snp.id = id) 
@@ -1141,7 +1170,6 @@ module CodeEditor =
         )
     
     let mutable draggedId   = CodeSnippetId.New
-    let inline  draggable v = htmlAttribute "draggable"    v
     
     
 # 1 @"(4) F# let listEntry code =.fsx"
@@ -1290,19 +1318,23 @@ module CodeEditor =
     let Do f = (fun _ _ -> f())
 # 1 @"(4) F# let styleEditor =.fsx"
     let splitterV1 =
-        Template.SplitterBar.New.Value(20.0)
+        Template.SplitterBar.New(20.0)
           .Node(div [ ``class`` "sliderv"
                       style "width : 5px; grid-column: 2  ; grid-row: 2/4; margin-left: -7px; border: 0px; padding: 0px;" ])
     
     let splitterV2 =
-        Template.SplitterBar.New.Value(50.0).Max(Val.map ((-) 92.0) splitterV1.GetValue)
+        Template.SplitterBar.New(50.0).Max(Val.map ((-) 92.0) splitterV1.GetValue)
           .Node(div [ ``class`` "sliderv"
                       style "width : 5px; grid-column: 3  ; grid-row: 3  ; margin-left: -7px; border: 0px; padding: 0px;" ])
           
     let splitterH3 =
-        Template.SplitterBar.New.Value(17.0).Horizontal().Before
+        Template.SplitterBar.New(17.0).Horizontal().Before
           .Node(div [ ``class`` "sliderh"
                       style "height: 5px; grid-column: 2/4; grid-row: 3  ; margin-top : -7px; border: 0px; padding: 0px;" ])
+    
+    storeVarCodeEditor "splitterV1" splitterV1.Var
+    storeVarCodeEditor "splitterV2" splitterV2.Var
+    storeVarCodeEditor "splitterH3" splitterH3.Var
     
     let styleEditorF sp1 sp2 sp3 =
         sprintf """
@@ -1508,13 +1540,17 @@ module CodeEditor =
             if dir then verticalSplit
             else        horizontalSplit)
     
+    
     let splitterMain1 =
-        Template.SplitterBar.New.Value( 0.0).Vertical(directionVertical).Min( 0.0).Max(35.0)
+        Template.SplitterBar.New( 0.0).Vertical(directionVertical).Min( 0.0).Max(35.0)
           .Node(div [ style style1 ])
     
     let splitterMain2 =
-        Template.SplitterBar.New.Value(24.0).Vertical(directionVertical).Min( 0.5).Max(Val.map (fun pos -> if pos = NewBrowser then 0.1 else 50.0) position).Before
+        Template.SplitterBar.New(24.0).Vertical(directionVertical).Min( 0.5).Max(Val.map (fun pos -> if pos = NewBrowser then 0.1 else 50.0) position).Before
           .Node(div [ style style2 ])
+    
+    storeVarCodeEditor "splitterMain1" splitterMain1.Var
+    storeVarCodeEditor "splitterMain2" splitterMain2.Var
     
     let pageStyle =
         Val.map3 (fun fmt v1 v2 -> 

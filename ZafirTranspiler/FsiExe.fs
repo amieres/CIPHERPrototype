@@ -67,7 +67,7 @@ type ShellEx(startInfo: ProcessStartInfo) =
     member this.Error   ()          = consume bufferError
     member this.Response(out:string, err:string)  = 
         match out.Trim(), err.Trim() with
-        | ""  , ""  -> None
+//        | ""  , ""  -> None
         | good, ""  -> Some( Result.succeed        good                             )
         | ""  , bad -> Some( Result.fail                <| ShellFailWithMessage bad )
         | good, bad -> Some( Result.succeedWithMsg good <| ShellFailWithMessage bad )
@@ -92,15 +92,12 @@ type ShellEx(startInfo: ProcessStartInfo) =
                    |> Option.defaultWith (fun () -> Result.succeedWithMsg "" ShellFinishedWithNoMessage)
             return res
         }
-    member this.Exit() =
-        proc.CloseMainWindow() |> ignore
-        if not proc.HasExited then
-            proc.WaitForExit()
-        (proc.ExitCode, this.Output, this.Error)
     member this.HasExited = try proc.HasExited with _ -> true
     interface System.IDisposable with
-        member this.Dispose () = 
-            proc.Dispose()
+        member this.Dispose () =
+            try proc.Kill   () with _ -> ()
+            try proc.Close  () with _ -> ()
+            try proc.Dispose() with _ -> ()
 
 type FsiExe(config) =
     let startInfo                 = ProcessStartInfo(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.1\Framework\v4.0\fsiAnyCPU.exe", config |> String.concat " ")             
@@ -111,7 +108,8 @@ type FsiExe(config) =
     member this.Eval txt =
         Wrap.wrapper {
             do! Result.tryProtection()
-            shell.Send <| txt + ";;"
+            shell.Send txt 
+            shell.Send ";;"
             let! res = shell.SendAndWait(endToken + ";;", endToken, true)
             return res
         }
@@ -159,7 +157,7 @@ let getIndentFile input =
     | CompiledMatch "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent.Value, file.Value
     | _                                                         -> 0               , input
 
-let fsiExe = lazy ResourceAgent<_, string> (20, (fun config -> new FsiExe(["--nologo" ; "--quiet" ; defaultArg config ""] )), (fun fsi -> (fsi :> System.IDisposable).Dispose()), fun fsi -> fsi.IsAlive)
+let fsiExe = lazy ResourceAgent<_, string> (20, (fun config -> new FsiExe(["--nologo" ; "--quiet" ; defaultArg config ""] )), (fun fsi -> (fsi :> System.IDisposable).Dispose()), (fun fsi -> fsi.IsAlive), "")
 
 let processFsiExe (code:string) (assemblies: string seq) (defines: string seq) : Wrap.Wrapper<string> =
     let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "

@@ -85,7 +85,7 @@ CIPHERSpaceLoadFilesDoAfter(function () {
 })
 CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/ZafirTranspiler.js"], function () {
 	"use strict";
-	var Global, TestWebSharper, HtmlNode, Val, HelperType, HtmlNode$1, Template, Button, Input, Hoverable, TextArea, CodeMirror, SplitterBar, RunCode, EditorRpc, RunNode, CodeEditor, CodeSnippetId, CodeSnippet, Position, SC$1, _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder, _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder, WebSharper, UI, Next, View, Doc, AttrModule, AttrProxy, IntelliFactory, Runtime, Seq, Var, Input$1, Mouse, Strings, Arrays, List, Collections, FSharpSet, BalancedTree, Operators, Remoting, AjaxRemotingProvider, Concurrency, PrintfHelpers, Unchecked, Guid, Option, Json, Provider, Slice, Storage, ListModel;
+	var Global, TestWebSharper, HtmlNode, Val, HelperType, HtmlNode$1, Template, Button, Input, Hoverable, TextArea, CodeMirror, SplitterBar, RunCode, EditorRpc, RunNode, CodeEditor, CodeSnippetId, CodeSnippet, Position, SC$1, _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder, _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder, WebSharper, UI, Next, View, Doc, AttrModule, AttrProxy, IntelliFactory, Runtime, Seq, Var, Input$1, Mouse, Strings, Arrays, List, Collections, FSharpSet, BalancedTree, Operators, Remoting, AjaxRemotingProvider, Concurrency, PrintfHelpers, Unchecked, Guid, Option, Json, Provider, Slice, Storage, ListModel;
 	Global = window;
 	TestWebSharper = Global.TestWebSharper = Global.TestWebSharper || {};
 	HtmlNode = TestWebSharper.HtmlNode = TestWebSharper.HtmlNode || {};
@@ -107,8 +107,8 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 	CodeSnippet = CodeEditor.CodeSnippet = CodeEditor.CodeSnippet || {};
 	Position = CodeEditor.Position = CodeEditor.Position || {};
 	SC$1 = Global["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# namespace TestWebSharper"] = Global["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# namespace TestWebSharper"] || {};
-	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"] = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"] || {};
 	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"] = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"] || {};
+	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"] = Global["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"] || {};
 	WebSharper = Global.WebSharper;
 	UI = WebSharper && WebSharper.UI;
 	Next = UI && UI.Next;
@@ -475,6 +475,9 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		return HtmlNode["class"](Val.map(function (b) {
 			return b ? cls : "";
 		}, Val.fixit(v)));
+	};
+	HtmlNode.draggable = function (v) {
+		return HtmlNode.htmlAttribute("draggable", v);
 	};
 	HtmlNode.spellcheck = function (v) {
 		return HtmlNode.htmlAttribute("spellcheck", v);
@@ -1106,9 +1109,6 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 			v = Val.fixit(true);
 			return SplitterBar.New(this.value, this.min, this.max, v, this.node, this.after, this.dragging, this.startVer, this.startP, this.start, this.size, this.domElem);
 		},
-		Var: function (v) {
-			return SplitterBar.New(v, this.min, this.max, this.vertical, this.node, this.after, this.dragging, this.startVer, this.startP, this.start, this.size, this.domElem);
-		},
 		Horizontal$1: function (v) {
 			var v$1, v$2;
 			v$1 = (v$2 = Val.fixit(v), Val.map(function (v$3) {
@@ -1208,10 +1208,16 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 					return Operators.Min($1, $2);
 				};
 			}, v$1, x);
+		},
+		get_Var: function () {
+			return this.value;
 		}
 	}, null, SplitterBar);
-	SplitterBar.get_New = function () {
-		return SplitterBar.New(Var.Create$1(30), Val.fixit(10), Val.fixit(75), Val.fixit(true), HtmlNode.div([HtmlNode["class"]("Splitter")]), true, false, true, 0, 0, 0, null);
+	SplitterBar.New$1 = function (value) {
+		return SplitterBar.New$2(Var.Create$1(value));
+	};
+	SplitterBar.New$2 = function (_var) {
+		return SplitterBar.New(_var, Val.fixit(10), Val.fixit(75), Val.fixit(true), HtmlNode.div([HtmlNode["class"]("Splitter")]), true, false, true, 0, 0, 0, null);
 	};
 	SplitterBar.New = function (value, min, max, vertical, node, after, dragging, startVer, startP, start, size, domElem) {
 		return new SplitterBar({
@@ -1824,7 +1830,7 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 			return CodeEditor.isDirectPredecessor(p, c);
 		}), CodeEditor.currentCodeSnippetO()), HtmlNode.classIf("direct-predecessor", v$1)), (v$2 = Val.map((p$1 = code.id, function (p$2) {
 			return CodeEditor.isIndirectPredecessor(p$1, p$2);
-		}), CodeEditor.curPredecessors()), HtmlNode.classIf("indirect-predecessor", v$2)), CodeEditor.draggable("true"), (a = AttrModule.Handler("dragover", function () {
+		}), CodeEditor.curPredecessors()), HtmlNode.classIf("indirect-predecessor", v$2)), HtmlNode.draggable("true"), (a = AttrModule.Handler("dragover", function () {
 			return function (ev) {
 				return ev.preventDefault();
 			};
@@ -1953,9 +1959,6 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		}(curO));
 		return o == null ? false : o.$0;
 	};
-	CodeEditor.draggable = function (v) {
-		return HtmlNode.htmlAttribute("draggable", v);
-	};
 	CodeEditor.draggedId = function () {
 		SC$1.$cctor();
 		return SC$1.draggedId;
@@ -2080,16 +2083,29 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		CodeEditor.refreshView();
 	};
 	CodeEditor.evaluateFS = function () {
-		var c;
-		CodeEditor.processSnippet("Evaluating F# code...", (c = function (vO, msgs) {
-			var x;
-			CodeEditor.sendMsg((x = msgs + "\n", function (y) {
-				return x + y;
-			}(vO == null ? "" : vO.$0)));
-		}, function (s) {
-				EditorRpc.evaluate(function ($1) {
-					return c($1[0], $1[1]);
-				}, s);
+		var c, f, g;
+		CodeEditor.processSnippet("Evaluating F# code...", (c = (f = function ($1, $2) {
+			var $3;
+			switch (($1 != null ? $1.$ == 1 : false) ? $1.$0 === "" ? $2 === "" ? 0 : ($3 = [$2, $1.$0], 3) : $2 === "" ? ($3 = $1.$0, 2) : ($3 = [$2, $1.$0], 3) : $2 === "" ? 0 : ($3 = $2, 1)) {
+				case 0:
+					return "Done!";
+					break;
+				case 1:
+					return $3;
+					break;
+				case 2:
+					return $3;
+					break;
+				case 3:
+					return $3[0] + "\n" + $3[1];
+					break;
+			}
+		}, (g = function (m) {
+			CodeEditor.sendMsg(m);
+		}, function (x) {
+				return g(f.apply(null, x));
+			})), function (s) {
+				EditorRpc.evaluate(c, s);
 			}));
 	};
 	CodeEditor.justCompile = function () {
@@ -2155,11 +2171,6 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		window$1 = (x = Global.window, x.open.apply(x, [Global.window.location.origin + "/Main.html"]));
 		Unchecked.Equals(window$1, null) ? failure("could not open new browser. Popup blocker may be active.") : v = (f = function () {
 			try {
-				(function ($1) {
-					return $1("Evaluating...");
-				}(function (s) {
-					Global.console.log(s);
-				}));
 				window$1.focus.apply(window$1, []);
 				success(window$1["eval"].apply(window$1, [js]));
 			}
@@ -2210,10 +2221,14 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		Var.Set(a, true);
 	};
 	CodeEditor.sendMsg = function (msg) {
-		var a, a$1, $1;
-		a = CodeEditor.codeMsgs();
-		a$1 = ($1 = CodeEditor.codeMsgs().c, $1 === null ? msg : $1 === "" ? msg : msg === null ? $1 : msg === "" ? $1 : $1 + "\n" + msg);
-		Var.Set(a, a$1);
+		var a, a$1, $1, $2;
+		if (!msg)
+			;
+		else {
+			a = CodeEditor.codeMsgs();
+			a$1 = ($1 = CodeEditor.codeMsgs().c, ($2 = Global.String(msg), $1 === null ? $2 : $1 === "" ? $2 : $2 === null ? $1 : $2 === "" ? $1 : $1 + "\n" + $2));
+			Var.Set(a, a$1);
+		}
 	};
 	CodeEditor.codeMsgs = function () {
 		SC$1.$cctor();
@@ -2332,7 +2347,7 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		}((s = Strings.SplitChars(content, [10], 1), Seq.map(Strings.Trim, s))))), o == null ? "<empty>" : o.$0);
 	};
 	SC$1.$cctor = Runtime.Cctor(function () {
-		var g, v, g$1, m, a, f, m$1, g$2, v$1, a$1, a$2, f$1, f$2, f$3, o, n, n$1, n$2;
+		var g, v, g$1, m, a, s, s$1, s$2, f, m$1, g$2, v$1, a$1, a$2, s$3, s$4, s$5, f$1, f$2, f$3, s$6, s$7, o, n, n$1, n$2;
 		SC$1.callAddClass = HtmlNode.addClass("a", "b");
 		SC$1.getClass = function (e) {
 			return HtmlNode.getAttr("class", e);
@@ -2364,11 +2379,20 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 			Encode: _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j(),
 			Decode: _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j()
 		});
-		SC$1.codeSnippets = (a = CodeEditor.codeSnippetsStorage(), ListModel.CreateWithStorage(function (s) {
-			return s.id;
+		SC$1.codeSnippets = (a = CodeEditor.codeSnippetsStorage(), ListModel.CreateWithStorage(function (s$8) {
+			return s$8.id;
 		}, a));
 		SC$1.missingVar = Var.Create$1("");
 		SC$1.currentCodeSnippetId = Var.Create$1(CodeSnippetId.get_New());
+		s = "CodeEditor." + "currentCodeSnippetId";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s);
+			v$3 !== null ? v$2.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				Global.window.localStorage.setItem(s, Global.JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1())(v$4)));
+			}, v$2);
+		}(CodeEditor.currentCodeSnippetId()));
 		SC$1.refresh = Var.Create$1();
 		SC$1.currentCodeSnippetO = Val.map2(function (k) {
 			return function () {
@@ -2376,6 +2400,15 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 			};
 		}, CodeEditor.currentCodeSnippetId(), CodeEditor.refresh());
 		SC$1.position = Var.Create$1(Position.Below);
+		s$1 = "CodeEditor." + "position";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$1);
+			v$3 !== null ? v$2.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				Global.window.localStorage.setItem(s$1, Global.JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(v$4)));
+			}, v$2);
+		}(CodeEditor.position()));
 		SC$1.directionVertical = Val.map(function (pos) {
 			return pos.$ == 1 ? true : false;
 		}, CodeEditor.position());
@@ -2384,6 +2417,16 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		SC$1.codeFS = Var.Create$1("");
 		SC$1.codeJS = Var.Create$1("");
 		SC$1.codeMsgs = Var.Create$1("");
+		s$2 = "CodeEditor." + "dirty";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$2);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$2, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.dirty()));
 		Val.sink(function (m$2) {
 			Global.window.onbeforeunload = m$2 ? function (e) {
 				e.returnValue = "Changes you made may not be saved.";
@@ -2418,11 +2461,41 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 				el.value = "";
 			};
 		})]).Id(CodeEditor.fileInputElementId()).get_Render()]));
-		SC$1.splitterV1 = SplitterBar.get_New().Value(20).Node(HtmlNode.div([HtmlNode["class"]("sliderv"), HtmlNode.style("width : 5px; grid-column: 2  ; grid-row: 2/4; margin-left: -7px; border: 0px; padding: 0px;")]));
-		SC$1.splitterV2 = SplitterBar.get_New().Value(50).Max(Val.map(function (y) {
+		SC$1.splitterV1 = SplitterBar.New$1(20).Node(HtmlNode.div([HtmlNode["class"]("sliderv"), HtmlNode.style("width : 5px; grid-column: 2  ; grid-row: 2/4; margin-left: -7px; border: 0px; padding: 0px;")]));
+		SC$1.splitterV2 = SplitterBar.New$1(50).Max(Val.map(function (y) {
 			return 92 - y;
 		}, CodeEditor.splitterV1().get_GetValue())).Node(HtmlNode.div([HtmlNode["class"]("sliderv"), HtmlNode.style("width : 5px; grid-column: 3  ; grid-row: 3  ; margin-left: -7px; border: 0px; padding: 0px;")]));
-		SC$1.splitterH3 = SplitterBar.get_New().Value(17).Horizontal().get_Before().Node(HtmlNode.div([HtmlNode["class"]("sliderh"), HtmlNode.style("height: 5px; grid-column: 2/4; grid-row: 3  ; margin-top : -7px; border: 0px; padding: 0px;")]));
+		SC$1.splitterH3 = SplitterBar.New$1(17).Horizontal().get_Before().Node(HtmlNode.div([HtmlNode["class"]("sliderh"), HtmlNode.style("height: 5px; grid-column: 2/4; grid-row: 3  ; margin-top : -7px; border: 0px; padding: 0px;")]));
+		s$3 = "CodeEditor." + "splitterV1";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$3);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$3, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.splitterV1().get_Var()));
+		s$4 = "CodeEditor." + "splitterV2";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$4);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$4, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.splitterV2().get_Var()));
+		s$5 = "CodeEditor." + "splitterH3";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$5);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$5, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.splitterH3().get_Var()));
 		SC$1.styleEditor = HtmlNode.htmlText(Val.map3(Runtime.Curried3(CodeEditor.styleEditorF), CodeEditor.splitterV1().get_GetValue(), CodeEditor.splitterV2().get_GetValue(), CodeEditor.splitterH3().get_GetValue()));
 		SC$1.style1h = "height : 5px; grid-column: 1/2  ; grid-row   : 2/3; margin-top : -7px; border: 0px; padding: 0px; background-color: #eef; cursor: row-resize";
 		SC$1.style2h = "height : 5px; grid-column: 1/2  ; grid-row   : 3/4; margin-top : -7px; border: 0px; padding: 0px; background-color: #eef; cursor: row-resize";
@@ -2449,10 +2522,30 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		}, function (v$2) {
 			return Val.map(f$3, v$2);
 		}(CodeEditor.directionVertical()));
-		SC$1.splitterMain1 = SplitterBar.get_New().Value(0).Vertical$1(CodeEditor.directionVertical()).Min(0).Max(35).Node(HtmlNode.div([HtmlNode.style(CodeEditor.style1())]));
-		SC$1.splitterMain2 = SplitterBar.get_New().Value(24).Vertical$1(CodeEditor.directionVertical()).Min(0.5).Max(Val.map(function (pos) {
+		SC$1.splitterMain1 = SplitterBar.New$1(0).Vertical$1(CodeEditor.directionVertical()).Min(0).Max(35).Node(HtmlNode.div([HtmlNode.style(CodeEditor.style1())]));
+		SC$1.splitterMain2 = SplitterBar.New$1(24).Vertical$1(CodeEditor.directionVertical()).Min(0.5).Max(Val.map(function (pos) {
 			return pos.$ === 3 ? 0.1 : 50;
 		}, CodeEditor.position())).get_Before().Node(HtmlNode.div([HtmlNode.style(CodeEditor.style2())]));
+		s$6 = "CodeEditor." + "splitterMain1";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$6);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$6, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.splitterMain1().get_Var()));
+		s$7 = "CodeEditor." + "splitterMain2";
+		(function (v$2) {
+			var v$3;
+			v$3 = Global.window.localStorage.getItem(s$7);
+			v$3 !== null ? v$2.set_RVal(((Provider.Id())())(Global.JSON.parse(v$3))) : void 0;
+			return Val.sink(function (v$4) {
+				var obj;
+				Global.window.localStorage.setItem(s$7, (obj = ((Provider.Id())())(v$4), Global.JSON.stringify(obj)));
+			}, v$2);
+		}(CodeEditor.splitterMain2().get_Var()));
 		SC$1.pageStyle = Val.map3(Runtime.Curried3(function (fmt, v1, v2) {
 			return (((fmt(Global.id))(v1))(98 - v1 - v2))(v2);
 		}), CodeEditor.styleSplit(), CodeEditor.splitterMain1().get_GetValue(), CodeEditor.splitterMain2().get_GetValue());
@@ -2466,6 +2559,9 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 		CodeEditor.addNodeById("splitterMain2", n$2);
 		SC$1.$cctor = Global.ignore;
 	});
+	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2 = function () {
+		return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2 ? _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2 : _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2 = (Provider.DecodeUnion(void 0, "$", [[0, []], [1, []], [2, []], [3, []]]))();
+	};
 	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1 = function () {
 		return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1 ? _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1 : _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1 = (Provider.EncodeUnion(void 0, "$", [[0, [["$0", "Item", Provider.Id(), 0]]]]))();
 	};
@@ -2477,5 +2573,8 @@ CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js
 	};
 	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j = function () {
 		return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v ? _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v : _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v = (Provider.DecodeRecord(CodeSnippet, [["name", Provider.Id(), 0], ["content", Provider.Id(), 0], ["parent", _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1, 1], ["predecessors", Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1), 0], ["companions", Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1), 0], ["id", _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1, 0], ["expanded", Provider.Id(), 0]]))();
+	};
+	_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2 = function () {
+		return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2 ? _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2 : _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2 = (Provider.EncodeUnion(void 0, "$", [[0, []], [1, []], [2, []], [3, []]]))();
 	};
 });
