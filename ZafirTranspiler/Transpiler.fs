@@ -359,7 +359,7 @@ let translate source minified =
 let evaluate source           = 
     async {
         let! r = Transpiler(source).EvalFsiExe() |> Wrap.getAsyncR
-        return r |> Result.mapMsgs Result.getMessages
+        return r |> Result.mapMsgs (Seq.map (fun m -> m.ErrMsg) >> String.concat "\n")
     }
 
 (*
