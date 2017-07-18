@@ -82,6 +82,7 @@
     <Compile Include="Login.fs" />
     <Compile Include="LoginUINext.fs" />
     <Compile Include="TestForm.fs" />
+    <Compile Include="CodeEditor.fs" />
     <Compile Include="Main.fs" />
     <Content Include="App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
