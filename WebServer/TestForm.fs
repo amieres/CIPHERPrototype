@@ -93,7 +93,7 @@ module TestForm =
       member inline this.OnClick     f    = { this with onClick  = f              }
 
     let dynamicSection () =
-//        let checkResult = Rop.Wrap.getResult    /// it does absolutely nothing is just there so Common.js gets included
+        let checkResult = Rop.Wrap.getResult    /// it does absolutely nothing is just there so Common.js gets included
         let completeJS js = 
           """
             CIPHERSpaceLoadFileGlobalFileRef = null;
