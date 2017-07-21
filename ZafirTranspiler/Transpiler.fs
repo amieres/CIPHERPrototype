@@ -22,16 +22,16 @@ open WebSharper.Compile.CommandTools
 
 open Microsoft.FSharp.Compiler
 
-
 type WebSharperError = AST.SourcePos option * CompilationError
 
-let webSharperError2TranspilerError: WebSharperError -> TranspilerError =
+let webSharperError2TranspilerError: WebSharperError -> ErrMsg =
     fun                              (posO, error)   ->
         posO 
-        |> Option.map (fun pos -> sprintf "%A - %A " pos.Start pos.End)
+        |> Option.map (fun pos -> sprintf "%s %A - %A " pos.FileName pos.Start pos.End )
         |> Option.defaultValue ""
         |>  sprintf "%s%s" <| error.ToString()
         |> ErrWebSharper
+        :> ErrMsg
 
 let fsharpChecker = 
     lazy ResourceAgent<_, unit>(20, fun _ -> FSharpChecker.Create(keepAssemblyContents = true) )
@@ -93,7 +93,8 @@ let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
         let! compiler    = compilerR
         let! comp        = compiler.Compile(refMeta, config.CompilerArgs, ".", config.ProjectFile) 
         let  wsErrors    = comp.Errors |> List.map webSharperError2TranspilerError
-        do!  List.isEmpty comp.Errors |> Result.failIfFalse (ErrWebSharper <| sprintf "%A" comp.Errors)
+        do! if wsErrors.IsEmpty then Result.succeed () else
+            Result.failWithMsgs wsErrors
         let  assem       = loader.LoadFile config.AssemblyFile
         let! js          = ModifyAssembly (refMeta.Result |> Option.defaultValue WebSharper.Core.Metadata.Info.Empty) 
                                           (comp.ToCurrentMetadata(config.WarnOnly)) config.SourceMap assem

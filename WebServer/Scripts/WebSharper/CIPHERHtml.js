@@ -1,41 +1,38 @@
 (function()
 {
  "use strict";
- var Global,CIPHERPrototype,Val,HelperType,Html,SC$1,Option,CIPHERHtml,R,ReactDOM,CipherNode,SC$2,App,Dummy,MailboxState,App$1,SC$3,DynNode,Props,Message,SC$4,DataTube,Tube,Cell,WebSharper,UI,Next,Doc,Seq,AttrModule,Strings,Arrays,List,IntelliFactory,Runtime,Collections,FSharpSet,BalancedTree,AttrProxy,View,Operators,Control,MailboxProcessor,Concurrency,Map,FSharpMap,Unchecked;
- Global=window;
- CIPHERPrototype=Global.CIPHERPrototype=Global.CIPHERPrototype||{};
+ var CIPHERPrototype,Val,HelperType,Html,SC$1,Option,CIPHERHtml,R,ReactDOM$1,CipherNode,SC$2,App,Dummy,MailboxState,App$1,SC$3,DynNode,Props,Message,SC$4,DataTube,Tube,Cell,UI,Next,Doc,Seq,AttrModule,Arrays,Strings,List,Runtime,Collections,FSharpSet,BalancedTree,AttrProxy,View,Operators,Control,MailboxProcessor,Concurrency,FSharpMap,Map,Unchecked;
+ CIPHERPrototype=window.CIPHERPrototype=window.CIPHERPrototype||{};
  Val=CIPHERPrototype.Val=CIPHERPrototype.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
  Html=Val.Html=Val.Html||{};
- SC$1=Global.StartupCode$CIPHERHtml$ClassVal=Global.StartupCode$CIPHERHtml$ClassVal||{};
+ SC$1=window.StartupCode$CIPHERHtml$ClassVal=window.StartupCode$CIPHERHtml$ClassVal||{};
  Option=CIPHERPrototype.Option=CIPHERPrototype.Option||{};
  CIPHERHtml=CIPHERPrototype.CIPHERHtml=CIPHERPrototype.CIPHERHtml||{};
  R=CIPHERHtml.R=CIPHERHtml.R||{};
- ReactDOM=CIPHERHtml.ReactDOM=CIPHERHtml.ReactDOM||{};
+ ReactDOM$1=CIPHERHtml.ReactDOM=CIPHERHtml.ReactDOM||{};
  CipherNode=CIPHERHtml.CipherNode=CIPHERHtml.CipherNode||{};
- SC$2=Global.StartupCode$CIPHERHtml$CIPHERHtml=Global.StartupCode$CIPHERHtml$CIPHERHtml||{};
+ SC$2=window.StartupCode$CIPHERHtml$CIPHERHtml=window.StartupCode$CIPHERHtml$CIPHERHtml||{};
  App=CIPHERPrototype.App=CIPHERPrototype.App||{};
  Dummy=App.Dummy=App.Dummy||{};
  MailboxState=App.MailboxState=App.MailboxState||{};
  App$1=App.App=App.App||{};
- SC$3=Global.StartupCode$CIPHERHtml$App=Global.StartupCode$CIPHERHtml$App||{};
+ SC$3=window.StartupCode$CIPHERHtml$App=window.StartupCode$CIPHERHtml$App||{};
  DynNode=CIPHERPrototype.DynNode=CIPHERPrototype.DynNode||{};
  Props=DynNode.Props=DynNode.Props||{};
  Message=DynNode.Message=DynNode.Message||{};
- SC$4=Global.StartupCode$CIPHERHtml$DynNode=Global.StartupCode$CIPHERHtml$DynNode||{};
+ SC$4=window.StartupCode$CIPHERHtml$DynNode=window.StartupCode$CIPHERHtml$DynNode||{};
  DataTube=CIPHERPrototype.DataTube=CIPHERPrototype.DataTube||{};
  Tube=DataTube.Tube=DataTube.Tube||{};
  Cell=DataTube.Cell=DataTube.Cell||{};
- WebSharper=Global.WebSharper;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;
  Seq=WebSharper&&WebSharper.Seq;
  AttrModule=Next&&Next.AttrModule;
- Strings=WebSharper&&WebSharper.Strings;
  Arrays=WebSharper&&WebSharper.Arrays;
+ Strings=WebSharper&&WebSharper.Strings;
  List=WebSharper&&WebSharper.List;
- IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Collections=WebSharper&&WebSharper.Collections;
  FSharpSet=Collections&&Collections.FSharpSet;
@@ -46,8 +43,8 @@
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
  Concurrency=WebSharper&&WebSharper.Concurrency;
- Map=Collections&&Collections.Map;
  FSharpMap=Collections&&Collections.FSharpMap;
+ Map=Collections&&Collections.Map;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  HelperType.HelperType={
   $:0
@@ -127,21 +124,21 @@
  };
  Html.bindHElem=function(hElem,v)
  {
-  var f,g,view;
+  var g;
   return{
    $:4,
-   $0:(f=(g=Html.renderDoc(),function(x)
+   $0:Doc.BindView((g=Html.renderDoc(),function(x)
    {
     return g(hElem(x));
-   }),(view=Val.toView(Global.CIPHERPrototype.Val.fixit2(v)),Doc.BindView(f,view)))
+   }),Val.toView(Val.fixit2(v)))
   };
  };
  Html.composeDoc=function(elt,dtl,dtlVal)
  {
-  var x,a,f,f$1,g;
+  var x,f,f$1,g;
   return{
    $:4,
-   $0:(x=Val.toView(dtlVal),(a=(f=(f$1=function(s)
+   $0:(x=Val.toView(dtlVal),Doc.BindView((f=(f$1=function(s)
    {
     return Seq.append(dtl,s);
    },function(x$1)
@@ -150,15 +147,14 @@
    }),(g=Html.renderDoc(),function(x$1)
    {
     return g(f(x$1));
-   })),Doc.BindView(a,x)))
+   })),x))
   };
  };
  Html.style1=function(n,v)
  {
-  var v$1;
   return{
    $:5,
-   $0:(v$1=Val.toView(Global.CIPHERPrototype.Val.fixit2(v)),AttrModule.DynamicStyle(n,v$1))
+   $0:AttrModule.DynamicStyle(n,Val.toView(Val.fixit2(v)))
   };
  };
  Html.style=function(v)
@@ -172,37 +168,26 @@
  };
  Html.style2pairs=function(ss)
  {
-  var m,p,m$1;
-  m=function(d)
+  return Arrays.map(function(d)
   {
    return[Strings.Trim(Arrays.get(d,0)),Strings.Trim(Arrays.get(d,1))];
-  };
-  return function(a)
-  {
-   return Arrays.map(m,a);
-  }((p=function(d)
+  },Arrays.filter(function(d)
   {
    return Arrays.length(d)===2;
-  },function(a)
-  {
-   return Arrays.filter(p,a);
-  }((m$1=function(s)
+  },Arrays.map(function(s)
   {
    return Strings.SplitChars(s,[58],0);
-  },function(a)
-  {
-   return Arrays.map(m$1,a);
-  }(Strings.SplitChars(ss,[59],0))))));
+  },Strings.SplitChars(ss,[59],0))));
  };
  Html.xclass=function(v)
  {
-  var m,cw,cv;
+  var m,cv;
   return{
    $:5,
-   $0:(m=Global.CIPHERPrototype.Val.fixit2(v),m.$==2?(cw=m.$0,AttrModule.DynamicClass("class_for_view_not_implemented",cw,function(y)
+   $0:(m=Val.fixit2(v),m.$==2?AttrModule.DynamicClass("class_for_view_not_implemented",m.$0,function(y)
    {
     return""!==y;
-   })):m.$==1?(cv=m.$0,AttrModule.DynamicClass(cv.RVal(),cv.RView(),function(y)
+   }):m.$==1?(cv=m.$0,AttrModule.DynamicClass(cv.RVal(),cv.RView(),function(y)
    {
     return""!==y;
    })):AttrModule.Class(m.$0))
@@ -343,7 +328,7 @@
  {
   return{
    $:2,
-   $0:Global.CIPHERPrototype.Val.fixit2(txt)
+   $0:Val.fixit2(txt)
   };
  };
  Html.htmlAttribute=function(name,v)
@@ -351,7 +336,7 @@
   return{
    $:1,
    $0:name,
-   $1:Global.CIPHERPrototype.Val.fixit2(v)
+   $1:Val.fixit2(v)
   };
  };
  Html.htmlElement=function(name,ch)
@@ -380,14 +365,12 @@
  };
  Html["HtmlNode.Class"]=function(_this,clas)
  {
-  var n;
-  n=Global.CIPHERPrototype.Val.fixit2(clas);
-  return Html.replaceAtt("class",_this,n);
+  return Html.replaceAtt("class",_this,Val.fixit2(clas));
  };
  Html["HtmlNode.get_toDoc"]=function(_this,u)
  {
-  var $1,x,v;
-  return(_this.$==1?true:_this.$==3?true:false)?Doc.Empty():(x=Html.chooseNode(_this),(v=Doc.Empty(),Html.defaultValue(v,x)));
+  var $1,x;
+  return _this.$==1||_this.$==3&&true?Doc.Empty():(x=Html.chooseNode(_this),Html.defaultValue(Doc.Empty(),x));
  };
  Html.replaceAtt=function(att,node,newVal)
  {
@@ -402,7 +385,6 @@
  };
  Html.replaceAttribute=function(att,children,newVal)
  {
-  var p;
   return new List.T({
    $:1,
    $0:{
@@ -410,13 +392,10 @@
     $0:att,
     $1:newVal
    },
-   $1:List.ofSeq((p=function(a)
+   $1:List.ofSeq(Seq.filter(function(a)
    {
     return a.$==1?a.$0===att?false:true:true;
-   },function(s)
-   {
-    return Seq.filter(p,s);
-   }(children)))
+   },children))
   });
  };
  Html.getStyle=function()
@@ -431,9 +410,7 @@
  };
  Html.getAttr=function(attr,element)
  {
-  var x;
-  x=element.$==0?element.$1:[];
-  return(Html.getAttrChildren(attr))(x);
+  return(Html.getAttrChildren(attr))(element.$==0?element.$1:[]);
  };
  Html.mapHtmlElement=function(f,element)
  {
@@ -445,7 +422,7 @@
   f=(c=function(a)
   {
    var $1;
-   return(a.$==1?a.$0===attr?($1=[a.$0,a.$1],true):false:false)?{
+   return a.$==1&&(a.$0===attr&&($1=[a.$0,a.$1],true))?{
     $:1,
     $0:$1[1]
    }:null;
@@ -467,38 +444,34 @@
  };
  Html.chooseNode=function(node)
  {
-  var name,children,a,a$1,vtext;
-  return node.$==0?(name=node.$0,(children=node.$1,{
+  var children;
+  return node.$==0?(children=node.$1,{
    $:1,
-   $0:(a=Html.getAttrsFromSeq(children),(a$1=Seq.choose(Html.chooseNode,children),Doc.Element(name,a,a$1)))
-  })):node.$==2?(vtext=node.$0,{
+   $0:Doc.Element(node.$0,Html.getAttrsFromSeq(children),Seq.choose(Html.chooseNode,children))
+  }):node.$==2?{
    $:1,
-   $0:Val.tagDoc(Doc.TextNode,vtext)
-  }):node.$==4?{
+   $0:Val.tagDoc(Doc.TextNode,node.$0)
+  }:node.$==4?{
    $:1,
    $0:node.$0
   }:null;
  };
  Html.getAttrsFromSeq=function(children)
  {
-  var x,s;
+  var x;
   x=Seq.choose(Html.chooseAttr,children);
-  s=List.choose(Global.id,List.ofArray([Html.groupAttr("class"," ",children),Html.groupAttr("style","; ",children)]));
-  return Seq.append(s,x);
+  return Seq.append(List.choose(id,List.ofArray([Html.groupAttr("class"," ",children),Html.groupAttr("style","; ",children)])),x);
  };
  Html.groupAttr=function(name,sep,children)
  {
-  var ss,c,v,r,f;
-  ss=(c=function(n)
+  var ss,r,f;
+  ss=Seq.choose(function(n)
   {
    return Html.chooseThisAttr(name,n);
-  },function(s)
-  {
-   return Seq.choose(c,s);
-  }(children));
+  },children);
   return Seq.isEmpty(ss)?null:{
    $:1,
-   $0:(v=(r=(f=function(a,b)
+   $0:Val.attrV(name,(r=(f=function(a,b)
    {
     return Html.concat(sep,a,b);
    },(Runtime.Curried3(Val.map2))(function($1)
@@ -507,13 +480,10 @@
     {
      return f($1,$2);
     };
-   })),function(s)
+   })),Seq.reduce(function($1,$2)
    {
-    return Seq.reduce(function($1,$2)
-    {
-     return(r($1))($2);
-    },s);
-   }(ss)),Val.attrV(name,v))
+    return(r($1))($2);
+   },ss)))
   };
  };
  Html.concat=function(s,a,b)
@@ -523,18 +493,18 @@
  Html.chooseThisAttr=function(_this,node)
  {
   var $1;
-  return(node.$==1?node.$0===_this?($1=[node.$0,node.$1],true):false:false)?{
+  return node.$==1&&(node.$0===_this&&($1=[node.$0,node.$1],true))?{
    $:1,
    $0:$1[1]
   }:null;
  };
  Html.chooseAttr=function(node)
  {
-  var $1,name,name$1,value;
-  return(node.$==1?(name=node.$0,name!=="class"?name!=="style":false)?($1=[node.$0,node.$1],true):false:false)?(name$1=$1[0],(value=$1[1],{
+  var $1,name;
+  return node.$==1&&((name=node.$0,name!=="class"&&name!=="style")&&($1=[node.$0,node.$1],true))?{
    $:1,
-   $0:Val.attrV(name$1,value)
-  })):node.$==5?{
+   $0:Val.attrV($1[0],$1[1])
+  }:node.$==5?{
    $:1,
    $0:node.$0
   }:null;
@@ -546,15 +516,12 @@
  };
  Html.removeClass=function(classes,rem)
  {
-  var s,e;
-  s=(e=Strings.SplitChars(classes,[32],0),new FSharpSet.New$1(BalancedTree.OfSeq(e))).Remove(rem);
-  return Strings.concat(" ",s);
+  return Strings.concat(" ",(new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(classes,[32],0)))).Remove(rem));
  };
  Html.addClass=function(classes,add)
  {
-  var s,x,e,s$1,e$1;
-  s=(x=(e=Strings.SplitChars(classes,[32],0),new FSharpSet.New$1(BalancedTree.OfSeq(e))),(s$1=(e$1=Strings.SplitChars(add,[32],0),new FSharpSet.New$1(BalancedTree.OfSeq(e$1))),new FSharpSet.New$1(BalancedTree.OfSeq(Seq.append(s$1,x)))));
-  return Strings.concat(" ",s);
+  var x;
+  return Strings.concat(" ",(x=new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(classes,[32],0))),new FSharpSet.New$1(BalancedTree.OfSeq(Seq.append(new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(add,[32],0))),x)))));
  };
  Html.defaultValue=function(v,a)
  {
@@ -562,23 +529,23 @@
  };
  Val.map4=function(f,v1,v2,v3,v4)
  {
-  return Val.map4V(f,Global.CIPHERPrototype.Val.fixit2(v1),Global.CIPHERPrototype.Val.fixit2(v2),Global.CIPHERPrototype.Val.fixit2(v3),Global.CIPHERPrototype.Val.fixit2(v4));
+  return Val.map4V(f,Val.fixit2(v1),Val.fixit2(v2),Val.fixit2(v3),Val.fixit2(v4));
  };
  Val.map3=function(f,v1,v2,v3)
  {
-  return Val.map3V(f,Global.CIPHERPrototype.Val.fixit2(v1),Global.CIPHERPrototype.Val.fixit2(v2),Global.CIPHERPrototype.Val.fixit2(v3));
+  return Val.map3V(f,Val.fixit2(v1),Val.fixit2(v2),Val.fixit2(v3));
  };
  Val.map2=function(f,v1,v2)
  {
-  return((Val.map2V(f))(Global.CIPHERPrototype.Val.fixit2(v1)))(Global.CIPHERPrototype.Val.fixit2(v2));
+  return((Val.map2V(f))(Val.fixit2(v1)))(Val.fixit2(v2));
  };
  Val.map=function(f,v)
  {
-  return Val.mapV(f,Global.CIPHERPrototype.Val.fixit2(v));
+  return Val.mapV(f,Val.fixit2(v));
  };
  Val.toDoc=function(v)
  {
-  return Doc.EmbedView(Val.toView(Global.CIPHERPrototype.Val.fixit2(v)));
+  return Doc.EmbedView(Val.toView(Val.fixit2(v)));
  };
  Val.textV=function(v)
  {
@@ -602,18 +569,18 @@
  };
  Val.tag=function(tag,v)
  {
-  return Val.tagDoc(tag,Global.CIPHERPrototype.Val.fixit2(v));
+  return Val.tagDoc(tag,Val.fixit2(v));
  };
  Val.atr=function(att,v)
  {
-  return Val.attrV(att,Global.CIPHERPrototype.Val.fixit2(v));
+  return Val.attrV(att,Val.fixit2(v));
  };
  Val.fixit2=function(v)
  {
   return typeof v=="function"?{
    $:2,
    $0:v
-  }:typeof v=="object"?typeof v.$!="undefined"?v:((typeof v.Id=="number"?true:typeof v.i=="number")?true:typeof(v.RView=="function"))?{
+  }:typeof v=="object"?typeof v.$!="undefined"?v:typeof v.Id=="number"||typeof v.i=="number"||typeof(v.RView=="function")?{
    $:1,
    $0:v
   }:typeof v.docNode!="undefined"?{
@@ -629,18 +596,15 @@
  };
  Val.attrV=function(att,va)
  {
-  var wa,va$1,a;
-  return va.$==2?(wa=va.$0,AttrModule.Dynamic(att,wa)):va.$==1?(va$1=va.$0,AttrModule.Dynamic(att,va$1.RView())):(a=va.$0,AttrProxy.Create(att,a));
+  return va.$==2?AttrModule.Dynamic(att,va.$0):va.$==1?AttrModule.Dynamic(att,va.$0.RView()):AttrProxy.Create(att,va.$0);
  };
  Val.tagElt=function(tag,va)
  {
-  var wa,va$1,a;
-  return va.$==2?(wa=va.$0,Doc.EmbedView(View.Map(tag,wa))):va.$==1?(va$1=va.$0,Doc.EmbedView((a=va$1.RView(),View.Map(tag,a)))):tag(va.$0);
+  return va.$==2?Doc.EmbedView(View.Map(tag,va.$0)):va.$==1?Doc.EmbedView(View.Map(tag,va.$0.RView())):tag(va.$0);
  };
  Val.tagDoc=function(tag,va)
  {
-  var wa,va$1,a;
-  return va.$==2?(wa=va.$0,Doc.EmbedView(View.Map(tag,wa))):va.$==1?(va$1=va.$0,Doc.EmbedView((a=va$1.RView(),View.Map(tag,a)))):tag(va.$0);
+  return va.$==2?Doc.EmbedView(View.Map(tag,va.$0)):va.$==1?Doc.EmbedView(View.Map(tag,va.$0.RView())):tag(va.$0);
  };
  Val.map4V=function(f3,v1,v2,v3,v4)
  {
@@ -675,19 +639,16 @@
   };
   $1=function(vb)
   {
-   var f$1,$2,g;
-   f$1=($2=(g=function(f$2,v)
-   {
-    return Val.mapV(f$2,v);
-   },function(x)
+   var f$1,$2;
+   f$1=($2=function(x)
    {
     var $3;
     $3=f(x);
     return function($4)
     {
-     return g($3,$4);
+     return Val.mapV($3,$4);
     };
-   }),function($3)
+   },function($3)
    {
     return swap($2,vb,$3);
    });
@@ -700,32 +661,23 @@
  };
  Val.bindV=function(f,v)
  {
-  var wa,a,va,a$1;
-  return v.$==2?(wa=v.$0,{
+  return v.$==2?{
    $:2,
-   $0:(a=function(x)
+   $0:View.Bind(function(x)
    {
     return Val.toView(f(x));
-   },function(a$2)
-   {
-    return View.Bind(a,a$2);
-   }(wa))
-  }):v.$==1?(va=v.$0,{
+   },v.$0)
+  }:v.$==1?{
    $:2,
-   $0:(a$1=function(x)
+   $0:View.Bind(function(x)
    {
     return Val.toView(f(x));
-   },function(a$2)
-   {
-    return View.Bind(a$1,a$2);
-   }(va.RView()))
-  }):f(v.$0);
+   },v.$0.RView())
+  }:f(v.$0);
  };
  Val.iter=function(f,v)
  {
-  var a;
-  a=Val.toView(v);
-  View.Get(f,a);
+  View.Get(f,Val.toView(v));
  };
  Val.toView=function(v)
  {
@@ -733,14 +685,13 @@
  };
  Val.mapV=function(f,va)
  {
-  var wa,va$1,a;
-  return va.$==2?(wa=va.$0,{
+  return va.$==2?{
    $:2,
-   $0:View.Map(f,wa)
-  }):va.$==1?(va$1=va.$0,{
+   $0:View.Map(f,va.$0)
+  }:va.$==1?{
    $:2,
-   $0:(a=va$1.RView(),View.Map(f,a))
-  }):{
+   $0:View.Map(f,va.$0.RView())
+  }:{
    $:0,
    $0:f(va.$0)
   };
@@ -780,7 +731,7 @@
   {
    return g$1(Html.style2pairs(x));
   });
-  SC$1.$cctor=Global.ignore;
+  SC$1.$cctor=window.ignore;
  });
  Option.defaultValue=function(def,a)
  {
@@ -789,30 +740,18 @@
  R=CIPHERHtml.R=Runtime.Class({},null,R);
  R.E00=function(elem,attrs,children)
  {
-  var reduceAtt,m,r,a,a$1;
-  reduceAtt=(m=Arrays.length(attrs)===0,m?{}:(r=function(a$2,b)
+  return React.createElement.apply(null,[elem,Arrays.length(attrs)===0?{}:Arrays.reduce(function(a,b)
   {
-   return Global.$.extend(true,{},a$2,b);
-  },function(a$2)
-  {
-   return Arrays.reduce(r,a$2);
-  }(attrs)));
-  a=(a$1=[elem,reduceAtt],function(a$2)
-  {
-   return a$1.concat(a$2);
-  }(children));
-  return Global.React.createElement.apply(null,a);
+   return $.extend(true,{},a,b);
+  },attrs)].concat(children));
  };
  R.E0=function(elem,attrs,children)
  {
-  var reduceAtt,r,a,a$1;
-  reduceAtt=attrs.$==0?{}:(r=function(a$2,b)
+  var reduceAtt,a;
+  reduceAtt=attrs.$==0?{}:Seq.reduce(function(a$1,b)
   {
-   return Global.$.extend(true,{},a$2,b);
-  },function(l)
-  {
-   return Seq.reduce(r,l);
-  }(attrs));
+   return $.extend(true,{},a$1,b);
+  },attrs);
   a=new List.T({
    $:1,
    $0:elem,
@@ -822,61 +761,51 @@
     $1:List.ofSeq(children)
    })
   });
-  return a.$==0?Global.React.createElement.apply(null,[elem,reduceAtt]):(a$1=Arrays.ofList(a),Global.React.createElement.apply(null,a$1));
+  return a.$==0?React.createElement.apply(null,[elem,reduceAtt]):React.createElement.apply(null,Arrays.ofList(a));
  };
  R.New=Runtime.Ctor(function()
  {
  },R);
- ReactDOM=CIPHERHtml.ReactDOM=Runtime.Class({},null,ReactDOM);
- ReactDOM.New=Runtime.Ctor(function()
+ ReactDOM$1=CIPHERHtml.ReactDOM=Runtime.Class({},null,ReactDOM$1);
+ ReactDOM$1.New=Runtime.Ctor(function()
  {
- },ReactDOM);
+ },ReactDOM$1);
  CipherNode.NEmpty={
   $:8
  };
  CIPHERHtml.reactContainerClass=function(className,afterRender)
  {
-  var options,r;
-  options=(r={},r.displayName="containerClass",r.componentDidMount=function()
+  var r;
+  return React.createClass((r={},r.displayName="containerClass",r.componentDidMount=function()
   {
-   afterRender(this,Global.ReactDOM.findDOMNode(this));
+   afterRender(this,ReactDOM.findDOMNode(this));
   },r.shouldComponentUpdate=function()
   {
    return false;
   },r.render=function()
   {
    return CIPHERHtml.toReact(CIPHERHtml.Div([CIPHERHtml.Class(className)]));
-  },r);
-  return Global.React.createClass(options);
+  },r));
  };
  CIPHERHtml.toIncrementalDom=function(node)
  {
   var attributeR;
   function elementR(a)
   {
-   var $1,tag,children,v,s,attrs,a$1,r,m,v$1;
+   var $1,tag,children,attrs,a$1;
    switch(a.$==1?1:a.$==6?2:a.$==7?3:a.$==4?4:a.$==5?4:a.$==2?4:a.$==3?4:a.$==8?4:0)
    {
     case 0:
      tag=a.$0;
      children=a.$1;
-     v=(s=[],function(p)
+     CIPHERHtml.elementOpen(tag,null,[],(attrs=(a$1=Arrays.collect(attributeR,children),Arrays.length(a$1)===0?{}:Seq.reduce(function(a$2,b)
      {
-      return CIPHERHtml.elementOpen(tag,null,s,p);
-     }((attrs=(a$1=Arrays.collect(attributeR,children),Arrays.length(a$1)===0?{}:(r=function(a$2,b)
-     {
-      return Global.$.extend(true,{},a$2,b);
-     },function(s$1)
-     {
-      return Seq.reduce(r,s$1);
-     }(a$1))),m=function(name)
+      return $.extend(true,{},a$2,b);
+     },a$1)),Arrays.collect(function(name)
      {
       return[name==="className"?"class":Strings.StartsWith(name,"on")?name.toLowerCase():name,attrs[name]];
-     },function(a$2)
-     {
-      return Arrays.collect(m,a$2);
-     }(Global.Object.keys(attrs)))));
-     v$1=Arrays.map(elementR,children);
+     },Object.keys(attrs))));
+     Arrays.map(elementR,children);
      return CIPHERHtml.elementClose(tag);
      break;
     case 1:
@@ -895,13 +824,11 @@
   }
   attributeR=function(a)
   {
-   var $1,value,name;
+   var $1;
    switch(a.$==3?1:a.$==0?2:a.$==1?2:a.$==4?2:a.$==5?2:a.$==6?2:a.$==7?2:a.$==8?2:0)
    {
     case 0:
-     value=a.$1;
-     name=a.$0;
-     return[CIPHERHtml.newAttr(name,value)];
+     return[CIPHERHtml.newAttr(a.$0,a.$1)];
      break;
     case 1:
      return a.$0;
@@ -916,77 +843,75 @@
  CIPHERHtml.textIDom=function(txt)
  {
   var x;
-  x=Global.window.IncrementalDOM;
+  x=window.IncrementalDOM;
   return x.text.apply(x,[txt]);
  };
  CIPHERHtml.elementClose=function(tag)
  {
   var x;
-  x=Global.window.IncrementalDOM;
+  x=window.IncrementalDOM;
   return x.elementClose.apply(x,[tag]);
  };
  CIPHERHtml.elementOpen=function(tag,key,statics,pairs)
  {
-  var x;
-  x=Global.window.IncrementalDOM;
-  return x.elementOpen.apply(x,[tag,key,statics].concat(pairs));
+  var x,args;
+  x=window.IncrementalDOM;
+  args=[tag,key,statics].concat(pairs);
+  return x.elementOpen.apply(x,args);
  };
  CIPHERHtml.patchInner=function(container,f)
  {
   var x;
-  x=Global.window.IncrementalDOM;
+  x=window.IncrementalDOM;
   x.patchInner.apply(x,[container,f]);
  };
  CIPHERHtml.patchOuter=function(container,f)
  {
   var x;
-  x=Global.window.IncrementalDOM;
+  x=window.IncrementalDOM;
   x.patchOuter.apply(x,[container,f]);
  };
  CIPHERHtml.toReact=function(node)
  {
-  var attributeR,a;
-  function elementR(a$1)
+  var attributeR;
+  function elementR(a)
   {
-   var $1,tag,children,subNodes,attributes,o;
-   switch(a$1.$==1?1:a$1.$==4?2:a$1.$==5?3:a$1.$==6?4:a$1.$==7?5:a$1.$==8?6:a$1.$==2?7:a$1.$==3?7:0)
+   var $1,children,subNodes;
+   switch(a.$==1?1:a.$==4?2:a.$==5?3:a.$==6?4:a.$==7?5:a.$==8?6:a.$==2?7:a.$==3?7:0)
    {
     case 0:
-     tag=a$1.$0;
-     children=a$1.$1;
+     children=a.$1;
      subNodes=Arrays.choose(elementR,children);
-     attributes=Arrays.collect(attributeR,children);
      return{
       $:1,
-      $0:R.E00(tag,attributes,subNodes)
+      $0:R.E00(a.$0,Arrays.collect(attributeR,children),subNodes)
      };
      break;
     case 1:
      return{
       $:1,
-      $0:a$1.$0
+      $0:a.$0
      };
      break;
     case 2:
      return{
       $:1,
-      $0:a$1.$0
+      $0:a.$0
      };
      break;
     case 3:
-     o=a$1.$0;
      return{
       $:1,
-      $0:Global.React.createElement.apply(null,[o])
+      $0:React.createElement.apply(null,[a.$0])
      };
      break;
     case 4:
-     return elementR(a$1.$0.CIPHERPrototype_CIPHERHtml_IUIObject$view());
+     return elementR(a.$0.CIPHERPrototype_CIPHERHtml_IUIObject$view());
      break;
     case 5:
      return{
       $:1,
-      $0:a$1.$0.CIPHERPrototype_CIPHERHtml_IUIApp$nodeR(a$1.$1)
+      $0:a.$0.CIPHERPrototype_CIPHERHtml_IUIApp$nodeR(a.$1)
      };
      break;
     case 6:
@@ -1000,48 +925,38 @@
      break;
    }
   }
-  attributeR=function(a$1)
+  attributeR=function(a)
   {
-   var $1,value,name;
-   switch(a$1.$==3?1:a$1.$==0?2:a$1.$==1?2:a$1.$==4?2:a$1.$==5?2:a$1.$==6?2:a$1.$==7?2:a$1.$==8?2:0)
+   var $1;
+   switch(a.$==3?1:a.$==0?2:a.$==1?2:a.$==4?2:a.$==5?2:a.$==6?2:a.$==7?2:a.$==8?2:0)
    {
     case 0:
-     value=a$1.$1;
-     name=a$1.$0;
-     return[CIPHERHtml.newAttr(name,value)];
+     return[CIPHERHtml.newAttr(a.$0,a.$1)];
      break;
     case 1:
-     return a$1.$0;
+     return a.$0;
      break;
     case 2:
      return[];
      break;
    }
   };
-  a=elementR(node);
-  return Option.defaultValue(null,a);
+  return Option.defaultValue(null,elementR(node));
  };
  CIPHERHtml.__outerHtml=function(html)
  {
-  var n,elem,tag,x,x$1,m,m$1,s,t;
+  var elem,tag,x,x$1;
   try
   {
-   n=html.indexOf(Global.String.fromCharCode(62));
-   return n>0?(elem=Global.document.createElement("div"),elem.innerHTML=html,tag=elem.firstElementChild,x=(x$1=(m=function(a)
+   return html.indexOf(String.fromCharCode(62))>0?(elem=document.createElement("div"),elem.innerHTML=html,tag=elem.firstElementChild,x=(x$1=Seq.map(function(a)
    {
     return CIPHERHtml.outerAttrs(a.name,a.value);
-   },function(s$1)
-   {
-    return Seq.map(m,s$1);
-   }((m$1=function(i)
+   },Seq.map(function(i)
    {
     return tag.attributes.item(i);
-   },function(s$1)
-   {
-    return Seq.map(m$1,s$1);
-   }(List.ofSeq(Operators.range(0,tag.attributes.length-1)))))),s=List.ofArray([CIPHERHtml.__innerHtml(tag.innerHTML)]),Seq.append(s,x$1)),t=tag.localName,CIPHERHtml.NewTag(t,x)):CipherNode.NEmpty;
+   },List.ofSeq(Operators.range(0,tag.attributes.length-1)))),Seq.append(List.ofArray([CIPHERHtml.__innerHtml(tag.innerHTML)]),x$1)),CIPHERHtml.NewTag(tag.localName,x)):CipherNode.NEmpty;
   }
-  catch(m$2)
+  catch(m)
   {
    return CipherNode.NEmpty;
   }
@@ -1062,16 +977,10 @@
  };
  CIPHERHtml._Style=function(styles)
  {
-  var r;
-  return CIPHERHtml.Style((r=function(a,b)
+  return CIPHERHtml.Style(Seq.reduce(function(a,b)
   {
-   var a$1;
-   a$1=Global.jQuery.extend.apply(Global.jQuery,[{}].concat([a]));
-   return Global.jQuery.extend.apply(Global.jQuery,[a$1].concat([b]));
-  },function(s)
-  {
-   return Seq.reduce(r,s);
-  }(styles)));
+   return jQuery.extend(jQuery.extend({},a),b);
+  },styles));
  };
  CIPHERHtml._border=function(brd)
  {
@@ -1488,12 +1397,12 @@
    $1:key
   };
  };
- CIPHERHtml.Id=function(id)
+ CIPHERHtml.Id=function(id$1)
  {
   return{
    $:2,
    $0:"id",
-   $1:id
+   $1:id$1
   };
  };
  CIPHERHtml.NewAttr=function(name,value)
@@ -1645,13 +1554,11 @@
  };
  CIPHERHtml.addChildren=function(newChildren,node)
  {
-  var name,children;
-  return node.$==1?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==2?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==3?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==4?node:node.$==5?node:node.$==6?node:node.$==7?node:node.$==8?CIPHERHtml.NElement("div",newChildren):(name=node.$0,(children=node.$1,CIPHERHtml.NElement(name,Seq.append(children,newChildren))));
+  return node.$==1?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==2?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==3?CIPHERHtml.NElement("div",Seq.append([node],newChildren)):node.$==4?node:node.$==5?node:node.$==6?node:node.$==7?node:node.$==8?CIPHERHtml.NElement("div",newChildren):CIPHERHtml.NElement(node.$0,Seq.append(node.$1,newChildren));
  };
  CIPHERHtml.insertChildren=function(newChildren,node)
  {
-  var name,children;
-  return node.$==1?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==2?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==3?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==4?node:node.$==5?node:node.$==6?node:node.$==7?node:node.$==8?CIPHERHtml.NElement("div",newChildren):(name=node.$0,(children=node.$1,CIPHERHtml.NElement(name,Seq.append(newChildren,children))));
+  return node.$==1?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==2?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==3?CIPHERHtml.NElement("div",Seq.append(newChildren,[node])):node.$==4?node:node.$==5?node:node.$==6?node:node.$==7?node:node.$==8?CIPHERHtml.NElement("div",newChildren):CIPHERHtml.NElement(node.$0,Seq.append(newChildren,node.$1));
  };
  CIPHERHtml.NElement=function(name,children)
  {
@@ -1675,7 +1582,7 @@
    };
   };
   SC$2.addAttribute=CIPHERHtml.addChild;
-  SC$2.$cctor=Global.ignore;
+  SC$2.$cctor=window.ignore;
  });
  Dummy.New=function(dummy)
  {
@@ -1710,8 +1617,7 @@
    {
     CIPHERHtml.patchOuter(mail.element,function()
     {
-     var v;
-     v=CIPHERHtml.toIncrementalDom(getCipherNode());
+     CIPHERHtml.toIncrementalDom(getCipherNode());
     });
    }
    function getCipherNode()
@@ -1744,8 +1650,7 @@
    });
    CIPHERHtml.patchInner(container,function()
    {
-    var v;
-    v=CIPHERHtml.toIncrementalDom(cipherNode);
+    CIPHERHtml.toIncrementalDom(cipherNode);
    });
   },
   renderReact:function(_this)
@@ -1755,8 +1660,7 @@
    forceUpdate_=_this.forceUpdate;
    forceUpdate=function()
    {
-    var v;
-    v=forceUpdate_.apply(_this,[]);
+    forceUpdate_.apply(_this,[]);
    };
    mail=_this.state;
    props=_this.props;
@@ -1767,10 +1671,10 @@
   },
   processMessages_:function(props,mail,forceUpdate,msg)
   {
-   var $this,_this,u,v;
+   var $this,_this,u;
    $this=this;
    _this=mail.agent;
-   v=_this.mailbox.AddLast((u=(this.update(function(m)
+   _this.mailbox.AddLast((u=(this.update(function(m)
    {
     $this.processMessages_(props,mail,forceUpdate,m);
    }))(props),function(o)
@@ -1784,26 +1688,23 @@
   },
   doMsg:function(mail,update,msg,forceUpdate,oldState)
   {
-   var p,m,refresh,newState;
+   var p,m,newState;
    p=(m=update(msg,oldState),m.$==1?[m.$0,false]:m.$==2?[oldState,false]:[m.$0,true]);
-   refresh=p[1];
    newState=p[0];
    mail.setLatest(newState);
-   refresh?forceUpdate():void 0;
+   p[1]?forceUpdate():void 0;
    return newState;
   },
   run:function(props,container)
   {
-   if(!Global.window.IncrementalDOM)
+   if(!window.IncrementalDOM)
     this.runReact(props,container);
    else
     this.runIncDom(props,container);
   },
   runReact:function(props,container)
   {
-   var elem;
-   elem=this.nodeR(props);
-   Global.ReactDOM.render(elem,container);
+   ReactDOM.render(this.nodeR(props),container);
   },
   runIncDom:function(props,container)
   {
@@ -1823,9 +1724,7 @@
   },
   nodeR:function(props)
   {
-   var args;
-   args=[this.reactClass,props];
-   return Global.React.createElement.apply(null,args);
+   return React.createElement.apply(null,[this.reactClass,props]);
   },
   get_view:function()
   {
@@ -1874,45 +1773,45 @@
  },App$1);
  App$1.New$2=Runtime.Ctor(function(init,update,view)
  {
-  var $this,init$1,i;
+  var $this,i;
   $this=this;
   this.init=init;
   this.update=update;
   this.view=view;
-  this.reactClass=(init$1=(i=this.init,function()
-  {
-   return App.mailbox(i,void 0);
-  }),Global.React.createClass({
+  this.reactClass=React.createClass({
    displayName:"rootClass",
-   getInitialState:init$1,
+   getInitialState:(i=this.init,function()
+   {
+    return App.mailbox(i,void 0);
+   }),
    render:function()
    {
     return $this.renderReact(this);
    }
-  }));
+  });
  },App$1);
  App.mailbox=function(init,u)
  {
-  var mail,_this,v;
+  var mail,_this;
   App.set_mailboxes(App.mailboxes()+1);
   mail=MailboxState.New(MailboxProcessor.Start(function(inbox)
   {
    function messageLoop(oldState)
    {
+    var b;
+    b=null;
     return Concurrency.Delay(function()
     {
-     var x;
-     x=inbox.Receive(null);
-     return Concurrency.Bind(x,function(a)
+     return Concurrency.Bind(inbox.Receive(null),function(a)
      {
       return messageLoop(a(oldState));
      });
     });
    }
-   return messageLoop(Global.jQuery.extend.apply(Global.jQuery,["object"].concat([init])));
+   return messageLoop(jQuery.extend("object",init));
   },null),App.mailboxes(),init);
   _this=mail.agent;
-  v=_this.mailbox.AddLast(function(initState)
+  _this.mailbox.AddLast(function(initState)
   {
    mail.setLatest(initState);
    return initState;
@@ -1932,12 +1831,10 @@
  };
  App.withContainerDo=function(className,f)
  {
-  var a;
-  a=[AttrProxy.Create("class",className),AttrModule.OnAfterRender(function(container)
+  return Doc.Element("div",[AttrProxy.Create("class",className),AttrModule.OnAfterRender(function(container)
   {
    f(container);
-  })];
-  return Doc.Element("div",a,[]);
+  })],[]);
  };
  App.DummyNew=function()
  {
@@ -1948,7 +1845,7 @@
  {
   SC$3.DummyNew=Dummy.New(true);
   SC$3.mailboxes=0;
-  SC$3.$cctor=Global.ignore;
+  SC$3.$cctor=window.ignore;
  });
  Props.New=function(nodeF,subscribe)
  {
@@ -1990,7 +1887,7 @@
  {
   SC$4.init=App.DummyNew();
   SC$4.app=new App$1.New$1(DynNode.init(),DynNode.update,Runtime.Curried3(DynNode.view));
-  SC$4.$cctor=Global.ignore;
+  SC$4.$cctor=window.ignore;
  });
  Tube=DataTube.Tube=Runtime.Class({
   subCell:function(subKey)
@@ -2003,8 +1900,7 @@
   },
   subscribe:function(kd,kl,f)
   {
-   var x,d;
-   this.listeners=this.listeners.Add(kd,(x=Map.TryFind(kd,this.listeners),(d=new FSharpMap.New([]),Option.defaultValue(d,x))).Add(kl,f));
+   this.listeners=this.listeners.Add(kd,Option.defaultValue(new FSharpMap.New([]),Map.TryFind(kd,this.listeners)).Add(kl,f));
   },
   setData:function(key,v)
   {
@@ -2028,34 +1924,20 @@
   },
   setAndTriggerO:function(key,vO)
   {
-   var a;
+   var o,a;
    this.setOnlyO(key,vO);
-   a=function(dict)
+   o=Map.TryFind(key,this.listeners);
+   o==null?void 0:(a=function(a$1,f)
    {
-    var a$1;
-    a$1=function(a$2,f)
-    {
-     f(vO);
-    };
-    (function(s)
-    {
-     Seq.iter(function($1)
-     {
-      return a$1($1[0],$1[1]);
-     },s);
-    }(Map.ToSeq(dict)));
-   };
-   (function(o)
+    f(vO);
+   },Seq.iter(function($1)
    {
-    if(o==null)
-     ;
-    else
-     a(o.$0);
-   }(Map.TryFind(key,this.listeners)));
+    return a($1[0],$1[1]);
+   },Map.ToSeq(o.$0)));
   },
   setOnlyO:function(key,vO)
   {
-   if(vO!=null?vO.$==1:false)
+   if(vO!=null&&vO.$==1)
     this.setOnly(key,vO.$0);
    else
     this.remove(key);
@@ -2073,14 +1955,14 @@
    return Map.TryFind(key,this.data);
   }
  },null,Tube);
- Tube.New$1=function(id)
+ Tube.New$1=function(id$1)
  {
-  return Tube.New(id,new FSharpMap.New([]),new FSharpMap.New([]));
+  return Tube.New(id$1,new FSharpMap.New([]),new FSharpMap.New([]));
  };
- Tube.New=function(id,data,listeners)
+ Tube.New=function(id$1,data,listeners)
  {
   return new Tube({
-   id:id,
+   id:id$1,
    data:data,
    listeners:listeners
   });
@@ -2088,48 +1970,32 @@
  Cell=DataTube.Cell=Runtime.Class({
   subCell:function(subKey)
   {
-   var tube,key;
-   tube=this.$0;
-   key=this.$1;
    return new Cell({
     $:0,
-    $0:tube,
+    $0:this.$0,
     $1:new List.T({
      $:1,
      $0:subKey,
-     $1:key
+     $1:this.$1
     })
    });
   },
   subscribe:function(listenKey,f)
   {
-   var tube,key;
-   tube=this.$0;
-   key=this.$1;
-   tube.subscribe(key,listenKey,function(oO)
+   this.$0.subscribe(this.$1,listenKey,function(oO)
    {
-    var m;
-    f((m=Global.id,function(o)
-    {
-     return o==null?null:{
-      $:1,
-      $0:m(o.$0)
-     };
-    }(oO)));
+    f(oO==null?null:{
+     $:1,
+     $0:oO.$0
+    });
    });
   },
   setDataO:function(vO)
   {
-   var tube,key,m;
-   tube=this.$0;
-   key=this.$1;
-   tube.setDataO(key,(m=Global.id,function(o)
-   {
-    return o==null?null:{
-     $:1,
-     $0:m(o.$0)
-    };
-   }(vO)));
+   this.$0.setDataO(this.$1,vO==null?null:{
+    $:1,
+    $0:vO.$0
+   });
   },
   setData:function(v)
   {
@@ -2145,17 +2011,12 @@
   },
   getDataO:function()
   {
-   var tube,key,m;
-   tube=this.$0;
-   key=this.$1;
-   m=Global.id;
-   return function(o)
-   {
-    return o==null?null:{
-     $:1,
-     $0:m(o.$0)
-    };
-   }(tube.getDataO(key));
+   var o;
+   o=this.$0.getDataO(this.$1);
+   return o==null?null:{
+    $:1,
+    $0:o.$0
+   };
   }
  },null,Cell);
  DataTube.generalCell=function()

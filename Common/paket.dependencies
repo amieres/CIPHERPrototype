@@ -18,8 +18,8 @@ nuget Mono.Cecil 0.10.0-beta6
 nuget Owin
 nuget System.ValueTuple
 nuget System.IO.Compression 4.3.0-preview1-24530-04
-nuget Zafir
+nuget Zafir         
 nuget Zafir.Compiler
 nuget Zafir.FSharp
 nuget Zafir.Owin
-nuget Zafir.UI.Next
+nuget Zafir.UI.Next         4.0.155.64-beta8

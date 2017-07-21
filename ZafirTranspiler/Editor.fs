@@ -146,7 +146,7 @@ open WebSharper
 open Transpiler
 open Rop
 
-[<Rpc>]
+[<Rpc ; JavaScript >]
 let checkSource source =
    Wrap.wrapper {
       let! checkR   = (checkFile ("test.fsx", source)                  >> Wrap.WAsync) |> fsharpChecker.Value.Process
@@ -162,7 +162,7 @@ let checkSource source =
                       )
    } |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
-[<Rpc>]
+[<Rpc; JavaScript >]
 let methods      source line col =
    Wrap.wrapper {
       let! metsR = (getMethodOverloads ("test.fsx", source) (line, col) >> Wrap.WAsync) |> fsharpChecker.Value.Process
@@ -172,7 +172,7 @@ let methods      source line col =
                   |> List.toArray
    }  |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
-[<Rpc>]
+[<Rpc ; JavaScript >]
 let declarations source line col =
    Wrap.wrapper {
       let! declsR = (getDeclarations   ("test.fsx", source) (line, col) >> Wrap.WAsync) |> fsharpChecker.Value.Process
@@ -187,8 +187,8 @@ let declarations source line col =
                    ) |> List.toArray
    } |> Wrap.getAsyncWithDefault (fun _ -> [||])
 
-[<Rpc>]
+[<Rpc ; JavaScript >]
 let translate    source minified = Transpiler.translate source minified
     
-[<Rpc>]
+[<Rpc ; JavaScript >]
 let evaluate     source          = Transpiler.evaluate  source

@@ -1,7 +1,7 @@
-﻿# 1 @" F# module FSharpStationMD =.fsx"
+﻿# 1 @" F# module FSharpStationMD   =.fsx"
 #if INTERACTIVE
 //#I @"../WebServer/bin"
-module FSharpStationMD =
+module FSharpStationMD   =
 #else
 namespace FSharpStationNS
 #nowarn "1182"
@@ -33,10 +33,10 @@ namespace FSharpStationNS
     type on   = WebSharper.UI.Next.Html.on
     type attr = WebSharper.UI.Next.Html.attr
     
-# 1 @"(4) F# module HtmlNode =.fsx"
+# 1 @"(4) F# module HtmlNode      =.fsx"
 #nowarn "1182"
     [<JavaScript>]
-    module HtmlNode =
+    module HtmlNode      =
     
 # 1 @"(6) F# type Val'a =.fsx"
       [<NoComparison>]
@@ -367,9 +367,9 @@ namespace FSharpStationNS
       let LoadFiles (files: string []) (cb: unit -> unit) : unit = X<_>
 # 1 @"(4) F# open HtmlNode.fsx"
     open HtmlNode
-# 1 @"(4) F# module Template =.fsx"
+# 1 @"(4) F# module Template      =.fsx"
     [<JavaScript>]
-    module Template =
+    module Template      =
 # 1 @"(6) F# type Button = {.fsx"
       [<NoComparison ; NoEquality>]
       type Button = {
@@ -533,9 +533,9 @@ namespace FSharpStationNS
 # 1 @"(6) F# let codeMirrorIncludes =.fsx"
       let codeMirrorIncludes =
          [| "/EPFileX/codemirror/scripts/codemirror/codemirror.js"             
-      //      "/EPFileX/codemirror/scripts/intellisense.js"                      
-      //      "/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js"
-      //      "/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js"    
+            "/EPFileX/codemirror/scripts/intellisense.js"                      
+            "/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js"
+            "/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js"    
             "/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js"            
             "/EPFileX/codemirror/scripts/addon/search/searchcursor.js"          
             "/EPFileX/codemirror/scripts/addon/search/search.js"          
@@ -546,16 +546,36 @@ namespace FSharpStationNS
             "/EPFileX/codemirror/scripts/addon/display/fullscreen.js"          
       //      "/EPFileX/codemirror/scripts/codemirror/mode/markdown.js"                 
          |]
-# 1 @"(6) F# type CodeMirror = {.fsx"
+# 1 @"(6) F# type CodeMirrorEditor() =.fsx"
+      type CodeMirrorEditor() =
+          let a = 1
+        with
+          [< Inline "setupEditor($elt)" >]
+          static member SetupEditor elt                               : CodeMirrorEditor = X<_>
+          [< Inline "$this.getValue()"              >]
+          member this.GetValue()                                      : string     = X<_>
+          [< Inline "$this.setValue($v)"            >]
+          member this.SetValue (v:string)                             : unit       = X<_>
+          [< Inline "$this.getDoc().markText({line:$fl, ch:$fc}, {line:$tl, ch:$tc}, {className: $className, title: $title})" >]
+          member this.MarkText (fl:int, fc:int) (tl:int, tc:int) (className: string) (title: string): unit       = X<_>
+          [< Inline "while($this.getAllMarks().length > 0) { $this.getAllMarks()[0].clear() }" >]
+          member this.RemoveMarks() : unit       = X<_>
+          [< Inline "$this.getDoc().clearHistory()" >]
+          member this.ClearHistory()                                  : unit       = X<_>
+          [< Inline "$this.on($event, $f)"          >]
+          member this.On(event: string, f:(CodeMirrorEditor * obj) -> unit) : unit     = X<_>
+      
       [<NoComparison ; NoEquality>]
       type CodeMirror = {
-          _class      : Val<string>
-          id          : string
-          var         : IRef<string>
-          onChange    : (unit -> unit)
+          _class          : Val<string>
+          style           : Val<string>
+          id              : string
+          var             : IRef<string>
+          onChange        : (unit -> unit)
+          mutable editorO : CodeMirrorEditor option
       } with
       
-        [< Inline "CodeMirror($elt, {
+      (*  [< Inline "CodeMirror($elt, {
       	    theme        : 'rubyblue'
       	  , lineNumbers  : true
       	  , matchBrackets: true
@@ -563,22 +583,15 @@ namespace FSharpStationNS
       		    Tab  : function (cm) { cm.replaceSelection('    ', 'end'); }
       		  , 'F11': function (cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }
               }
-      })"    >]
-        static member SetupEditor elt                               : CodeMirror = X<_>
-        [< Inline "$this.getValue()"              >]
-        member this.GetValue()                                      : string     = X<_>
-        [< Inline "$this.setValue($v)"            >]
-        member this.SetValue (v:string)                             : unit       = X<_>
-        [< Inline "$this.getDoc().clearHistory()" >]
-        member this.ClearHistory()                                  : unit       = X<_>
-        [< Inline "$this.on($event, $f)"          >]
-        member this.On(event: string, f:(CodeMirror * obj) -> unit) : unit     = X<_>
+      })"    >]*)
       
         static member  New(var) = 
             { _class   = Val.fixit "" 
+              style    = Val.fixit "" 
               id       = ""
               var      = var 
               onChange = ignore
+              editorO  = None
             }
         static member  New(v)   = CodeMirror.New(Var.Create v)
         member        this.Render    =
@@ -586,12 +599,14 @@ namespace FSharpStationNS
                 ``class``            this._class
                 SomeAttr <| attr.id  this.id 
                 style "position: relative; height: 300px"
+                style                this.style
                 div [
                       style "height: 100%; width: 100%; position: absolute;"
                       SomeAttr <| on.afterRender (fun el ->
                         LoadFiles codeMirrorIncludes
                           (fun () ->                       
-                             let editor = CodeMirror.SetupEditor el
+                             let editor = CodeMirrorEditor.SetupEditor el
+                             this.editorO <- Some editor
                              editor.On("change", fun (cm, change) -> 
                                  let v = editor.GetValue() 
                                  if this.var.Value <> v then this.var.Value <- v; this.onChange() )
@@ -609,6 +624,7 @@ namespace FSharpStationNS
         member inline this.Class    clas = { this with _class    = Val.fixit clas }
         member inline this.Id       id   = { this with id        =       id       }
         member inline this.SetVar   v    = { this with var       = v              }
+        member inline this.Style    sty  = { this with style     = Val.fixit sty  }
         member inline this.OnChange f    = { this with onChange  = f              }
         member inline this.Var           = this.var
       
@@ -855,9 +871,9 @@ namespace FSharpStationNS
               ]
           member this.Render =
               div <| this.GridTemplate()
-# 1 @"(4) F# module RunCode =.fsx"
+# 1 @"(4) F# module RunCode       =.fsx"
     [<JavaScript>]
-    module RunCode =
+    module RunCode       =
 # 1 @"(6) F# module EditorRpc =.fsx"
 #r @"ZafirTranspiler.dll"
       module EditorRpc =
@@ -1060,6 +1076,14 @@ namespace FSharpStationNS
           |> Seq.tryHead
           |> Option.defaultValue "<empty>"
       
+      let sanitize n =
+          let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
+                          '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
+                          '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
+                          '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
+                          '\\'  ; '/'|]
+          n |> String.filter (fun c -> not <| Array.contains c illegal)
+      
       type CodeSnippet = {
           name         : string
           content      : string
@@ -1123,14 +1147,8 @@ namespace FSharpStationNS
                   |> Option.defaultValue out
               level this 0
           member this.NameSanitized =
-              //let illegal = System.IO.Path.GetInvalidFileNameChars()
-              let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
-                              '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
-                              '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
-                              '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
-                              '\\'  ; '/'|]
               this.Name
-              |> String.filter (fun c -> not <| Array.contains c illegal)
+              |> sanitize
               |> (fun c -> "F# " + c + ".fsx")
           member this.ContentIndented() =
               let lvl = this.Level()
@@ -1413,8 +1431,8 @@ namespace FSharpStationNS
           |> fst
           |> Seq.choose (Option.map renderDoc)
           |> Doc.Concat
-# 1 @"(6) F# let addCode () =.fsx"
-      let addCode () =
+# 1 @"(6) F# let addCode   ()   =.fsx"
+      let addCode   ()   =
           CodeSnippet.PickIO currentCodeSnippetId.Value
           |> Option.map (fun (i, snp) -> CodeSnippet.New(i + 1, "", snp.parent, [], [], ""))
           |> Option.defaultWith (fun _ -> CodeSnippet.New "")
@@ -1484,8 +1502,8 @@ namespace FSharpStationNS
                       )
       
       let Do f = (fun _ _ -> f())
-# 1 @"(6) F# let styleEditor =.fsx"
-      let styleEditor =
+# 1 @"(6) F# let styleEditor    =.fsx"
+      let styleEditor    =
            """
       div textarea {
       font-family: monospace;
@@ -1543,8 +1561,54 @@ namespace FSharpStationNS
           text-align: center;
           font-family: arial;
       }
-      
+      .Error   { background-color: orangered } 
+      .Warning { background-color: blue      } 
           """
+# 1 @"(6) F# let (REGEX_) (expr string) (opt string) (value string) =.fsx"
+      let (|REGEX|_|) (expr: string) (opt: string) (value: string) =
+          if value = null then None else
+          try 
+              match String(value).Match(RegExp(expr, opt)) with
+              | null         -> None
+              | [| |]        -> None
+              | m            -> Some m
+          with e -> None
+      
+      let codeMirror = Template.CodeMirror.New(Val.bindIRef curSnippetCodeOf currentCodeSnippetId).OnChange(setDirty ).Style("height: 100%")
+      
+      let rex1 = """\((\d+)\) F# (.+).fsx\((\d+)\,(\d+)\): (error|warning) ((.|\b)+)\."""
+      let rex2 = """(Err|Warning)(FSharp|WebSharper)\s+"(\((\d+)\) )?F# (.+?)(.fsx)? \((\d+)\,\s*(\d+)\) - \((\d+)\,\s*(\d+)\) ((.|\s)+?)""" + "\""
+      let rex = rex1 + "|" + rex2
+      
+      codeMsgs.View 
+      |> View.Sink(fun txt -> 
+          codeMirror.editorO 
+          |> Option.iter (fun ed -> 
+              printfn "inside"
+              ed.RemoveMarks()
+              match txt with
+              | REGEX rex "g" m -> m
+              | _               -> [||]
+              |> Array.choose (fun v ->
+                  match v with
+                  | REGEX rex2 "" [| _ ; sev; from;  _; indent; file; _; fl; fc; tl; tc; msg; _ |] -> Some (file, int fl, int fc - int indent    , int tl, int tc - int indent, sev, from , msg)
+                  | REGEX rex1 "" [| _ ;                indent; file   ; fl; fc;    sev; msg; _ |] -> Some (file, int fl, int fc - int indent - 1, int fl, int fc - int indent, sev, "fsi", msg)
+                  | _ -> None
+              )
+              |> Array.iter (fun (file, fl, fc, tl, tc, sev, from, msg) ->
+                  Val.sink (fun curO ->
+                      curO
+                      |> Option.iter (fun (cur:CodeSnippet) ->
+                          Val.sink (fun n    ->
+                              printfn "inside -%s-%s-" file (sanitize n)
+                              if file = sanitize n then
+                                  ed.MarkText (fl - 1, fc) (tl - 1, tc) (if sev.ToUpper().StartsWith("ERR") then "Error" else "Warning")  msg
+                          ) (curSnippetNameOf cur.id)
+                      )
+                  ) currentCodeSnippetO
+              )
+          )
+      )
 # 1 @"(6) F# CodeEditor.fsx"
       let spl1         = Template.SplitterBar.New(20.0).Children([ style "grid-row: 2 / 4" ])
       storeVarCodeEditor "splitterV1" spl1.Var
@@ -1555,13 +1619,12 @@ namespace FSharpStationNS
            .ColVariable(spl1).ColVariable(50.0).Max(Val.map ((-) 92.0) spl1.GetValue).Children([ style "grid-row: 3 / 5" ]).ColAuto(0.0)
            .RowFixedPx(34.0) .RowAuto(0.0).RowVariable(17.0).Children([ style "grid-column: 2 / 4" ]).Before.RowFixedPx(80.0)
            .Padding(1.0)
-        |> fun g -> // issue in websharper when too many . in a row
-          g.Content( style  """ 
+           .Content( style  """ 
                           grid-template-areas:
-                              'header0 header   header'
+                              'header0 header   header  '
                               'sidebar content1 content1'
                               'sidebar content2 content3'
-                              'footer  footer   footer2';
+                              'footer  footer   footer2 ';
                           color      : #333;
                           height     : 100%;
                           font-size  : small;
@@ -1576,7 +1639,7 @@ namespace FSharpStationNS
                     |> Doc.BindView id |> SomeDoc
                   ])
            .Content("header"  , Template.Input     .New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:")         .Render)
-           .Content("content1", Template.CodeMirror.New(Val.bindIRef curSnippetCodeOf currentCodeSnippetId).OnChange(setDirty )              .Render.AddChildren([style1 "height" "100%"]))
+           .Content("content1", codeMirror                                                                                                   .Render)
            .Content("content2", Template.TextArea  .New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 )              .Render)
            .Content("content3", Template.TextArea  .New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated")              .Render)
            .Content("footer2" , Template.TextArea  .New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        )              .Render) 
@@ -1608,8 +1671,7 @@ namespace FSharpStationNS
                     """
                   ]
               )
-        |> fun g ->
-          g.Content( script [ src  "/EPFileX/FileSaver/FileSaver.js"                                     ; ``type`` "text/javascript"             ] )
+           .Content( script [ src  "/EPFileX/FileSaver/FileSaver.js"                                     ; ``type`` "text/javascript"             ] )
            .Content( script [ src  "http://code.jquery.com/jquery-3.1.1.min.js"                          ; ``type`` "text/javascript"             ] )
            .Content( script [ src  "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ; ``type`` "text/javascript"             ] )
            .Content( link   [ href "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"; ``type`` "text/css" ; rel "stylesheet" ] )

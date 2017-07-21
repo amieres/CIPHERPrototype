@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,Rop,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,SC$1,IntelliFactory,Runtime,WebSharper,PrintfHelpers,Operators,List,Strings,Seq,MatchFailureException,Concurrency;
- Global=window;
- Rop=Global.Rop=Global.Rop||{};
+ var Rop,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,SC$1,Runtime,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency;
+ Rop=window.Rop=window.Rop||{};
  Option=Rop.Option=Rop.Option||{};
  ExceptionThrown=Rop.ExceptionThrown=Rop.ExceptionThrown||{};
  ErrOptionIsNone=Rop.ErrOptionIsNone=Rop.ErrOptionIsNone||{};
@@ -11,12 +10,9 @@
  ropBuilder=Result.ropBuilder=Result.ropBuilder||{};
  Wrap=Rop.Wrap=Rop.Wrap||{};
  Builder=Wrap.Builder=Wrap.Builder||{};
- SC$1=Global.StartupCode$Common$Result=Global.StartupCode$Common$Result||{};
- IntelliFactory=Global.IntelliFactory;
+ SC$1=window.StartupCode$Common$Result=window.StartupCode$Common$Result||{};
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- WebSharper=Global.WebSharper;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
- Operators=WebSharper&&WebSharper.Operators;
  List=WebSharper&&WebSharper.List;
  Strings=WebSharper&&WebSharper.Strings;
  Seq=WebSharper&&WebSharper.Seq;
@@ -32,7 +28,7 @@
     $0:modifier(o.$0)
    };
   };
-  g=(v=Global.id,function(a)
+  g=(v=id,function(a)
   {
    return Option.defaultValue(v,a);
   });
@@ -44,25 +40,25 @@
  Option.apply=function(vO,fO)
  {
   var $1;
-  return((vO!=null?vO.$==1:false)?(fO!=null?fO.$==1:false)?($1=[fO.$0,vO.$0],true):false:false)?{
+  return vO!=null&&vO.$==1&&(fO!=null&&fO.$==1&&($1=[fO.$0,vO.$0],true))?{
    $:1,
    $0:$1[0]($1[1])
   }:null;
  };
  Option.iterFO=function(vO,fO)
  {
-  if(vO!=null?vO.$==1:false)
-   if(fO!=null?fO.$==1:false)
+  if(vO!=null&&vO.$==1)
+   if(fO!=null&&fO.$==1)
     fO.$0(vO.$0);
  };
  Option.iterF=function(v,a)
  {
-  if(a!=null?a.$==1:false)
+  if(a!=null&&a.$==1)
    a.$0(v);
  };
  Option.call=function(v,a)
  {
-  return(a!=null?a.$==1:false)?{
+  return a!=null&&a.$==1?{
    $:1,
    $0:a.$0(v)
   }:null;
@@ -82,18 +78,13 @@
   },
   Rop_ErrMsg$get_ErrMsg:function()
   {
-   var f;
-   f=function($1,$2)
-   {
-    return $1(PrintfHelpers.prettyPrint($2));
-   };
    return(function($1)
    {
     return function($2)
     {
-     return f($1,$2);
+     return $1(PrintfHelpers.prettyPrint($2));
     };
-   }(Global.id))(this.exn);
+   }(id))(this.exn);
   }
  },null,ExceptionThrown);
  ExceptionThrown.New=Runtime.Ctor(function(exn)
@@ -128,7 +119,14 @@
   },
   Using:function(disposable,restOfCExpr)
   {
-   return Operators.Using(disposable,restOfCExpr);
+   try
+   {
+    return restOfCExpr(disposable);
+   }
+   finally
+   {
+    disposable.Dispose();
+   }
   },
   Bind:function(w,r)
   {
@@ -137,7 +135,7 @@
     return Result.tryCall(r,v);
    },w);
   },
-  ReturnFrom:Global.id,
+  ReturnFrom:id,
   Return:function(x)
   {
    return Result.succeed(x);
@@ -148,41 +146,27 @@
  },ropBuilder);
  Result.getMessages=function(ms)
  {
-  var errors,p,warnings,p$1,f,s,m;
-  return ms.$===0?"":(errors=(p=function(m$1)
+  var errors,warnings;
+  return ms.$===0?"":(errors=List.filter(function(m)
   {
-   return!m$1.Rop_ErrMsg$get_IsWarning();
-  },function(l)
+   return!m.Rop_ErrMsg$get_IsWarning();
+  },ms),(warnings=List.filter(function(m)
   {
-   return List.filter(p,l);
-  }(ms)),(warnings=(p$1=function(m$1)
+   return m.Rop_ErrMsg$get_IsWarning();
+  },ms),((((Runtime.Curried(function($1,$2,$3,$4)
   {
-   return m$1.Rop_ErrMsg$get_IsWarning();
-  },function(l)
+   return $1(String($2)+" errors, "+String($3)+" warnings\n"+PrintfHelpers.toSafe($4));
+  },4))(id))(errors.get_Length()))(warnings.get_Length()))(Strings.concat("\n",List.map(function(m)
   {
-   return List.filter(p$1,l);
-  }(ms)),(f=function($1,$2,$3,$4)
-  {
-   return $1(Global.String($2)+" errors, "+Global.String($3)+" warnings\n"+PrintfHelpers.toSafe($4));
-  },((((Runtime.Curried(f,4))(Global.id))(errors.get_Length()))(warnings.get_Length()))((s=(m=function(m$1)
-  {
-   return m$1.Rop_ErrMsg$get_ErrMsg();
-  },function(l)
-  {
-   return List.map(m,l);
-  }(ms)),Strings.concat("\n",s))))));
+   return m.Rop_ErrMsg$get_ErrMsg();
+  },ms)))));
  };
  Result.seqCheck=function(s)
  {
-  var m,p,c,m$1;
-  m=(p=function(a)
+  return Seq.exists(function(a)
   {
-   return Result.Success(a).$==1?true:false;
-  },function(s$1)
-  {
-   return Seq.exists(p,s$1);
-  }(s));
-  return m?Result.failWithMsgs((c=function(a)
+   return Result.Success(a).$==1&&true;
+  },s)?Result.failWithMsgs(Seq.pick(function(a)
   {
    var a$1;
    a$1=Result.Success(a);
@@ -190,10 +174,7 @@
     $:1,
     $0:a$1.$0
    }:null;
-  },function(s$1)
-  {
-   return Seq.pick(c,s$1);
-  }(s))):Result.succeed((m$1=function(a)
+  },s)):Result.succeed(Seq.map(function(a)
   {
    var a$1;
    a$1=Result.Success(a);
@@ -201,30 +182,20 @@
     return a$1.$0[0];
    else
     throw new MatchFailureException.New("Result.fs",190,56);
-  },function(s$1)
-  {
-   return Seq.map(m$1,s$1);
-  }(s)));
+  },s));
  };
  Result.withError=function(f,a)
  {
-  var o,ms,f$1;
-  o=a.$0;
+  var ms;
   ms=a.$1;
-  f$1=function()
+  return Option.defaultWith(function()
   {
    return f(ms);
-  };
-  return function(a$1)
-  {
-   return Option.defaultWith(f$1,a$1);
-  }(o);
+  },a.$0);
  };
  Result.ifError=function(def,a)
  {
-  var o;
-  o=a.$0;
-  return Option.defaultValue(def,o);
+  return Option.defaultValue(def,a.$0);
  };
  Result.failIfTrue=function(m,v)
  {
@@ -244,7 +215,7 @@
  };
  Result.fromOption=function(m,a)
  {
-  return(a!=null?a.$==1:false)?Result.succeed(a.$0):Result.fail(m);
+  return a!=null&&a.$==1?Result.succeed(a.$0):Result.fail(m);
  };
  Result.fromChoice=function(context,c)
  {
@@ -286,19 +257,19 @@
  };
  Result.apply=function(a,a$1)
  {
-  var fO,fMs,o,ms,$1,f,x;
-  fO=a.$0;
+  var fMs,ms,$1,$2,$3;
   fMs=a.$1;
-  o=a$1.$0;
   ms=a$1.$1;
-  return((fO!=null?fO.$==1:false)?(o!=null?o.$==1:false)?($1=[fO.$0,o.$0],true):false:false)?(f=$1[0],(x=$1[1],{
+  $1=a.$0;
+  $2=a$1.$0;
+  return $1!=null&&$1.$==1&&($2!=null&&$2.$==1&&($3=[$1.$0,$2.$0],true))?{
    $:0,
    $0:{
     $:1,
-    $0:f(x)
+    $0:$3[0]($3[1])
    },
    $1:List.append(fMs,ms)
-  })):{
+  }:{
    $:0,
    $0:null,
    $1:List.append(fMs,ms)
@@ -306,18 +277,18 @@
  };
  Result.bind=function(f,a)
  {
-  var o,ms,x,m,o2,ms2;
+  var o,ms,m;
   o=a.$0;
   ms=a.$1;
   return o==null?{
    $:0,
    $0:null,
    $1:ms
-  }:(x=o.$0,(m=f(x),(o2=m.$0,(ms2=m.$1,{
+  }:(m=f(o.$0),{
    $:0,
-   $0:o2,
-   $1:List.append(ms,ms2)
-  }))));
+   $0:m.$0,
+   $1:List.append(ms,m.$1)
+  });
  };
  Result.combine=function(a)
  {
@@ -330,14 +301,11 @@
  };
  Result.mergeMsgs=function(ms,r)
  {
-  var t,f;
-  t=(f=function(l)
+  var t;
+  t=Result.mapMsgs(function(l)
   {
    return List.append(ms,l);
-  },function(a)
-  {
-   return Result.mapMsgs(f,a);
-  }(r));
+  },r);
   return{
    $:0,
    $0:t[0],
@@ -358,23 +326,18 @@
  };
  Result.mapMsg=function(f,a)
  {
-  var o,ms;
-  o=a.$0;
-  ms=a.$1;
-  return[o,List.map(f,ms)];
+  return[a.$0,List.map(f,a.$1)];
  };
  Result.map=function(f,a)
  {
-  var o,ms;
-  o=a.$0;
-  ms=a.$1;
+  var o;
   return{
    $:0,
-   $0:o==null?null:{
+   $0:(o=a.$0,o==null?null:{
     $:1,
     $0:f(o.$0)
-   },
-   $1:ms
+   }),
+   $1:a.$1
   };
  };
  Result.failWithMsgs=function(ms)
@@ -445,7 +408,7 @@
   {
    return f();
   },
-  ReturnFrom:Global.id,
+  ReturnFrom:id,
   Return:function(x)
   {
    return{
@@ -491,11 +454,11 @@
  },Builder);
  Wrap.getAsyncWithDefault=function(f,wb)
  {
+  var b;
+  b=null;
   return Concurrency.Delay(function()
   {
-   var x;
-   x=Wrap.getAsyncR(wb);
-   return Concurrency.Bind(x,function(a)
+   return Concurrency.Bind(Wrap.getAsyncR(wb),function(a)
    {
     return Concurrency.Return(Result.withError(f,a));
    });
@@ -503,63 +466,50 @@
  };
  Wrap.getAsyncR=function(wb)
  {
-  var v,v$1,va;
-  return wb.$==3?(v=wb.$0,Concurrency.Return(Result.succeed(v))):wb.$==4?(v$1=wb.$0,Concurrency.Return(Result.fromOption(Wrap.errOptionIsNone(),v$1))):wb.$==0?Concurrency.Return(wb.$0):wb.$==2?wb.$0:(va=wb.$0,Concurrency.Delay(function()
+  var va,b;
+  return wb.$==3?Concurrency.Return(Result.succeed(wb.$0)):wb.$==4?Concurrency.Return(Result.fromOption(Wrap.errOptionIsNone(),wb.$0)):wb.$==0?Concurrency.Return(wb.$0):wb.$==2?wb.$0:(va=wb.$0,(b=null,Concurrency.Delay(function()
   {
    return Concurrency.Bind(va,function(a)
    {
     return Concurrency.Return(Result.succeed(a));
    });
-  }));
+  })));
  };
  Wrap.getResult=function(callback,wb)
  {
-  var s,ab,arb,s$1;
   if(wb.$==4)
   {
    if(wb.$0==null)
     callback(Result.fail(Wrap.errOptionIsNone()));
    else
-    {
-     s=wb.$0.$0;
-     callback(Result.succeed(s));
-    }
+    callback(Result.succeed(wb.$0.$0));
   }
   else
    if(wb.$==0)
     callback(wb.$0);
    else
     if(wb.$==1)
+     Concurrency.StartWithContinuations(wb.$0,function(v)
      {
-      ab=wb.$0;
-      Concurrency.StartWithContinuations(ab,function(v)
-      {
-       callback(Result.succeed(v));
-      },function(exc)
+      callback(Result.succeed(v));
+     },function(exc)
+     {
+      callback(Result.fail(Result.failException(exc)));
+     },function(can)
+     {
+      callback(Result.fail(Result.failException(can)));
+     },null);
+    else
+     if(wb.$==2)
+      Concurrency.StartWithContinuations(wb.$0,callback,function(exc)
       {
        callback(Result.fail(Result.failException(exc)));
       },function(can)
       {
        callback(Result.fail(Result.failException(can)));
       },null);
-     }
-    else
-     if(wb.$==2)
-      {
-       arb=wb.$0;
-       Concurrency.StartWithContinuations(arb,callback,function(exc)
-       {
-        callback(Result.fail(Result.failException(exc)));
-       },function(can)
-       {
-        callback(Result.fail(Result.failException(can)));
-       },null);
-      }
      else
-      {
-       s$1=wb.$0;
-       callback(Result.succeed(s$1));
-      }
+      callback(Result.succeed(wb.$0));
  };
  Wrap.wrapper=function()
  {
@@ -568,15 +518,11 @@
  };
  Wrap.combine=function(errOptionIsNone,wa,wb)
  {
-  var m,ms;
-  return wa.$==4?wa.$0==null?(m=List.ofArray([errOptionIsNone]),function(w)
-  {
-   return Wrap.addMsgs(errOptionIsNone,m,w);
-  }(wb)):wb:wa.$==0?wa.$0.$1.$==0?wb:(ms=wa.$0.$1,Wrap.addMsgs(errOptionIsNone,ms,wb)):wa.$==1?wb:wa.$==2?wb:wb;
+  return wa.$==4?wa.$0==null?Wrap.addMsgs(errOptionIsNone,List.ofArray([errOptionIsNone]),wb):wb:wa.$==0?wa.$0.$1.$==0?wb:Wrap.addMsgs(errOptionIsNone,wa.$0.$1,wb):wa.$==1?wb:wa.$==2?wb:wb;
  };
  Wrap.addMsgs=function(errOptionIsNone,ms,wb)
  {
-  var $1,r;
+  var $1,b,b$1;
   if(ms.$===0)
    return wb;
   else
@@ -591,7 +537,7 @@
     case 1:
      return{
       $:0,
-      $0:(r=Result.fail(errOptionIsNone),Result.mergeMsgs(ms,r))
+      $0:Result.mergeMsgs(ms,Result.fail(errOptionIsNone))
      };
      break;
     case 2:
@@ -603,48 +549,44 @@
     case 3:
      return{
       $:2,
-      $0:Concurrency.Delay(function()
+      $0:(b=null,Concurrency.Delay(function()
       {
        return Concurrency.Bind($1,function(a)
        {
         return Concurrency.Return(Result.succeedWithMsgs(a,ms));
        });
-      })
+      }))
      };
      break;
     case 4:
      return{
       $:2,
-      $0:Concurrency.Delay(function()
+      $0:(b$1=null,Concurrency.Delay(function()
       {
        return Concurrency.Bind($1,function(a)
        {
         return Concurrency.Return(Result.mergeMsgs(ms,a));
        });
-      })
+      }))
      };
      break;
    }
  };
  Wrap.wrapper2Async=function(f,a)
  {
-  var $1,wb,m,ms,ab;
+  var $1,wb,ab,b;
   wb=Wrap.tryCall(f,a);
   switch(wb.$==4?0:wb.$==0?1:wb.$==1?2:wb.$==2?3:0)
   {
    case 0:
-    m=List.T.Empty;
-    return function(a$1)
-    {
-     return Wrap.wb2arb(m,a$1);
-    }(wb);
+    return Wrap.wb2arb(List.T.Empty,wb);
     break;
    case 1:
-    ms=wb.$0.$1;
-    return Wrap.wb2arb(ms,wb);
+    return Wrap.wb2arb(wb.$0.$1,wb);
     break;
    case 2:
     ab=wb.$0;
+    b=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Bind(ab,function(a$1)
@@ -660,7 +602,7 @@
  };
  Wrap.bind=function(f,wa)
  {
-  var $1,a,a$1,ms;
+  var $1,a,ms,b,b$1;
   switch(wa.$==4?wa.$0==null?1:($1=wa.$0.$0,0):wa.$==0?(a=Result.Success(wa.$0),a.$==1?($1=a.$0,2):a.$0[1].$==0?($1=a.$0[0],0):($1=[a.$0[0],a.$0[1]],3)):wa.$==1?($1=wa.$0,4):wa.$==2?($1=wa.$0,5):($1=wa.$0,0))
   {
    case 0:
@@ -679,12 +621,11 @@
     };
     break;
    case 3:
-    a$1=$1[0];
     ms=$1[1];
-    return function(a$2)
+    return function(a$1)
     {
-     var $2,a$3,b,m2;
-     switch(a$2.$==3?($2=a$2.$0,0):a$2.$==0?(a$3=Result.Success(a$2.$0),a$3.$==1?($2=a$3.$0,2):a$3.$0[1].$==0?($2=a$3.$0[0],0):($2=[a$3.$0[0],a$3.$0[1]],1)):a$2.$==1?($2=a$2.$0,3):a$2.$==2?($2=a$2.$0,4):5)
+     var $2,a$2,b$2,b$3;
+     switch(a$1.$==3?($2=a$1.$0,0):a$1.$==0?(a$2=Result.Success(a$1.$0),a$2.$==1?($2=a$2.$0,2):a$2.$0[1].$==0?($2=a$2.$0[0],0):($2=[a$2.$0[0],a$2.$0[1]],1)):a$1.$==1?($2=a$1.$0,3):a$1.$==2?($2=a$1.$0,4):5)
      {
       case 0:
        return{
@@ -693,11 +634,9 @@
        };
        break;
       case 1:
-       b=$2[0];
-       m2=$2[1];
        return{
         $:0,
-        $0:Result.succeedWithMsgs(b,List.append(ms,m2))
+        $0:Result.succeedWithMsgs($2[0],List.append(ms,$2[1]))
        };
        break;
       case 2:
@@ -709,25 +648,25 @@
       case 3:
        return{
         $:2,
-        $0:Concurrency.Delay(function()
+        $0:(b$2=null,Concurrency.Delay(function()
         {
-         return Concurrency.Bind($2,function(a$4)
+         return Concurrency.Bind($2,function(a$3)
          {
-          return Concurrency.Return(Result.succeedWithMsgs(a$4,ms));
+          return Concurrency.Return(Result.succeedWithMsgs(a$3,ms));
          });
-        })
+        }))
        };
        break;
       case 4:
        return{
         $:2,
-        $0:Concurrency.Delay(function()
+        $0:(b$3=null,Concurrency.Delay(function()
         {
-         return Concurrency.Bind($2,function(a$4)
+         return Concurrency.Bind($2,function(a$3)
          {
-          return Concurrency.Return(Result.mergeMsgs(ms,a$4));
+          return Concurrency.Return(Result.mergeMsgs(ms,a$3));
          });
-        })
+        }))
        };
        break;
       case 5:
@@ -735,38 +674,35 @@
        return;
        break;
      }
-    }(Wrap.tryCall(f,a$1));
+    }(Wrap.tryCall(f,$1[0]));
     break;
    case 4:
     return{
      $:2,
-     $0:Concurrency.Delay(function()
+     $0:(b=null,Concurrency.Delay(function()
      {
-      return Concurrency.Bind($1,function(a$2)
+      return Concurrency.Bind($1,function(a$1)
       {
-       var x,m;
-       x=Wrap.tryCall(f,a$2);
-       m=List.T.Empty;
-       return Wrap.wb2arb(m,x);
+       return Wrap.wb2arb(List.T.Empty,Wrap.tryCall(f,a$1));
       });
-     })
+     }))
     };
     break;
    case 5:
     return{
      $:2,
-     $0:Concurrency.Delay(function()
+     $0:(b$1=null,Concurrency.Delay(function()
      {
-      return Concurrency.Bind($1,function(a$2)
+      return Concurrency.Bind($1,function(a$1)
       {
-       var a$3,ms$1,a$4,ms$2,a$5;
-       a$3=Result.Success(a$2);
-       return a$3.$==1?(ms$1=a$3.$0,Concurrency.Delay(function()
+       var a$2,ms$1,b$2;
+       a$2=Result.Success(a$1);
+       return a$2.$==1?(ms$1=a$2.$0,b$2=null,Concurrency.Delay(function()
        {
         return Concurrency.Return(Result.failWithMsgs(ms$1));
-       })):(a$4=a$3.$0[0],ms$2=a$3.$0[1],a$5=Wrap.tryCall(f,a$4),Wrap.wb2arb(ms$2,a$5));
+       })):Wrap.wb2arb(a$2.$0[1],Wrap.tryCall(f,a$2.$0[0]));
       });
-     })
+     }))
     };
     break;
   }
@@ -787,10 +723,11 @@
  };
  Wrap.wb2arb=function(ms,a)
  {
-  var $1;
+  var $1,b,b$1,b$2,b$3,b$4;
   switch(a.$==2?($1=a.$0,1):a.$==0?($1=a.$0,2):a.$==3?($1=a.$0,3):a.$==4?a.$0==null?4:($1=a.$0.$0,3):($1=a.$0,0))
   {
    case 0:
+    b=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Bind($1,function(a$1)
@@ -800,6 +737,7 @@
     });
     break;
    case 1:
+    b$1=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Bind($1,function(a$1)
@@ -809,18 +747,21 @@
     });
     break;
    case 2:
+    b$2=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Return(Result.mergeMsgs(ms,$1));
     });
     break;
    case 3:
+    b$3=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Return(Result.succeedWithMsgs($1,ms));
     });
     break;
    case 4:
+    b$4=null;
     return Concurrency.Delay(function()
     {
      return Concurrency.Return(Result.failWithMsgs(new List.T({
@@ -842,6 +783,6 @@
   SC$1.result=new ropBuilder.New();
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
-  SC$1.$cctor=Global.ignore;
+  SC$1.$cctor=window.ignore;
  });
 }());

@@ -409,11 +409,10 @@ function fsiEval(code, callback) {
 
 function setupEditor(element) {
   // Setup the CodeMirror editor with fsharp mode
-  var source = element.innerText;
-  element.innerText = "";
+//  var source = element.innerText;
+//  element.innerText = "";
   var editor = CodeMirror(element, {
-	  value: source
-	  , mode: 'fsharp'
+	    mode: 'fsharp'
 	  , lineNumbers: true
 	  , theme: "rubyblue"
 	  , matchBrackets: true
@@ -438,13 +437,13 @@ function setupEditor(element) {
 
   // Request type-checking and parsing errors from the server
   editor.compiler = new Compiler(editor,
-	  function () { }//CIPHERPrototype.EditorRpc.checkSourceClient(editor.getValue(), editor.compiler.updateMarkers); }
+	  function () { FSharpStationNS.RunCode.EditorRpc.checkSource(editor.getValue(), editor.compiler.updateMarkers); }
   );
 
   // Request declarations & method overloads from the server
-  editor.intellisense = new Intellisense(editor,
-	  function (position) { }//CIPHERPrototype.EditorRpc.declarationsClient(editor.getValue(), position.lineIndex, position.columnIndex, editor.intellisense.setDeclarations); }
-	, function (position) { }//CIPHERPrototype.EditorRpc.methodsClient(editor.getValue(), position.lineIndex, position.columnIndex, editor.intellisense.setMethods);      }
-  );
+//  editor.intellisense = new Intellisense(editor,
+//	  function (position) { FSharpStationNS.RunCode..EditorRpc.declarations(editor.getValue(), position.lineIndex, position.columnIndex, editor.intellisense.setDeclarations); }
+//	, function (position) { FSharpStationNS.RunCode..EditorRpc.methods(editor.getValue(), position.lineIndex, position.columnIndex, editor.intellisense.setMethods);      }
+//  );
   return editor;
 }
