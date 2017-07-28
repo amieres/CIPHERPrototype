@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Arrays,Operators,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
+ var WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Arrays,Operators,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Json=WebSharper.Json=WebSharper.Json||{};
  Provider=Json.Provider=Json.Provider||{};
@@ -9,6 +9,7 @@
  Control=Web.Control=Web.Control||{};
  FSharpInlineControl=Web.FSharpInlineControl=Web.FSharpInlineControl||{};
  InlineControl=Web.InlineControl=Web.InlineControl||{};
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
@@ -169,7 +170,7 @@
  });
  Provider.DecodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new Date(x)).getTime();
+  return(new window.Date(x)).getTime();
  });
  Provider.DecodeTuple=function(decs)
  {
@@ -309,7 +310,7 @@
  });
  Provider.EncodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new Date(x)).toISOString();
+  return(new window.Date(x)).toISOString();
  });
  Provider.EncodeTuple=Runtime.Curried3(function(encs,$1,args)
  {

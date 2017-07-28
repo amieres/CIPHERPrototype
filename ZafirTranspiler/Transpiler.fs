@@ -96,8 +96,10 @@ let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
         do! if wsErrors.IsEmpty then Result.succeed () else
             Result.failWithMsgs wsErrors
         let  assem       = loader.LoadFile config.AssemblyFile
-        let! js          = ModifyAssembly (refMeta.Result |> Option.defaultValue WebSharper.Core.Metadata.Info.Empty) 
-                                          (comp.ToCurrentMetadata(config.WarnOnly)) config.SourceMap assem
+        let! js          = ModifyAssembly (Some comp) 
+                                          (refMeta.Result |> Option.defaultValue WebSharper.Core.Metadata.Info.Empty) 
+                                          (comp.ToCurrentMetadata(config.WarnOnly)) 
+                                          config.SourceMap config.AnalyzeClosures assem
                            |> Result.fromOption NothingToTranslateToJavaScript
         let  thisProject = Path.GetFileNameWithoutExtension config.ProjectFile
         let  ctx = { context with
@@ -184,7 +186,7 @@ let compileMainW: Context -> seq<string> -> Wrap.Wrapper<string> =
     fscArgs.Add "--define:FSHARP41"
     wsArgs := 
         { !wsArgs with 
-            References   = refs |> Seq.distinct |> Array.ofSeq
+            References   = refs |> Seq.map (fun s -> s.ToLower()) |> Seq.distinct |> Array.ofSeq
             Resources    = resources.ToArray()
             CompilerArgs = fscArgs  .ToArray() 
         }

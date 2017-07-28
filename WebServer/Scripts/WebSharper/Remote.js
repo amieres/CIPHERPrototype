@@ -1,11 +1,12 @@
 (function()
 {
  "use strict";
- var CIPHERPrototype,RemoteError,IntelliFactory,Runtime,PrintfHelpers;
+ var CIPHERPrototype,RemoteError,IntelliFactory,Runtime,WebSharper,PrintfHelpers;
  CIPHERPrototype=window.CIPHERPrototype=window.CIPHERPrototype||{};
  RemoteError=CIPHERPrototype.RemoteError=CIPHERPrototype.RemoteError||{};
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ WebSharper=window.WebSharper;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  RemoteError=CIPHERPrototype.RemoteError=Runtime.Class({
   Rop_ErrMsg$get_IsWarning:function()
@@ -20,7 +21,7 @@
     {
      return $1("Login Failed "+PrintfHelpers.toSafe($2));
     };
-   }(id))(this.$0);
+   }(window.id))(this.$0);
   }
  },null,RemoteError);
 }());

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Rop,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,SC$1,Runtime,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency;
+ var Rop,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,SC$1,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency;
  Rop=window.Rop=window.Rop||{};
  Option=Rop.Option=Rop.Option||{};
  ExceptionThrown=Rop.ExceptionThrown=Rop.ExceptionThrown||{};
@@ -11,7 +11,9 @@
  Wrap=Rop.Wrap=Rop.Wrap||{};
  Builder=Wrap.Builder=Wrap.Builder||{};
  SC$1=window.StartupCode$Common$Result=window.StartupCode$Common$Result||{};
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ WebSharper=window.WebSharper;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  List=WebSharper&&WebSharper.List;
  Strings=WebSharper&&WebSharper.Strings;
@@ -28,7 +30,7 @@
     $0:modifier(o.$0)
    };
   };
-  g=(v=id,function(a)
+  g=(v=window.id,function(a)
   {
    return Option.defaultValue(v,a);
   });
@@ -84,7 +86,7 @@
     {
      return $1(PrintfHelpers.prettyPrint($2));
     };
-   }(id))(this.exn);
+   }(window.id))(this.exn);
   }
  },null,ExceptionThrown);
  ExceptionThrown.New=Runtime.Ctor(function(exn)
@@ -135,7 +137,7 @@
     return Result.tryCall(r,v);
    },w);
   },
-  ReturnFrom:id,
+  ReturnFrom:window.id,
   Return:function(x)
   {
    return Result.succeed(x);
@@ -155,8 +157,8 @@
    return m.Rop_ErrMsg$get_IsWarning();
   },ms),((((Runtime.Curried(function($1,$2,$3,$4)
   {
-   return $1(String($2)+" errors, "+String($3)+" warnings\n"+PrintfHelpers.toSafe($4));
-  },4))(id))(errors.get_Length()))(warnings.get_Length()))(Strings.concat("\n",List.map(function(m)
+   return $1(window.String($2)+" errors, "+window.String($3)+" warnings\n"+PrintfHelpers.toSafe($4));
+  },4))(window.id))(errors.get_Length()))(warnings.get_Length()))(Strings.concat("\n",List.map(function(m)
   {
    return m.Rop_ErrMsg$get_ErrMsg();
   },ms)))));
@@ -408,7 +410,7 @@
   {
    return f();
   },
-  ReturnFrom:id,
+  ReturnFrom:window.id,
   Return:function(x)
   {
    return{

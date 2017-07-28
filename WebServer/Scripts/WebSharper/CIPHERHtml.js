@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var CIPHERPrototype,Val,HelperType,Html,SC$1,Option,CIPHERHtml,R,ReactDOM$1,CipherNode,SC$2,App,Dummy,MailboxState,App$1,SC$3,DynNode,Props,Message,SC$4,DataTube,Tube,Cell,UI,Next,Doc,Seq,AttrModule,Arrays,Strings,List,Runtime,Collections,FSharpSet,BalancedTree,AttrProxy,View,Operators,Control,MailboxProcessor,Concurrency,FSharpMap,Map,Unchecked;
+ var CIPHERPrototype,Val,HelperType,Html,SC$1,Option,CIPHERHtml,R,ReactDOM,CipherNode,SC$2,App,Dummy,MailboxState,App$1,SC$3,DynNode,Props,Message,SC$4,DataTube,Tube,Cell,WebSharper,UI,Next,Doc,Seq,AttrModule,Arrays,Strings,List,IntelliFactory,Runtime,Collections,FSharpSet,BalancedTree,AttrProxy,View,React,$,ReactDOM$1,Object,String,Operators,$$1,Control,MailboxProcessor,Concurrency,FSharpMap,Map,Unchecked;
  CIPHERPrototype=window.CIPHERPrototype=window.CIPHERPrototype||{};
  Val=CIPHERPrototype.Val=CIPHERPrototype.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
@@ -10,7 +10,7 @@
  Option=CIPHERPrototype.Option=CIPHERPrototype.Option||{};
  CIPHERHtml=CIPHERPrototype.CIPHERHtml=CIPHERPrototype.CIPHERHtml||{};
  R=CIPHERHtml.R=CIPHERHtml.R||{};
- ReactDOM$1=CIPHERHtml.ReactDOM=CIPHERHtml.ReactDOM||{};
+ ReactDOM=CIPHERHtml.ReactDOM=CIPHERHtml.ReactDOM||{};
  CipherNode=CIPHERHtml.CipherNode=CIPHERHtml.CipherNode||{};
  SC$2=window.StartupCode$CIPHERHtml$CIPHERHtml=window.StartupCode$CIPHERHtml$CIPHERHtml||{};
  App=CIPHERPrototype.App=CIPHERPrototype.App||{};
@@ -25,6 +25,7 @@
  DataTube=CIPHERPrototype.DataTube=CIPHERPrototype.DataTube||{};
  Tube=DataTube.Tube=DataTube.Tube||{};
  Cell=DataTube.Cell=DataTube.Cell||{};
+ WebSharper=window.WebSharper;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;
@@ -33,13 +34,20 @@
  Arrays=WebSharper&&WebSharper.Arrays;
  Strings=WebSharper&&WebSharper.Strings;
  List=WebSharper&&WebSharper.List;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Collections=WebSharper&&WebSharper.Collections;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
  AttrProxy=Next&&Next.AttrProxy;
  View=Next&&Next.View;
+ React=window.React;
+ $=window.$;
+ ReactDOM$1=window.ReactDOM;
+ Object=window.Object;
+ String=window.String;
  Operators=WebSharper&&WebSharper.Operators;
+ $$1=window.jQuery;
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
  Concurrency=WebSharper&&WebSharper.Concurrency;
@@ -460,7 +468,7 @@
  {
   var x;
   x=Seq.choose(Html.chooseAttr,children);
-  return Seq.append(List.choose(id,List.ofArray([Html.groupAttr("class"," ",children),Html.groupAttr("style","; ",children)])),x);
+  return Seq.append(List.choose(window.id,List.ofArray([Html.groupAttr("class"," ",children),Html.groupAttr("style","; ",children)])),x);
  };
  Html.groupAttr=function(name,sep,children)
  {
@@ -766,10 +774,10 @@
  R.New=Runtime.Ctor(function()
  {
  },R);
- ReactDOM$1=CIPHERHtml.ReactDOM=Runtime.Class({},null,ReactDOM$1);
- ReactDOM$1.New=Runtime.Ctor(function()
+ ReactDOM=CIPHERHtml.ReactDOM=Runtime.Class({},null,ReactDOM);
+ ReactDOM.New=Runtime.Ctor(function()
  {
- },ReactDOM$1);
+ },ReactDOM);
  CipherNode.NEmpty={
   $:8
  };
@@ -778,7 +786,7 @@
   var r;
   return React.createClass((r={},r.displayName="containerClass",r.componentDidMount=function()
   {
-   afterRender(this,ReactDOM.findDOMNode(this));
+   afterRender(this,ReactDOM$1.findDOMNode(this));
   },r.shouldComponentUpdate=function()
   {
    return false;
@@ -948,7 +956,7 @@
   var elem,tag,x,x$1;
   try
   {
-   return html.indexOf(String.fromCharCode(62))>0?(elem=document.createElement("div"),elem.innerHTML=html,tag=elem.firstElementChild,x=(x$1=Seq.map(function(a)
+   return html.indexOf(String.fromCharCode(62))>0?(elem=window.document.createElement("div"),elem.innerHTML=html,tag=elem.firstElementChild,x=(x$1=Seq.map(function(a)
    {
     return CIPHERHtml.outerAttrs(a.name,a.value);
    },Seq.map(function(i)
@@ -979,7 +987,7 @@
  {
   return CIPHERHtml.Style(Seq.reduce(function(a,b)
   {
-   return jQuery.extend(jQuery.extend({},a),b);
+   return $$1.extend($$1.extend({},a),b);
   },styles));
  };
  CIPHERHtml._border=function(brd)
@@ -1397,12 +1405,12 @@
    $1:key
   };
  };
- CIPHERHtml.Id=function(id$1)
+ CIPHERHtml.Id=function(id)
  {
   return{
    $:2,
    $0:"id",
-   $1:id$1
+   $1:id
   };
  };
  CIPHERHtml.NewAttr=function(name,value)
@@ -1704,7 +1712,7 @@
   },
   runReact:function(props,container)
   {
-   ReactDOM.render(this.nodeR(props),container);
+   ReactDOM$1.render(this.nodeR(props),container);
   },
   runIncDom:function(props,container)
   {
@@ -1808,7 +1816,7 @@
      });
     });
    }
-   return messageLoop(jQuery.extend("object",init));
+   return messageLoop($$1.extend("object",init));
   },null),App.mailboxes(),init);
   _this=mail.agent;
   _this.mailbox.AddLast(function(initState)
@@ -1955,14 +1963,14 @@
    return Map.TryFind(key,this.data);
   }
  },null,Tube);
- Tube.New$1=function(id$1)
+ Tube.New$1=function(id)
  {
-  return Tube.New(id$1,new FSharpMap.New([]),new FSharpMap.New([]));
+  return Tube.New(id,new FSharpMap.New([]),new FSharpMap.New([]));
  };
- Tube.New=function(id$1,data,listeners)
+ Tube.New=function(id,data,listeners)
  {
   return new Tube({
-   id:id$1,
+   id:id,
    data:data,
    listeners:listeners
   });

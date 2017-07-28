@@ -83,11 +83,15 @@
             try { window[key].$cctor(); } catch (e) {} 
         } 
       })
-                       CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/ZafirTranspiler.js"], function()
+                       CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/Remote.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
- var FSharpStationNS,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror$1,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,CodeSnippetId,CodeSnippet,Position,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,UI,Next,View,Doc,AttrModule,AttrProxy,Runtime,Seq,Var,Input$1,Mouse,Arrays,Strings,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,Guid,Option,Json,Provider,Slice,Storage,ListModel;
+ var FSharpStationNS,FSStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
  FSharpStationNS=window.FSharpStationNS=window.FSharpStationNS||{};
+ FSStationShared=FSharpStationNS.FSStationShared=FSharpStationNS.FSStationShared||{};
+ CodeSnippetId=FSStationShared.CodeSnippetId=FSStationShared.CodeSnippetId||{};
+ CodeSnippet=FSStationShared.CodeSnippet=FSStationShared.CodeSnippet||{};
+ FSMessage=FSStationShared.FSMessage=FSStationShared.FSMessage||{};
  HtmlNode=FSharpStationNS.HtmlNode=FSharpStationNS.HtmlNode||{};
  Val=HtmlNode.Val=HtmlNode.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
@@ -98,32 +102,34 @@
  Hoverable=Template.Hoverable=Template.Hoverable||{};
  TextArea=Template.TextArea=Template.TextArea||{};
  CodeMirrorEditor=Template.CodeMirrorEditor=Template.CodeMirrorEditor||{};
- CodeMirror$1=Template.CodeMirror=Template.CodeMirror||{};
+ CodeMirror=Template.CodeMirror=Template.CodeMirror||{};
  SplitterBar=Template.SplitterBar=Template.SplitterBar||{};
  Grid=Template.Grid=Template.Grid||{};
  RunCode=FSharpStationNS.RunCode=FSharpStationNS.RunCode||{};
  EditorRpc=RunCode.EditorRpc=RunCode.EditorRpc||{};
  RunNode=RunCode.RunNode=RunCode.RunNode||{};
  FSharpStation=FSharpStationNS.FSharpStation=FSharpStationNS.FSharpStation||{};
- CodeSnippetId=FSharpStation.CodeSnippetId=FSharpStation.CodeSnippetId||{};
- CodeSnippet=FSharpStation.CodeSnippet=FSharpStation.CodeSnippet||{};
  Position=FSharpStation.Position=FSharpStation.Position||{};
+ CodeSnippet$1=FSharpStation.CodeSnippet=FSharpStation.CodeSnippet||{};
  SC$1=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# module FSharpStationMD   ="]=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# module FSharpStationMD   ="]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]||{};
+ WebSharper=window.WebSharper;
+ Guid=WebSharper&&WebSharper.Guid;
+ IntelliFactory=window.IntelliFactory;
+ Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ Strings=WebSharper&&WebSharper.Strings;
+ Arrays=WebSharper&&WebSharper.Arrays;
+ Seq=WebSharper&&WebSharper.Seq;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  View=Next&&Next.View;
  Doc=Next&&Next.Doc;
  AttrModule=Next&&Next.AttrModule;
  AttrProxy=Next&&Next.AttrProxy;
- Runtime=IntelliFactory&&IntelliFactory.Runtime;
- Seq=WebSharper&&WebSharper.Seq;
  Var=Next&&Next.Var;
  Input$1=Next&&Next.Input;
  Mouse=Input$1&&Input$1.Mouse;
- Arrays=WebSharper&&WebSharper.Arrays;
- Strings=WebSharper&&WebSharper.Strings;
  List=WebSharper&&WebSharper.List;
  Collections=WebSharper&&WebSharper.Collections;
  FSharpSet=Collections&&Collections.FSharpSet;
@@ -133,13 +139,58 @@
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  Concurrency=WebSharper&&WebSharper.Concurrency;
- Guid=WebSharper&&WebSharper.Guid;
- Option=WebSharper&&WebSharper.Option;
+ JSON=window.JSON;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
  Slice=WebSharper&&WebSharper.Slice;
- Storage=Next&&Next.Storage;
+ Option=WebSharper&&WebSharper.Option;
  ListModel=Next&&Next.ListModel;
+ console=window.console;
+ CodeSnippetId.get_New=function()
+ {
+  return{
+   $:0,
+   $0:Guid.NewGuid()
+  };
+ };
+ CodeSnippet=FSStationShared.CodeSnippet=Runtime.Class({
+  get_Name:function()
+  {
+   return FSStationShared.snippetName(this.name,this.content);
+  }
+ },null,CodeSnippet);
+ CodeSnippet.New=function(name,content,parent,predecessors,companions,id,expanded)
+ {
+  return new CodeSnippet({
+   name:name,
+   content:content,
+   parent:parent,
+   predecessors:predecessors,
+   companions:companions,
+   id:id,
+   expanded:expanded
+  });
+ };
+ FSMessage.GetIdentification={
+  $:7
+ };
+ FSStationShared.sanitize=function(n)
+ {
+  var illegal;
+  illegal=[34,60,62,124,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,58,42,63,92,47];
+  return Strings.Filter(function(c)
+  {
+   return!Arrays.contains(c,illegal);
+  },n);
+ };
+ FSStationShared.snippetName=function(name,content)
+ {
+  var o;
+  return name!==""?name:(o=Seq.tryHead(Seq.filter(function(l)
+  {
+   return!(Strings.StartsWith(l,"#")||Strings.StartsWith(l,"[<")||Strings.StartsWith(l,"//"));
+  },Seq.map(Strings.Trim,Strings.SplitChars(content,[10],1)))),o==null?"<empty>":o.$0);
+ };
  HelperType.HelperType={
   $:0
  };
@@ -449,7 +500,7 @@
      return Var.Set(cover,true);
     };
    })
-  })]),HtmlNode.div([HtmlNode.style("position: absolute;"),HtmlNode.classIf("iframe-cover",Val.map(id,cover)),new HtmlNode$1({
+  })]),HtmlNode.div([HtmlNode.style("position: absolute;"),HtmlNode.classIf("iframe-cover",Val.map(window.id,cover)),new HtmlNode$1({
    $:5,
    $0:AttrModule.Handler("mouseenter",function()
    {
@@ -854,7 +905,7 @@
  {
   var x;
   x=Seq.choose(HtmlNode.chooseAttr,children);
-  return Seq.append(List.choose(id,List.ofArray([HtmlNode.groupAttr("class"," ",children),HtmlNode.groupAttr("style","; ",children)])),x);
+  return Seq.append(List.choose(window.id,List.ofArray([HtmlNode.groupAttr("class"," ",children),HtmlNode.groupAttr("style","; ",children)])),x);
  };
  HtmlNode.groupAttr=function(name,sep,children)
  {
@@ -942,9 +993,9 @@
   {
    return Button.New(Val.fixit(clas),this._type,this.style,this.text,this.onClick,this.disabled,this.id);
   },
-  Id:function(id$1)
+  Id:function(id)
   {
-   return Button.New(this._class,this._type,this.style,this.text,this.onClick,this.disabled,id$1);
+   return Button.New(this._class,this._type,this.style,this.text,this.onClick,this.disabled,id);
   },
   get_Render:function()
   {
@@ -971,7 +1022,7 @@
    };
   },Val.fixit(false),"");
  };
- Button.New=function(_class,_type,style,text,onClick,disabled,id$1)
+ Button.New=function(_class,_type,style,text,onClick,disabled,id)
  {
   return new Button({
    _class:_class,
@@ -980,7 +1031,7 @@
    text:text,
    onClick:onClick,
    disabled:disabled,
-   id:id$1
+   id:id
   });
  };
  Input=Template.Input=Runtime.Class({
@@ -1004,9 +1055,9 @@
   {
    return Input.New(this._type,this._class,this.style,this.placeholder,this.id,this["var"],this.prefix,this.suffix,c,this.prefixAdded,this.suffixAdded);
   },
-  Id:function(id$1)
+  Id:function(id)
   {
-   return Input.New(this._type,this._class,this.style,this.placeholder,id$1,this["var"],this.prefix,this.suffix,this.content,this.prefixAdded,this.suffixAdded);
+   return Input.New(this._type,this._class,this.style,this.placeholder,id,this["var"],this.prefix,this.suffix,this.content,this.prefixAdded,this.suffixAdded);
   },
   Placeholder:function(plc)
   {
@@ -1060,14 +1111,14 @@
   c=Val.fixit("form-control");
   return Input.New(Val.fixit("text"),c,Val.fixit(""),Val.fixit("Enter text:"),"",_var,HtmlNode$1.HtmlEmpty,HtmlNode$1.HtmlEmpty,List.T.Empty,false,false);
  };
- Input.New=function(_type,_class,style,placeholder,id$1,_var,prefix,suffix,content,prefixAdded,suffixAdded)
+ Input.New=function(_type,_class,style,placeholder,id,_var,prefix,suffix,content,prefixAdded,suffixAdded)
  {
   return new Input({
    _type:_type,
    _class:_class,
    style:style,
    placeholder:placeholder,
-   id:id$1,
+   id:id,
    "var":_var,
    prefix:prefix,
    suffix:suffix,
@@ -1130,9 +1181,9 @@
   {
    return TextArea.New(this._class,this.placeholder,this.title,this.spellcheck,this.id,v);
   },
-  Id:function(id$1)
+  Id:function(id)
   {
-   return TextArea.New(this._class,this.placeholder,this.title,this.spellcheck,id$1,this["var"]);
+   return TextArea.New(this._class,this.placeholder,this.title,this.spellcheck,id,this["var"]);
   },
   Spellcheck:function(spl)
   {
@@ -1166,14 +1217,14 @@
  {
   return TextArea.New(Val.fixit("form-control"),Val.fixit("Enter text:"),Val.fixit(""),Val.fixit(false),"",_var);
  };
- TextArea.New=function(_class,placeholder,title,spellcheck,id$1,_var)
+ TextArea.New=function(_class,placeholder,title,spellcheck,id,_var)
  {
   return new TextArea({
    _class:_class,
    placeholder:placeholder,
    title:title,
    spellcheck:spellcheck,
-   id:id$1,
+   id:id,
    "var":_var
   });
  };
@@ -1181,30 +1232,30 @@
  CodeMirrorEditor.New=Runtime.Ctor(function()
  {
  },CodeMirrorEditor);
- CodeMirror$1=Template.CodeMirror=Runtime.Class({
+ CodeMirror=Template.CodeMirror=Runtime.Class({
   get_Var:function()
   {
    return this["var"];
   },
   OnChange:function(f)
   {
-   return CodeMirror$1.New(this._class,this.style,this.id,this["var"],f,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,this["var"],f,this.editorO);
   },
   Style:function(sty)
   {
-   return CodeMirror$1.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.editorO);
+   return CodeMirror.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.editorO);
   },
   SetVar:function(v)
   {
-   return CodeMirror$1.New(this._class,this.style,this.id,v,this.onChange,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,v,this.onChange,this.editorO);
   },
-  Id:function(id$1)
+  Id:function(id)
   {
-   return CodeMirror$1.New(this._class,this.style,id$1,this["var"],this.onChange,this.editorO);
+   return CodeMirror.New(this._class,this.style,id,this["var"],this.onChange,this.editorO);
   },
   Class:function(clas)
   {
-   return CodeMirror$1.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.editorO);
+   return CodeMirror.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.editorO);
   },
   get_Render:function()
   {
@@ -1217,10 +1268,10 @@
     $:5,
     $0:AttrModule.OnAfterRender(function(el)
     {
-     CIPHERSpaceLoadFiles(Template.codeMirrorIncludes(),function()
+     window.CIPHERSpaceLoadFiles(Template.codeMirrorIncludes(),function()
      {
       var editor;
-      editor=CodeMirror(el,{
+      editor=window.CodeMirror(el,{
        theme:"rubyblue",
        lineNumbers:true,
        matchBrackets:true,
@@ -1257,23 +1308,23 @@
     })
    })]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/editor.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/codemirror.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/theme/rubyblue.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/display/fullscreen.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/dialog/dialog.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.css(".CodeMirror { height: 100% }")]);
   }
- },null,CodeMirror$1);
- CodeMirror$1.New$1=function(v)
+ },null,CodeMirror);
+ CodeMirror.New$1=function(v)
  {
-  return CodeMirror$1.New$2(Var.Create$1(v));
+  return CodeMirror.New$2(Var.Create$1(v));
  };
- CodeMirror$1.New$2=function(_var)
+ CodeMirror.New$2=function(_var)
  {
-  return CodeMirror$1.New(Val.fixit(""),Val.fixit(""),"",_var,function()
+  return CodeMirror.New(Val.fixit(""),Val.fixit(""),"",_var,function()
   {
   },null);
  };
- CodeMirror$1.New=function(_class,style,id$1,_var,onChange,editorO)
+ CodeMirror.New=function(_class,style,id,_var,onChange,editorO)
  {
-  return new CodeMirror$1({
+  return new CodeMirror({
    _class:_class,
    style:style,
-   id:id$1,
+   id:id,
    "var":_var,
    onChange:onChange,
    editorO:editorO
@@ -1343,7 +1394,7 @@
    $this=this;
    mouseCoord=function(ev)
    {
-    return $this.startVer?Number(ev.clientX):Number(ev.clientY);
+    return $this.startVer?window.Number(ev.clientX):window.Number(ev.clientY);
    };
    size=function()
    {
@@ -1472,7 +1523,7 @@
       {
        return $1("grid-area: "+PrintfHelpers.toSafe($2));
       };
-     }(id))(area.$0))]):html;
+     }(window.id))(area.$0))]):html;
     },Seq.map(function($1)
     {
      return m($1[0],$1[1]);
@@ -1484,13 +1535,13 @@
       var spl;
       return $2.$==2?(spl=$2.$0,{
        $:1,
-       $0:spl.get_Render().InsertChildren([HtmlNode.style1("grid-column",String($1+(spl.after?2:1))),HtmlNode.style1("grid-row",(function($3)
+       $0:spl.get_Render().InsertChildren([HtmlNode.style1("grid-column",window.String($1+(spl.after?2:1))),HtmlNode.style1("grid-row",(function($3)
        {
         return function($4)
         {
-         return $3("1 / "+String($4));
+         return $3("1 / "+window.String($4));
         };
-       }(id))(Arrays.length($this.rows)+1))])
+       }(window.id))(Arrays.length($this.rows)+1))])
       }):$2.$==1?null:null;
      },Seq.choose(function($1)
      {
@@ -1503,13 +1554,13 @@
        var spl;
        return $2.$==2?(spl=$2.$0,{
         $:1,
-        $0:spl.get_Render().InsertChildren([HtmlNode.style1("grid-row",String($1+(spl.after?2:1))),HtmlNode.style1("grid-column",(function($3)
+        $0:spl.get_Render().InsertChildren([HtmlNode.style1("grid-row",window.String($1+(spl.after?2:1))),HtmlNode.style1("grid-column",(function($3)
         {
          return function($4)
          {
-          return $3("1 / "+String($4));
+          return $3("1 / "+window.String($4));
          };
-        }(id))(Arrays.length($this.cols)+1))])
+        }(window.id))(Arrays.length($this.cols)+1))])
        }):$2.$==1?null:null;
       },Seq.choose(function($1)
       {
@@ -1521,7 +1572,7 @@
         return Seq.append([HtmlNode.style((((Runtime.Curried3(function($1,$2,$3)
         {
          return $1("display: grid; grid-gap: "+$2.toFixed(6)+"px; padding: "+$3.toFixed(6)+"px; box-sizing: border-box");
-        }))(id))($this.gap))($this.padding))],Seq.delay(function()
+        }))(window.id))($this.gap))($this.padding))],Seq.delay(function()
         {
          return[new HtmlNode$1({
           $:5,
@@ -1532,8 +1583,8 @@
             Var.Set($this.width,el.getBoundingClientRect().width);
             Var.Set($this.height,el.getBoundingClientRect().height);
            }
-           setTimeout(setDimensions,60);
-           (new ResizeObserver(setDimensions)).observe(el);
+           window.setTimeout(setDimensions,60);
+           (new window.ResizeObserver(setDimensions)).observe(el);
           })
          })];
         }));
@@ -1594,7 +1645,7 @@
    {
     return function(size$1)
     {
-     return(size$1-$this.padding*2-$this.gap*(Number(Arrays.length(areas))-1)-v)/(size$1-$this.padding*2);
+     return(size$1-$this.padding*2-$this.gap*(window.Number(Arrays.length(areas))-1)-v)/(size$1-$this.padding*2);
     };
    },p[1],size),(autoPct=Val.map(function(y)
    {
@@ -1613,7 +1664,7 @@
        {
         return $1($2.toFixed(6)+"%");
        };
-      }(id))(x);
+      }(window.id))(x);
      };
     },finalPerc,pc);
    },(pixel=function(px)
@@ -1628,7 +1679,7 @@
       {
        return $1($2.toFixed(6)+"px");
       };
-     }(id))(x);
+     }(window.id))(x);
     },px);
    },Val.map(function(s)
    {
@@ -1871,19 +1922,19 @@
  {
   Concurrency.StartWithContinuations(asy,callback,function(e)
   {
-   alert(String(e));
+   window.alert(window.String(e));
   },function(c)
   {
-   alert(String(c));
+   window.alert(window.String(c));
   },null);
  };
  RunNode=RunCode.RunNode=Runtime.Class({
   createBaseNode:function()
   {
    var el;
-   el=document.createElement("div");
+   el=window.document.createElement("div");
    el.setAttribute("id",this.nodeName);
-   document.body.appendChild(el);
+   window.document.body.appendChild(el);
    return el;
   },
   RunHtmlPlusFree:function(node)
@@ -1905,11 +1956,11 @@
     sendMsg("Running JavaScript...");
     try
     {
-     $2=(v=eval(freeJS.c),(sendMsg("Done!"),String(v)));
+     $2=(v=window["eval"](freeJS.c),(sendMsg("Done!"),window.String(v)));
     }
     catch(e)
     {
-     $2=(sendMsg("Failed!"),String(e));
+     $2=(sendMsg("Failed!"),window.String(e));
     }
     sendMsg($2);
    };
@@ -1941,7 +1992,7 @@
     $0:HtmlNode.tag(Doc.Verbatim,Val.map2((Runtime.Curried3(function($1,$2,$3)
     {
      return $1(PrintfHelpers.toSafe($2)+"<style>"+PrintfHelpers.toSafe($3)+"</style>");
-    }))(id),freeHtml,freeCSS))
+    }))(window.id),freeHtml,freeCSS))
    })]));
   },
   RunHtml:function(node)
@@ -1955,7 +2006,7 @@
   get_AddBootstrap:function()
   {
    var el;
-   el=document.createElement("div");
+   el=window.document.createElement("div");
    el.innerHTML="<script src='http://code.jquery.com/jquery-3.1.1.min.js' type='text/javascript' charset='UTF-8'></script>\r\n                  <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' type='text/javascript' charset='UTF-8'></script>\r\n                  <link type='text/css' rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>\r\n                  <link type='text/css' rel='stylesheet' href='/EPFileX/css/main.css'>\r\n                 ";
    this.runNode.appendChild(el);
    return this;
@@ -1976,8 +2027,8 @@
  {
   var baseNode,m,m$1,e;
   this.nodeName=nodeName;
-  baseNode=(m=document.getElementById(this.nodeName),Unchecked.Equals(m,null)?this.createBaseNode():m);
-  this.runNode=(m$1=baseNode.shadowRoot,Unchecked.Equals(m$1,null)?(e=document.createElement("div"),(baseNode.attachShadow({
+  baseNode=(m=window.document.getElementById(this.nodeName),Unchecked.Equals(m,null)?this.createBaseNode():m);
+  this.runNode=(m$1=baseNode.shadowRoot,Unchecked.Equals(m$1,null)?(e=window.document.createElement("div"),(baseNode.attachShadow({
    mode:"open"
   }).appendChild(e),e.style="height: 100%; width: 100%;",e)):m$1.firstChild);
   clearNode==null||clearNode.$0?this.runNode.innerHTML="":void 0;
@@ -2002,162 +2053,6 @@
  RunCode.completeJS=function(js)
  {
   return"\r\n          CIPHERSpaceLoadFileGlobalFileRef = null;\r\n          CIPHERSpaceLoadFile = function (filename, callback) {\r\n              if (filename.slice(-3) == \".js\" || filename.slice(-4) == \".fsx\" || filename.slice(-3) == \".fs\") { //if filename is a external JavaScript file\r\n                  var fileRef = null;\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement('script')\r\n                      fileRef.setAttribute(\"type\", \"text/javascript\")\r\n                      fileRef.setAttribute(\"src\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-4) == \".css\") { //if filename is an external CSS file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"stylesheet\")\r\n                      fileRef.setAttribute(\"type\", \"text/css\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-5) == \".html\") { //if filename is an external HTML file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"import\")\r\n                      fileRef.setAttribute(\"type\", \"text/html\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              if (!!fileRef) {\r\n                  CIPHERSpaceLoadFileGlobalFileRef = fileRef;\r\n      \u0009\u0009\u0009fileRef.onload = function () { fileRef.onload = null;  callback(); }\r\n                  document.getElementsByTagName(\"head\")[0].appendChild(fileRef);\r\n              }\r\n          }\r\n          CIPHERSpaceLoadFiles = function (files, callback) {\r\n              var newCallback = callback\r\n              if (!!CIPHERSpaceLoadFileGlobalFileRef && !!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n                  var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n                  CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n                  newCallback = function () {\r\n                      callback();\r\n                      oldCallback();\r\n                  }\r\n              }\r\n              var i = 0;\r\n              loadNext = function () {\r\n                  if (i < files.length) {\r\n                      var file = files[i];\r\n                      i++;\r\n                      CIPHERSpaceLoadFile(file, loadNext);\r\n                  }\r\n                  else newCallback();\r\n              };\r\n              loadNext();\r\n      \u0009}\r\n          CIPHERSpaceLoadFiles(['https://code.jquery.com/jquery-3.1.1.min.js'], function() {}); \r\n      \u0009CIPHERSpaceLoadFilesDoAfter = function (callback) {\r\n      \u0009\u0009var newCallback = callback\r\n      \u0009\u0009if (!!CIPHERSpaceLoadFileGlobalFileRef) {\r\n      \u0009\u0009\u0009if (!!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n      \u0009\u0009\u0009\u0009var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n      \u0009\u0009\u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n      \u0009\u0009\u0009\u0009newCallback = function () {\r\n      \u0009\u0009\u0009\u0009\u0009oldCallback();\r\n      \u0009\u0009\u0009\u0009\u0009callback();\r\n      \u0009\u0009\u0009\u0009}\r\n      \u0009\u0009\u0009}\r\n      \u0009\u0009}\r\n      \u0009\u0009else CIPHERSpaceLoadFileGlobalFileRef = {};\r\n      \u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = newCallback;\r\n      \u0009}\r\n      \r\n      CIPHERSpaceLoadFilesDoAfter(function() { \r\n        if (typeof IntelliFactory !=='undefined')\r\n          IntelliFactory.Runtime.Start();\r\n        for (key in window) { \r\n          if (key.startsWith(\"StartupCode$\")) \r\n            try { window[key].$cctor(); } catch (e) {} \r\n        } \r\n      })\r\n                       "+js;
- };
- CodeSnippetId.get_New=function()
- {
-  return{
-   $:0,
-   $0:Guid.NewGuid()
-  };
- };
- CodeSnippet=FSharpStation.CodeSnippet=Runtime.Class({
-  IsDescendantOf:function(antId)
-  {
-   function isDescendantOf(snp)
-   {
-    var m,parId,o,o$1;
-    m=snp.parent;
-    return m!=null&&m.$==1&&(parId=m.$0,Unchecked.Equals(parId,antId)||(o=(o$1=CodeSnippet.FetchO(parId),o$1==null?null:{
-     $:1,
-     $0:isDescendantOf(o$1.$0)
-    }),o==null?false:o.$0));
-   }
-   return isDescendantOf(this);
-  },
-  Code:function()
-  {
-   var preds;
-   preds=Arrays.ofSeq(this.UniquePredecesors());
-   return Strings.concat("\n",Seq.map(function(snp)
-   {
-    return snp.ContentIndented();
-   },Seq.filter(function(snp)
-   {
-    return Arrays.contains(snp.id,preds);
-   },(FSharpStation.codeSnippets())["var"].RVal())));
-  },
-  ContentIndented:function()
-  {
-   var lvl,x;
-   lvl=this.Level();
-   x=lvl===0||lvl===1?this.content:Strings.concat("\n",Arrays.map(function(l)
-   {
-    return Strings.StartsWith(l,"#")?l:Strings.replicate(lvl,"  ")+l;
-   },Strings.SplitChars(this.content,[10],0)));
-   return((((Runtime.Curried(function($1,$2,$3,$4)
-   {
-    return $1("# 1 @\""+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3)+"\"\n"+PrintfHelpers.toSafe($4));
-   },4))(id))(lvl===0||lvl===1?"":(function($1)
-   {
-    return function($2)
-    {
-     return $1("("+String($2)+")");
-    };
-   }(id))(lvl*2)))(this.get_NameSanitized()))(x);
-  },
-  get_NameSanitized:function()
-  {
-   return"F# "+FSharpStation.sanitize(this.get_Name())+".fsx";
-  },
-  Level:function()
-  {
-   function level(snp,out)
-   {
-    var o,o$1,o$2;
-    o=(o$1=(o$2=snp.parent,o$2==null?null:CodeSnippet.FetchO(o$2.$0)),o$1==null?null:{
-     $:1,
-     $0:level(o$1.$0,out+1)
-    });
-    return o==null?out:o.$0;
-   }
-   return level(this,0);
-  },
-  UniquePredecesors:function()
-  {
-   function preds(ins,outs)
-   {
-    var hd;
-    return ins.$==1?(hd=ins.$0,preds(List.collect(id,List.ofArray([ins.$1,List.collect(function(s)
-    {
-     return List.append(Option.toList(s.parent),s.predecessors);
-    },CodeSnippet.FetchL(hd))])),Seq.contains(hd,outs)?outs:new List.T({
-     $:1,
-     $0:hd,
-     $1:outs
-    }))):outs;
-   }
-   return preds(List.ofArray([this.id]),List.T.Empty);
-  },
-  get_Name:function()
-  {
-   return FSharpStation.snippetName(this.name,this.content);
-  }
- },null,CodeSnippet);
- CodeSnippet.New$1=function(od,nm,pa,pred,co,cnt)
- {
-  var newS,$1,a,a$1,t;
-  newS=CodeSnippet.New(nm,cnt,pa,pred,co,CodeSnippetId.get_New(),true);
-  $1=FSharpStation.codeSnippets().get_Length();
-  $1===0?FSharpStation.codeSnippets().Append(newS):od===0?(a=Seq.append([newS],(FSharpStation.codeSnippets())["var"].RVal()),FSharpStation.codeSnippets().Set(a)):od<$1?(a$1=(t=Arrays.splitAt(od,Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal())),t[0].concat([newS].concat(t[1]))),FSharpStation.codeSnippets().Set(a$1)):FSharpStation.codeSnippets().Append(newS);
-  return newS;
- };
- CodeSnippet.New$2=function(nm,pa,pred,co,cnt)
- {
-  return CodeSnippet.New$1(FSharpStation.codeSnippets().get_Length(),nm,pa,pred,co,cnt);
- };
- CodeSnippet.New$3=function(cnt)
- {
-  return CodeSnippet.New$2("",null,List.T.Empty,List.T.Empty,cnt);
- };
- CodeSnippet.New$4=function(pa,cnt)
- {
-  return CodeSnippet.New$2("",{
-   $:1,
-   $0:pa
-  },List.T.Empty,List.T.Empty,cnt);
- };
- CodeSnippet.New$5=function(pa,pred,cnt)
- {
-  return CodeSnippet.New$2("",{
-   $:1,
-   $0:pa
-  },pred,List.T.Empty,cnt);
- };
- CodeSnippet.New$6=function(pred,cnt)
- {
-  return CodeSnippet.New$2("",null,pred,List.T.Empty,cnt);
- };
- CodeSnippet.FetchL=function(id$1)
- {
-  return Option.toList(CodeSnippet.FetchO(id$1));
- };
- CodeSnippet.FetchO=function(id$1)
- {
-  return FSharpStation.codeSnippets().TryFindByKey(id$1);
- };
- CodeSnippet.PickIO=function(id$1)
- {
-  var f;
-  f=function(a,snp)
-  {
-   return Unchecked.Equals(snp.id,id$1);
-  };
-  return FSharpStation.tryPickI(function($1)
-  {
-   return f($1[0],$1[1]);
-  },(FSharpStation.codeSnippets())["var"].RVal());
- };
- CodeSnippet.New=function(name,content,parent,predecessors,companions,id$1,expanded)
- {
-  return new CodeSnippet({
-   name:name,
-   content:content,
-   parent:parent,
-   predecessors:predecessors,
-   companions:companions,
-   id:id$1,
-   expanded:expanded
-  });
  };
  Position.NewBrowser={
   $:3
@@ -2194,7 +2089,7 @@
    return 92-y;
   },FSharpStation.spl1().get_GetValue())).Children([HtmlNode.style("grid-row: 3 / 5")]).ColAuto(0).RowFixedPx(34).RowAuto(0).RowVariable(17).Children([HtmlNode.style("grid-column: 2 / 4")]).get_Before().RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   header  '\r\n                              'sidebar content1 content1'\r\n                              'sidebar content2 content3'\r\n                              'footer  footer   footer2 ';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.div([HtmlNode.style("overflow: auto"),new HtmlNode$1({
    $:4,
-   $0:Doc.BindView(id,View.Map(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x))))
+   $0:Doc.BindView(window.id,View.Map(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x))))
   })])).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v)
   {
    var o,r;
@@ -2247,6 +2142,80 @@
   SC$1.$cctor();
   return SC$1.spl1;
  };
+ FSharpStation.awaitMessage=function()
+ {
+  var b;
+  Concurrency.Start((b=null,Concurrency.Delay(function()
+  {
+   return Concurrency.While(function()
+   {
+    return true;
+   },Concurrency.Delay(function()
+   {
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[FSharpStation.fsId()]),function(a)
+    {
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a.messageId.$0,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(FSharpStation.respondMessage((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a.content)))))]),function()
+     {
+      return Concurrency.Return(null);
+     });
+    });
+   }));
+  })),null);
+ };
+ FSharpStation.respondMessage=function(fsMsg)
+ {
+  var o,o$1,o$2,o$3;
+  return fsMsg.$==1?{
+   $:1,
+   $0:(o=CodeSnippet$1.FetchO(fsMsg.$0),o==null?null:{
+    $:1,
+    $0:FSharpStation["CodeSnippet.Code"](o.$0)
+   })
+  }:fsMsg.$==2?{
+   $:0,
+   $0:CodeSnippet$1.FetchO(fsMsg.$0)
+  }:fsMsg.$==3?{
+   $:1,
+   $0:(o$1=CodeSnippet$1.FetchByPathO(fsMsg.$0),o$1==null?null:{
+    $:1,
+    $0:o$1.$0.content
+   })
+  }:fsMsg.$==4?{
+   $:1,
+   $0:(o$2=CodeSnippet$1.FetchByPathO(fsMsg.$0),o$2==null?null:{
+    $:1,
+    $0:FSharpStation["CodeSnippet.Code"](o$2.$0)
+   })
+  }:fsMsg.$==5?{
+   $:0,
+   $0:CodeSnippet$1.FetchByPathO(fsMsg.$0)
+  }:fsMsg.$==6?{
+   $:1,
+   $0:{
+    $:1,
+    $0:"Message received: "+fsMsg.$0
+   }
+  }:fsMsg.$==7?{
+   $:2,
+   $0:FSharpStation.fsId()
+  }:{
+   $:1,
+   $0:(o$3=CodeSnippet$1.FetchO(fsMsg.$0),o$3==null?null:{
+    $:1,
+    $0:o$3.$0.content
+   })
+  };
+ };
+ FSharpStation.prior=function()
+ {
+  SC$1.$cctor();
+  return SC$1.prior;
+ };
+ FSharpStation.set_prior=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.prior=$1;
+ };
  FSharpStation.rex=function()
  {
   SC$1.$cctor();
@@ -2275,7 +2244,7 @@
   else
    try
    {
-    m=(new String(value)).match(new RegExp(expr,opt));
+    m=(new window.String(value)).match(new window.RegExp(expr,opt));
     return Unchecked.Equals(m,null)?null:m&&Arrays.length(m)===0?null:{
      $:1,
      $0:m
@@ -2303,29 +2272,32 @@
  FSharpStation.downloadFile=function()
  {
   var x,m;
-  saveAs(new Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j))())(x)))],{
+  window.saveAs(new window.Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4))())(x)))],{
    type:"text/plain;charset=utf-8"
   }),(m=FSharpStation.justFileName(FSharpStation.fileName().c),m===""?"snippets.fsjson":m));
   FSharpStation.setClean();
  };
  FSharpStation.loadFile=function(e)
  {
-  if(!FSharpStation.dirty().c||confirm("Changes have not been saved, do you really want to load?"))
-   FSharpStation.loadTextFile(e.getRootNode().firstChild.querySelector("#"+FSharpStation.fileInputElementId()),function(txt)
+  var body;
+  if(!FSharpStation.dirty().c||window.confirm("Changes have not been saved, do you really want to load?"))
    {
-    var a;
-    try
+    FSharpStation.loadTextFile((body=e.getRootNode().body,!body?e.getRootNode().firstChild:body).querySelector("#"+FSharpStation.fileInputElementId()),function(txt)
     {
-     a=((Provider.DecodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j))())(JSON.parse(txt));
-     FSharpStation.codeSnippets().Set(a);
-     FSharpStation.setClean();
-     FSharpStation.refreshView();
-    }
-    catch(e$1)
-    {
-     alert(String(e$1));
-    }
-   });
+     var a;
+     try
+     {
+      a=((Provider.DecodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3))())(JSON.parse(txt));
+      FSharpStation.codeSnippets().Set(a);
+      FSharpStation.setClean();
+      FSharpStation.refreshView();
+     }
+     catch(e$1)
+     {
+      window.alert(window.String(e$1));
+     }
+    });
+   }
  };
  FSharpStation.fileInputElementId=function()
  {
@@ -2336,7 +2308,7 @@
  {
   var files,reader;
   files=element.files;
-  files.length>0?(reader=new FileReader(),reader.onload=function(e)
+  files.length>0?(reader=new window.FileReader(),reader.onload=function(e)
   {
    return f(e.target.result);
   },reader.readAsText(files.item(0))):void 0;
@@ -2358,22 +2330,22 @@
  FSharpStation.deleteCode=function()
  {
   var o,snp;
-  o=CodeSnippet.FetchO(FSharpStation.currentCodeSnippetId().c);
-  o==null?void 0:(snp=o.$0,confirm((function($1)
+  o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+  o==null?void 0:(snp=o.$0,window.confirm((function($1)
   {
    return function($2)
    {
     return $1("Do you want to delete "+PrintfHelpers.toSafe($2)+"?");
    };
-  }(id))(snp.get_Name()))?(Var.Set(FSharpStation.currentCodeSnippetId(),CodeSnippetId.get_New()),FSharpStation.codeSnippets().Remove(snp),FSharpStation.setDirty(),FSharpStation.refreshView()):void 0);
+  }(window.id))(snp.get_Name()))?(Var.Set(FSharpStation.currentCodeSnippetId(),CodeSnippetId.get_New()),FSharpStation.codeSnippets().Remove(snp),FSharpStation.setDirty(),FSharpStation.refreshView()):void 0);
  };
  FSharpStation.addCode=function()
  {
   var n,o,o$1;
-  n=(o=(o$1=CodeSnippet.PickIO(FSharpStation.currentCodeSnippetId().c),o$1==null?null:{
+  n=(o=(o$1=CodeSnippet$1.PickIO(FSharpStation.currentCodeSnippetId().c),o$1==null?null:{
    $:1,
-   $0:CodeSnippet.New$1(o$1.$0[0]+1,"",o$1.$0[1].parent,List.T.Empty,List.T.Empty,"")
-  }),o==null?CodeSnippet.New$3(""):o.$0);
+   $0:CodeSnippet$1.New(o$1.$0[0]+1,"",o$1.$0[1].parent,List.T.Empty,List.T.Empty,"")
+  }),o==null?CodeSnippet$1.New$2(""):o.$0);
   Var.Set(FSharpStation.currentCodeSnippetId(),n.id);
   FSharpStation.setDirty();
   FSharpStation.refreshView();
@@ -2460,13 +2432,13 @@
   {
    return function($2)
    {
-    return $1(String($2)+"em");
+    return $1(window.String($2)+"em");
    };
-  }(id))(code.Level())),HtmlNode.style("white-space: pre"),HtmlNode.htmlText(Val.map2(function(n)
+  }(window.id))(FSharpStation["CodeSnippet.Level"](code))),HtmlNode.style("white-space: pre"),HtmlNode.htmlText(Val.map2(function(n)
   {
    return function(c)
    {
-    return FSharpStation.snippetName(n,c);
+    return FSStationShared.snippetName(n,c);
    };
   },FSharpStation.curSnippetNameOf(code.id),FSharpStation.curSnippetCodeOf(code.id))),new HtmlNode$1({
    $:5,
@@ -2510,7 +2482,7 @@
   else
    {
     cur=curO.$0;
-    Unchecked.Equals(cur,pre)||FSharpStation.isIndirectPredecessor(cur.id,pre.UniquePredecesors())?void 0:(preds=(List.contains(pre.id,cur.predecessors)?(p=(x=pre.id,function(y)
+    Unchecked.Equals(cur,pre)||FSharpStation.isIndirectPredecessor(cur.id,FSharpStation["CodeSnippet.UniquePredecesors"](pre))?void 0:(preds=(List.contains(pre.id,cur.predecessors)?(p=(x=pre.id,function(y)
     {
      return!Unchecked.Equals(x,y);
     }),function(l)
@@ -2563,8 +2535,8 @@
  FSharpStation.indentCodeOut=function()
  {
   var o,snp,newP,o$1,o$2;
-  o=CodeSnippet.FetchO(FSharpStation.currentCodeSnippetId().c);
-  o==null?void 0:(snp=o.$0,newP=(o$1=(o$2=snp.parent,o$2==null?null:CodeSnippet.FetchO(o$2.$0)),o$1==null?null:o$1.$0.parent),FSharpStation.codeSnippets().UpdateBy(function(c)
+  o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+  o==null?void 0:(snp=o.$0,newP=(o$1=(o$2=snp.parent,o$2==null?null:CodeSnippet$1.FetchO(o$2.$0)),o$1==null?null:o$1.$0.parent),FSharpStation.codeSnippets().UpdateBy(function(c)
   {
    return{
     $:1,
@@ -2575,7 +2547,7 @@
  FSharpStation.indentCodeIn=function()
  {
   var o;
-  o=CodeSnippet.PickIO(FSharpStation.currentCodeSnippetId().c);
+  o=CodeSnippet$1.PickIO(FSharpStation.currentCodeSnippetId().c);
   o==null?void 0:(function(j,snp)
   {
    (function(f,i)
@@ -2617,12 +2589,12 @@
  FSharpStation.reorderSnippet=function(toId,fromId)
  {
   var p,others,moving,$1,$2,ti,tsn,a;
-  function trySnippet(id$1)
+  function trySnippet(id)
   {
    var f;
    f=function(a$1,snp)
    {
-    return Unchecked.Equals(snp.id,id$1);
+    return Unchecked.Equals(snp.id,id);
    };
    return function(s)
    {
@@ -2634,13 +2606,13 @@
   }
   p=Arrays.partition(function(snp)
   {
-   return Unchecked.Equals(snp.id,fromId)||snp.IsDescendantOf(fromId);
+   return Unchecked.Equals(snp.id,fromId)||FSharpStation["CodeSnippet.IsDescendantOf"](snp,fromId);
   },Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()));
   others=p[1];
   moving=p[0];
   $1=(trySnippet(fromId))(moving);
   $2=(trySnippet(toId))(others);
-  $1!=null&&$1.$==1?$2!=null&&$2.$==1?(ti=$2.$0[0],tsn=$2.$0[1],a=Arrays.collect(id,[Slice.array(others,{
+  $1!=null&&$1.$==1?$2!=null&&$2.$==1?(ti=$2.$0[0],tsn=$2.$0[1],a=Arrays.collect(window.id,[Slice.array(others,{
    $:1,
    $0:0
   },{
@@ -2724,8 +2696,8 @@
  FSharpStation.processSnippet=function(msg,processCode)
  {
   var o,code;
-  o=CodeSnippet.FetchO(FSharpStation.currentCodeSnippetId().c);
-  o==null?void 0:(Var.Set(FSharpStation.codeMsgs(),msg),Var.Set(FSharpStation.codeJS(),""),code=o.$0.Code(),Var.Set(FSharpStation.codeFS(),code),processCode(code));
+  o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+  o==null?void 0:(Var.Set(FSharpStation.codeMsgs(),msg),Var.Set(FSharpStation.codeJS(),""),code=FSharpStation["CodeSnippet.Code"](o.$0),Var.Set(FSharpStation.codeFS(),code),processCode(code));
  };
  FSharpStation.runJS=function(msgs,js)
  {
@@ -2746,7 +2718,7 @@
  {
   var window$1,args;
   window$1=(args=[window.location.origin+"/Main.html"],window.open.apply(window,args));
-  Unchecked.Equals(window$1,null)?failure("could not open new browser. Popup blocker may be active."):setTimeout(function()
+  Unchecked.Equals(window$1,null)?failure("could not open new browser. Popup blocker may be active."):window.setTimeout(function()
   {
    try
    {
@@ -2755,7 +2727,7 @@
    }
    catch(e)
    {
-    failure(String(e));
+    failure(window.String(e));
    }
   },600);
  };
@@ -2771,15 +2743,15 @@
    }
    catch(e)
    {
-    failure(String(e));
+    failure(window.String(e));
    }
   }));
  };
  FSharpStation.getFSCode=function()
  {
   var o;
-  o=CodeSnippet.FetchO(FSharpStation.currentCodeSnippetId().c);
-  o==null?void 0:Var.Set(FSharpStation.codeFS(),o.$0.Code());
+  o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+  o==null?void 0:Var.Set(FSharpStation.codeFS(),FSharpStation["CodeSnippet.Code"](o.$0));
  };
  FSharpStation.setClean=function()
  {
@@ -2796,7 +2768,7 @@
    ;
   else
    {
-    Var.Set(FSharpStation.codeMsgs(),($1=FSharpStation.codeMsgs().c,($2=String(msg),$1===null?$2:$1===""?$2:$2===null?$1:$2===""?$1:$1+"\n"+$2)));
+    Var.Set(FSharpStation.codeMsgs(),($1=FSharpStation.codeMsgs().c,($2=window.String(msg),$1===null?$2:$1===""?$2:$2===null?$1:$2===""?$1:$1+"\n"+$2)));
    }
  };
  FSharpStation.codeMsgs=function()
@@ -2826,7 +2798,7 @@
  };
  FSharpStation.noSelection=function(cur)
  {
-  return Unchecked.Equals(CodeSnippet.FetchO(cur),null);
+  return Unchecked.Equals(CodeSnippet$1.FetchO(cur),null);
  };
  FSharpStation.directionVertical=function()
  {
@@ -2910,40 +2882,183 @@
   SC$1.$cctor();
   return SC$1.missingVar;
  };
+ CodeSnippet$1.FetchByPathO=function(names)
+ {
+  var tryFindByName;
+  function tryFindByPath(snps,names$1)
+  {
+   var first,x,f,x$1;
+   first=(x=Seq.tryHead(names$1),x==null?null:tryFindByName(snps,x.$0));
+   return Seq.length(names$1)<=1?first:first==null?null:(f=first.$0,(x$1=Seq.tail(names$1),tryFindByPath(Seq.filter(function(snp)
+   {
+    return Unchecked.Equals(snp.parent,{
+     $:1,
+     $0:f.id
+    });
+   },(FSharpStation.codeSnippets())["var"].RVal()),x$1)));
+  }
+  tryFindByName=function(snps,name)
+  {
+   return Seq.tryHead(Seq.filter(function(snp)
+   {
+    return snp.get_Name()===name;
+   },snps));
+  };
+  return tryFindByPath(Seq.filter(function(snp)
+  {
+   return snp.parent==null;
+  },(FSharpStation.codeSnippets())["var"].RVal()),names);
+ };
+ FSharpStation["CodeSnippet.IsDescendantOf"]=function(_this,antId)
+ {
+  function isDescendantOf(snp)
+  {
+   var m,parId,o,o$1;
+   m=snp.parent;
+   return m!=null&&m.$==1&&(parId=m.$0,Unchecked.Equals(parId,antId)||(o=(o$1=CodeSnippet$1.FetchO(parId),o$1==null?null:{
+    $:1,
+    $0:isDescendantOf(o$1.$0)
+   }),o==null?false:o.$0));
+  }
+  return isDescendantOf(_this);
+ };
+ FSharpStation["CodeSnippet.Code"]=function(_this,u)
+ {
+  var preds;
+  preds=Arrays.ofSeq(FSharpStation["CodeSnippet.UniquePredecesors"](_this));
+  return Strings.concat("\n",Seq.map(FSharpStation["CodeSnippet.ContentIndented"],Seq.filter(function(snp)
+  {
+   return Arrays.contains(snp.id,preds);
+  },(FSharpStation.codeSnippets())["var"].RVal())));
+ };
+ FSharpStation["CodeSnippet.ContentIndented"]=function(_this,u)
+ {
+  var lvl,x;
+  lvl=FSharpStation["CodeSnippet.Level"](_this);
+  x=Strings.Replace(lvl===0||lvl===1?_this.content:Strings.concat("\n",Arrays.map(function(l)
+  {
+   return Strings.StartsWith(l,"#")?l:Strings.replicate(lvl,"  ")+l;
+  },Strings.SplitChars(_this.content,[10],0))),"##"+"FSHARPSTATION_ID"+"##",FSharpStation.fsIds());
+  return((((Runtime.Curried(function($1,$2,$3,$4)
+  {
+   return $1("# 1 @\""+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3)+"\"\n"+PrintfHelpers.toSafe($4));
+  },4))(window.id))(lvl===0||lvl===1?"":(function($1)
+  {
+   return function($2)
+   {
+    return $1("("+window.String($2)+")");
+   };
+  }(window.id))(lvl*2)))(FSharpStation["CodeSnippet.get_NameSanitized"](_this)))(x);
+ };
+ FSharpStation["CodeSnippet.get_NameSanitized"]=function(_this,u)
+ {
+  return"F# "+FSStationShared.sanitize(_this.get_Name())+".fsx";
+ };
+ FSharpStation["CodeSnippet.Level"]=function(_this,u)
+ {
+  function level(snp,out)
+  {
+   var o,o$1,o$2;
+   o=(o$1=(o$2=snp.parent,o$2==null?null:CodeSnippet$1.FetchO(o$2.$0)),o$1==null?null:{
+    $:1,
+    $0:level(o$1.$0,out+1)
+   });
+   return o==null?out:o.$0;
+  }
+  return level(_this,0);
+ };
+ FSharpStation["CodeSnippet.UniquePredecesors"]=function(_this,u)
+ {
+  function preds(ins,outs)
+  {
+   var hd;
+   return ins.$==1?(hd=ins.$0,preds(List.collect(window.id,List.ofArray([ins.$1,List.collect(function(s)
+   {
+    return List.append(Option.toList(s.parent),s.predecessors);
+   },CodeSnippet$1.FetchL(hd))])),Seq.contains(hd,outs)?outs:new List.T({
+    $:1,
+    $0:hd,
+    $1:outs
+   }))):outs;
+  }
+  return preds(List.ofArray([_this.id]),List.T.Empty);
+ };
+ CodeSnippet$1.New=function(od,nm,pa,pred,co,cnt)
+ {
+  var newS,$1,a,a$1,t;
+  newS=CodeSnippet.New(nm,cnt,pa,pred,co,CodeSnippetId.get_New(),true);
+  $1=FSharpStation.codeSnippets().get_Length();
+  $1===0?FSharpStation.codeSnippets().Append(newS):od===0?(a=Seq.append([newS],(FSharpStation.codeSnippets())["var"].RVal()),FSharpStation.codeSnippets().Set(a)):od<$1?(a$1=(t=Arrays.splitAt(od,Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal())),t[0].concat([newS].concat(t[1]))),FSharpStation.codeSnippets().Set(a$1)):FSharpStation.codeSnippets().Append(newS);
+  return newS;
+ };
+ CodeSnippet$1.New$1=function(nm,pa,pred,co,cnt)
+ {
+  return CodeSnippet$1.New(FSharpStation.codeSnippets().get_Length(),nm,pa,pred,co,cnt);
+ };
+ CodeSnippet$1.New$2=function(cnt)
+ {
+  return CodeSnippet$1.New$1("",null,List.T.Empty,List.T.Empty,cnt);
+ };
+ CodeSnippet$1.New$3=function(pa,cnt)
+ {
+  return CodeSnippet$1.New$1("",{
+   $:1,
+   $0:pa
+  },List.T.Empty,List.T.Empty,cnt);
+ };
+ CodeSnippet$1.New$4=function(pa,pred,cnt)
+ {
+  return CodeSnippet$1.New$1("",{
+   $:1,
+   $0:pa
+  },pred,List.T.Empty,cnt);
+ };
+ CodeSnippet$1.New$5=function(pred,cnt)
+ {
+  return CodeSnippet$1.New$1("",null,pred,List.T.Empty,cnt);
+ };
+ CodeSnippet$1.FetchL=function(id)
+ {
+  return Option.toList(CodeSnippet$1.FetchO(id));
+ };
+ CodeSnippet$1.FetchO=function(id)
+ {
+  return FSharpStation.codeSnippets().TryFindByKey(id);
+ };
+ CodeSnippet$1.PickIO=function(id)
+ {
+  var f;
+  f=function(a,snp)
+  {
+   return Unchecked.Equals(snp.id,id);
+  };
+  return FSharpStation.tryPickI(function($1)
+  {
+   return f($1[0],$1[1]);
+  },(FSharpStation.codeSnippets())["var"].RVal());
+ };
  FSharpStation.tryPickI=function(f,s)
  {
   return Seq.tryHead(Seq.filter(f,Seq.indexed(s)));
+ };
+ FSharpStation.fsId=function()
+ {
+  SC$1.$cctor();
+  return SC$1.fsId;
+ };
+ FSharpStation.fsIds=function()
+ {
+  SC$1.$cctor();
+  return SC$1.fsIds;
  };
  FSharpStation.codeSnippets=function()
  {
   SC$1.$cctor();
   return SC$1.codeSnippets;
  };
- FSharpStation.codeSnippetsStorage=function()
- {
-  SC$1.$cctor();
-  return SC$1.codeSnippetsStorage;
- };
- FSharpStation.sanitize=function(n)
- {
-  var illegal;
-  illegal=[34,60,62,124,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,58,42,63,92,47];
-  return Strings.Filter(function(c)
-  {
-   return!Arrays.contains(c,illegal);
-  },n);
- };
- FSharpStation.snippetName=function(name,content)
- {
-  var o;
-  return name!==""?name:(o=Seq.tryHead(Seq.filter(function(l)
-  {
-   return!(Strings.StartsWith(l,"#")||Strings.StartsWith(l,"[<")||Strings.StartsWith(l,"//"));
-  },Seq.map(Strings.Trim,Strings.SplitChars(content,[10],1)))),o==null?"<empty>":o.$0);
- };
  SC$1.$cctor=Runtime.Cctor(function()
  {
-  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,s$2,v$5,v$6,f,m$1,g$2,v$7,view,contentVar,changingIRefO,f$1,s$3,v$8,v$9,s$4,v$10,v$11,s$5,v$12,v$13,x;
+  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,f,g$2,v$5,view,contentVar,changingIRefO,f$1,s$2,v$6,v$7,s$3,v$8,v$9,s$4,v$10,v$11,x;
   SC$1.callAddClass=HtmlNode.addClass("a","b");
   SC$1.getClass=function(e)
   {
@@ -2960,11 +3075,11 @@
   {
    return g(HtmlNode.chooseNode(x$1));
   });
-  SC$1.string2Styles=(g$1=(m=function(n,v$14)
+  SC$1.string2Styles=(g$1=(m=function(n,v$12)
   {
    return new HtmlNode$1({
     $:5,
-    $0:AttrModule.Style(n,v$14)
+    $0:AttrModule.Style(n,v$12)
    });
   },function(a)
   {
@@ -2977,23 +3092,24 @@
    return g$1(HtmlNode.style2pairs(x$1));
   });
   SC$1.codeMirrorIncludes=["/EPFileX/codemirror/scripts/codemirror/codemirror.js","/EPFileX/codemirror/scripts/intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js","/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js","/EPFileX/codemirror/scripts/addon/search/searchcursor.js","/EPFileX/codemirror/scripts/addon/search/search.js","/EPFileX/codemirror/scripts/addon/search/jump-to-line.js","/EPFileX/codemirror/scripts/addon/dialog/dialog.js","/EPFileX/codemirror/scripts/addon/edit/matchbrackets.js","/EPFileX/codemirror/scripts/addon/selection/active-line.js","/EPFileX/codemirror/scripts/addon/display/fullscreen.js"];
-  SC$1.codeSnippetsStorage=Storage.LocalStorage("CodeSnippets",{
-   Encode:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j(),
-   Decode:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j()
-  });
-  SC$1.codeSnippets=ListModel.CreateWithStorage(function(s$6)
+  SC$1.codeSnippets=ListModel.Create(function(s$5)
   {
-   return s$6.id;
-  },FSharpStation.codeSnippetsStorage());
+   return s$5.id;
+  },List.T.Empty);
+  SC$1.fsIds="FSharpStation-"+window.String(Guid.NewGuid());
+  SC$1.fsId={
+   $:0,
+   $0:FSharpStation.fsIds()
+  };
   SC$1.missingVar=Var.Create$1("");
   SC$1.currentCodeSnippetId=Var.Create$1(CodeSnippetId.get_New());
   s="CodeEditor."+"currentCodeSnippetId";
   v$1=FSharpStation.currentCodeSnippetId();
   v$2=window.localStorage.getItem(s);
-  v$2!==null?v$1.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1())(JSON.parse(v$2))):void 0;
-  Val.sink(function(v$14)
+  v$2!==null?v$1.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j())(JSON.parse(v$2))):void 0;
+  Val.sink(function(v$12)
   {
-   window.localStorage.setItem(s,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1())(v$14)));
+   window.localStorage.setItem(s,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j())(v$12)));
   },v$1);
   SC$1.refresh=Var.Create$1();
   SC$1.currentCodeSnippetO=Val.map2(function(k)
@@ -3007,10 +3123,10 @@
   s$1="CodeEditor."+"position";
   v$3=FSharpStation.position();
   v$4=window.localStorage.getItem(s$1);
-  v$4!==null?v$3.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(v$4))):void 0;
-  Val.sink(function(v$14)
+  v$4!==null?v$3.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1())(JSON.parse(v$4))):void 0;
+  Val.sink(function(v$12)
   {
-   window.localStorage.setItem(s$1,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(v$14)));
+   window.localStorage.setItem(s$1,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1())(v$12)));
   },v$3);
   SC$1.directionVertical=Val.map(function(pos)
   {
@@ -3021,45 +3137,34 @@
   SC$1.codeFS=Var.Create$1("");
   SC$1.codeJS=Var.Create$1("");
   SC$1.codeMsgs=Var.Create$1("");
-  s$2="CodeEditor."+"dirty";
-  v$5=FSharpStation.dirty();
-  v$6=window.localStorage.getItem(s$2);
-  v$6!==null?v$5.set_RVal(((Provider.Id())())(JSON.parse(v$6))):void 0;
-  Val.sink(function(v$14)
+  Val.sink(function(m$1)
   {
-   window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$14)));
-  },v$5);
-  Val.sink(function(m$2)
-  {
-   window.onbeforeunload=m$2?function(e)
+   window.onbeforeunload=m$1?function(e)
    {
     e.returnValue="Changes you made may not be saved.";
    }:null;
   },FSharpStation.dirty());
   SC$1.draggedId=CodeSnippetId.get_New();
-  SC$1.curPredecessors=Val.map((f=(m$1=function(snp)
-  {
-   return snp.UniquePredecesors();
-  },function(o)
+  SC$1.curPredecessors=Val.map((f=function(o)
   {
    return o==null?null:{
     $:1,
-    $0:m$1(o.$0)
+    $0:FSharpStation["CodeSnippet.UniquePredecesors"](o.$0)
    };
-  }),(g$2=(v$7=List.T.Empty,function(o)
+  },(g$2=(v$5=List.T.Empty,function(o)
   {
-   return o==null?v$7:o.$0;
+   return o==null?v$5:o.$0;
   }),function(x$1)
   {
    return g$2(f(x$1));
   })),FSharpStation.currentCodeSnippetO());
   SC$1.fileName=Var.Create$1("");
-  SC$1.emptyFile=Val.map(function(v$14)
+  SC$1.emptyFile=Val.map(function(v$12)
   {
-   return v$14==="";
+   return v$12==="";
   },FSharpStation.fileName());
   SC$1.fileInputElementId="CodeEditorFileSel";
-  SC$1.loadFileElement=Input.New$2(Var.Lens(FSharpStation.fileName(),FSharpStation.justFileName,id)).Prefix(HtmlNode.label([HtmlNode["class"]("btn btn-primary"),HtmlNode.htmlText("Load File..."),Input.New$2(FSharpStation.fileName()).Type("file").Style("display: none").Content([AttrModule.Handler("change",function(el)
+  SC$1.loadFileElement=Input.New$2(Var.Lens(FSharpStation.fileName(),FSharpStation.justFileName,window.id)).Prefix(HtmlNode.label([HtmlNode["class"]("btn btn-primary"),HtmlNode.htmlText("Load File..."),Input.New$2(FSharpStation.fileName()).Type("file").Style("display: none").Content([AttrModule.Handler("change",function(el)
   {
    return function()
    {
@@ -3072,15 +3177,15 @@
     el.value="";
    };
   })]).Id(FSharpStation.fileInputElementId()).get_Render()]));
-  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { background-color: blue      } \r\n      .Error   { background-color: orangered } \r\n          ";
-  SC$1.codeMirror=CodeMirror$1.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$14)
+  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { background-color: blue    } \r\n      .Error   { background-color: darkred } \r\n          ";
+  SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$12)
   {
    var o,r;
    o=changingIRefO[0];
-   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),v$14)?r.set_RVal(v$14):void 0);
-  },contentVar.v),View.Sink(function(v$14)
+   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),v$12)?r.set_RVal(v$12):void 0);
+  },contentVar.v),View.Sink(function(v$12)
   {
-   Var.Set(contentVar,v$14);
+   Var.Set(contentVar,v$12);
   },View.Bind(function(cur)
   {
    var r;
@@ -3098,81 +3203,92 @@
   SC$1.rex1="\\((\\d+)\\) F# (.+).fsx\\((\\d+)\\,(\\d+)\\): (error|warning) ((.|\\b)+)";
   SC$1.rex2="(Err|Warning)(FSharp|WebSharper)\\s+\"(\\((\\d+)\\) )?F# (.+?)(.fsx)? \\((\\d+)\\,\\s*(\\d+)\\) - \\((\\d+)\\,\\s*(\\d+)\\) ((.|\\s)+?)"+"\"";
   SC$1.rex=FSharpStation.rex1()+"|"+FSharpStation.rex2();
+  SC$1.prior=["",""];
   f$1=function(msgs,curO)
   {
-   var m$2,editor;
-   m$2=FSharpStation.codeMirror().editorO;
-   m$2!=null&&m$2.$==1?(editor=m$2.$0,curO!=null&&curO.$==1?Val.iter(function(name)
+   var b;
+   Concurrency.Start((b=null,Concurrency.Delay(function()
    {
-    var a,a$1;
-    ((function($1)
+    var m$1,editor;
+    m$1=FSharpStation.codeMirror().editorO;
+    return m$1!=null&&m$1.$==1?(editor=m$1.$0,curO!=null&&curO.$==1?(Val.iter(function(name)
     {
-     return function($2)
+     var a,a$1;
+     ((function($1)
      {
-      return $1("RemoveMarks: "+PrintfHelpers.toSafe($2));
-     };
-    }(function(s$6)
-    {
-     console.log(s$6);
-    }))(name));
-    while(editor.getAllMarks().length>0)
-     (editor.getAllMarks())[0].clear();
-    a=function(file,fl,fc,tl,tc,sev,from,msg)
-    {
-     (((Runtime.Curried3(function($1,$2,$3)
-     {
-      return $1("inside -"+PrintfHelpers.toSafe($2)+"-"+PrintfHelpers.toSafe($3)+"-");
-     }))(function(s$6)
-     {
-      console.log(s$6);
-     }))(file))(FSharpStation.sanitize(name));
-     file===FSharpStation.sanitize(name)?setTimeout(function()
-     {
-      ((((function(t)
+      return function($2)
       {
-       var a$2,a$3;
-       a$2=t[0];
-       a$3=t[1];
-       return function(t$1)
+       return $1("RemoveMarks: "+PrintfHelpers.toSafe($2));
+      };
+     }(function(s$5)
+     {
+      console.log(s$5);
+     }))(name));
+     if(Unchecked.Equals(FSharpStation.prior(),[msgs,name]))
+      void 0;
+     else
+      {
+       FSharpStation.set_prior([msgs,name]);
+       while(editor.getAllMarks().length>0)
+        (editor.getAllMarks())[0].clear();
+       a=function(file,fl,fc,tl,tc,sev,from,msg)
        {
-        var a$4,a$5;
-        a$4=t$1[0];
-        a$5=t$1[1];
-        return function(a$6)
+        (((Runtime.Curried3(function($1,$2,$3)
         {
-         return function(a$7)
+         return $1("inside -"+PrintfHelpers.toSafe($2)+"-"+PrintfHelpers.toSafe($3)+"-");
+        }))(function(s$5)
+        {
+         console.log(s$5);
+        }))(file))(FSStationShared.sanitize(name));
+        file===FSStationShared.sanitize(name)?window.setTimeout(function()
+        {
+         ((((function(t)
          {
-          return editor.getDoc().markText({
-           line:a$2,
-           ch:a$3
-          },{
-           line:a$4,
-           ch:a$5
-          },{
-           className:a$6,
-           title:a$7
-          });
-         };
-        };
+          var a$2,a$3;
+          a$2=t[0];
+          a$3=t[1];
+          return function(t$1)
+          {
+           var a$4,a$5;
+           a$4=t$1[0];
+           a$5=t$1[1];
+           return function(a$6)
+           {
+            return function(a$7)
+            {
+             return editor.getDoc().markText({
+              line:a$2,
+              ch:a$3
+             },{
+              line:a$4,
+              ch:a$5
+             },{
+              className:a$6,
+              title:a$7
+             });
+            };
+           };
+          };
+         }([fl-1,fc]))([tl-1,tc]))(Strings.StartsWith(sev.toUpperCase(),"ERR")?"Error":"Warning"))(msg));
+        },100):void 0;
        };
-      }([fl-1,fc]))([tl-1,tc]))(Strings.StartsWith(sev.toUpperCase(),"ERR")?"Error":"Warning"))(msg));
-     },100):void 0;
-    };
-    Arrays.iter(function($1)
-    {
-     return a($1[0],$1[1],$1[2],$1[3],$1[4],$1[5],$1[6],$1[7]);
-    },Arrays.choose(function(v$14)
-    {
-     var $1,a$2,t,indent,$2,a$3,t$1,fc,fl,indent$1;
-     return(a$2=FSharpStation.REGEX(FSharpStation.rex2(),"",v$14),a$2!=null&&a$2.$==1&&((t=a$2.$0,t&&Arrays.length(t)===13)&&($1=[Arrays.get(a$2.$0,8),Arrays.get(a$2.$0,5),Arrays.get(a$2.$0,7),Arrays.get(a$2.$0,2),Arrays.get(a$2.$0,4),Arrays.get(a$2.$0,11),Arrays.get(a$2.$0,1),Arrays.get(a$2.$0,10),Arrays.get(a$2.$0,9)],true)))?(indent=$1[4],{
-      $:1,
-      $0:[$1[1],$1[2]<<0,($1[0]<<0)-(indent<<0),$1[8]<<0,($1[7]<<0)-(indent<<0),$1[6],$1[3],$1[5]]
-     }):(a$3=FSharpStation.REGEX(FSharpStation.rex1(),"",v$14),a$3!=null&&a$3.$==1&&((t$1=a$3.$0,t$1&&Arrays.length(t$1)===8)&&($2=[Arrays.get(a$3.$0,4),Arrays.get(a$3.$0,2),Arrays.get(a$3.$0,3),Arrays.get(a$3.$0,1),Arrays.get(a$3.$0,6),Arrays.get(a$3.$0,5)],true)))?(fc=$2[0],(fl=$2[2],(indent$1=$2[3],{
-      $:1,
-      $0:[$2[1],fl<<0,(fc<<0)-(indent$1<<0)-1,fl<<0,(fc<<0)-(indent$1<<0),$2[5],"fsi",$2[4]]
-     }))):null;
-    },(a$1=FSharpStation.REGEX(FSharpStation.rex(),"g",msgs),a$1!=null&&a$1.$==1?a$1.$0:[])));
-   },FSharpStation.curSnippetNameOf(curO.$0.id)):void 0):void 0;
+       Arrays.iter(function($1)
+       {
+        return a($1[0],$1[1],$1[2],$1[3],$1[4],$1[5],$1[6],$1[7]);
+       },Arrays.choose(function(v$12)
+       {
+        var $1,a$2,t,indent,$2,a$3,t$1,fc,fl,indent$1;
+        return(a$2=FSharpStation.REGEX(FSharpStation.rex2(),"",v$12),a$2!=null&&a$2.$==1&&((t=a$2.$0,t&&Arrays.length(t)===13)&&($1=[Arrays.get(a$2.$0,8),Arrays.get(a$2.$0,5),Arrays.get(a$2.$0,7),Arrays.get(a$2.$0,2),Arrays.get(a$2.$0,4),Arrays.get(a$2.$0,11),Arrays.get(a$2.$0,1),Arrays.get(a$2.$0,10),Arrays.get(a$2.$0,9)],true)))?(indent=$1[4],{
+         $:1,
+         $0:[$1[1],$1[2]<<0,($1[0]<<0)-(indent<<0),$1[8]<<0,($1[7]<<0)-(indent<<0),$1[6],$1[3],$1[5]]
+        }):(a$3=FSharpStation.REGEX(FSharpStation.rex1(),"",v$12),a$3!=null&&a$3.$==1&&((t$1=a$3.$0,t$1&&Arrays.length(t$1)===8)&&($2=[Arrays.get(a$3.$0,4),Arrays.get(a$3.$0,2),Arrays.get(a$3.$0,3),Arrays.get(a$3.$0,1),Arrays.get(a$3.$0,6),Arrays.get(a$3.$0,5)],true)))?(fc=$2[0],(fl=$2[2],(indent$1=$2[3],{
+         $:1,
+         $0:[$2[1],fl<<0,(fc<<0)-(indent$1<<0)-1,fl<<0,(fc<<0)-(indent$1<<0),$2[5],"fsi",$2[4]]
+        }))):null;
+       },(a$1=FSharpStation.REGEX(FSharpStation.rex(),"g",msgs),a$1!=null&&a$1.$==1?a$1.$0:[])));
+      }
+    },FSharpStation.curSnippetNameOf(curO.$0.id)),Concurrency.Zero()):Concurrency.Zero()):Concurrency.Zero();
+   })),null);
   };
   Val.sink(function($1)
   {
@@ -3184,65 +3300,81 @@
     return[msgs,curO];
    };
   },FSharpStation.codeMsgs(),FSharpStation.currentCodeSnippetO()));
-  SC$1.spl1=SplitterBar.New$1(20).Children([HtmlNode.style("grid-row: 2 / 4")]);
-  s$3="CodeEditor."+"splitterV1";
-  v$8=FSharpStation.spl1().get_Var();
-  v$9=window.localStorage.getItem(s$3);
-  v$9!==null?v$8.set_RVal(((Provider.Id())())(JSON.parse(v$9))):void 0;
-  Val.sink(function(v$14)
+  window.setTimeout(function()
   {
-   window.localStorage.setItem(s$3,JSON.stringify(((Provider.Id())())(v$14)));
-  },v$8);
+   FSharpStation.awaitMessage();
+  },1000);
+  SC$1.spl1=SplitterBar.New$1(20).Children([HtmlNode.style("grid-row: 2 / 4")]);
+  s$2="CodeEditor."+"splitterV1";
+  v$6=FSharpStation.spl1().get_Var();
+  v$7=window.localStorage.getItem(s$2);
+  v$7!==null?v$6.set_RVal(((Provider.Id())())(JSON.parse(v$7))):void 0;
+  Val.sink(function(v$12)
+  {
+   window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$12)));
+  },v$6);
   SC$1.splitterMain1=SplitterBar.New$1(0).Vertical$1(FSharpStation.directionVertical()).Min(0).Max(35);
   SC$1.splitterMain2=SplitterBar.New$1(24).Vertical$1(FSharpStation.directionVertical()).Min(0.5).Max(Val.map(function(pos)
   {
    return pos.$===3?0.1:50;
   },FSharpStation.position())).get_Before();
-  s$4="CodeEditor."+"splitterMain1";
-  v$10=FSharpStation.splitterMain1().get_Var();
+  s$3="CodeEditor."+"splitterMain1";
+  v$8=FSharpStation.splitterMain1().get_Var();
+  v$9=window.localStorage.getItem(s$3);
+  v$9!==null?v$8.set_RVal(((Provider.Id())())(JSON.parse(v$9))):void 0;
+  Val.sink(function(v$12)
+  {
+   window.localStorage.setItem(s$3,JSON.stringify(((Provider.Id())())(v$12)));
+  },v$8);
+  s$4="CodeEditor."+"splitterMain2";
+  v$10=FSharpStation.splitterMain2().get_Var();
   v$11=window.localStorage.getItem(s$4);
   v$11!==null?v$10.set_RVal(((Provider.Id())())(JSON.parse(v$11))):void 0;
-  Val.sink(function(v$14)
+  Val.sink(function(v$12)
   {
-   window.localStorage.setItem(s$4,JSON.stringify(((Provider.Id())())(v$14)));
+   window.localStorage.setItem(s$4,JSON.stringify(((Provider.Id())())(v$12)));
   },v$10);
-  s$5="CodeEditor."+"splitterMain2";
-  v$12=FSharpStation.splitterMain2().get_Var();
-  v$13=window.localStorage.getItem(s$5);
-  v$13!==null?v$12.set_RVal(((Provider.Id())())(JSON.parse(v$13))):void 0;
-  Val.sink(function(v$14)
-  {
-   window.localStorage.setItem(s$5,JSON.stringify(((Provider.Id())())(v$14)));
-  },v$12);
   SC$1.grid=Grid.get_New().Padding(0).Content$1("editor",FSharpStation.CodeEditor()).Content(HtmlNode.style("height: 100vh; margin: 0px; ")).Content(HtmlNode.css("\r\n                 #CodeEditor              { grid-area: editor  ; overflow: hidden; }\r\n                 #TestNode                { grid-area: testNode; overflow: auto  ; }\r\n                 body > div:first-of-type { grid-area: header  ; overflow: hidden; }\r\n             "));
   (x=HtmlNode.bindHElem(HtmlNode.body,Val.map(function(dir)
   {
    return(dir?FSharpStation.grid().ColVariable$1(FSharpStation.splitterMain1()).ColAuto(16).ColVariable$1(FSharpStation.splitterMain2()).Content(HtmlNode.style(" grid-template-areas: 'header   editor   testNode'; ")):FSharpStation.grid().RowVariable$1(FSharpStation.splitterMain1()).RowAuto(16).RowVariable$1(FSharpStation.splitterMain2()).Content(HtmlNode.style(" grid-template-areas: 'header' 'editor' 'testNode'; "))).GridTemplate();
-  },FSharpStation.directionVertical())),(HtmlNode.renderDoc())(x)).ReplaceInDom(document.body);
+  },FSharpStation.directionVertical())),(HtmlNode.renderDoc())(x)).ReplaceInDom(window.document.body);
   SC$1.$cctor=window.ignore;
  });
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]],[3,[]]]))();
- };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
- };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1),0],["companions",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1,0],["expanded",Provider.Id(),0]]))();
- };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
- };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v=(Provider.DecodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1,1],["predecessors",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1),0],["companions",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1,0],["expanded",Provider.Id(),0]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]],[3,[]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4,1]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3,0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["companions",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0],["expanded",Provider.Id(),0]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$2=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[1,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[3,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[4,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[5,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[6,[["$0","Item",Provider.Id(),0]]],[7,[]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3=(Provider.DecodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,1],["predecessors",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j),0],["companions",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0],["expanded",Provider.Id(),0]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$1=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]],[3,[]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$1=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]],[3,[]]]))();
  };
 });

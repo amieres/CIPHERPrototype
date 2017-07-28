@@ -932,8 +932,8 @@
             $:1,
             $0:a$1
            });
-           return Concurrency.Return(null);
-          })):(scanNext(),Concurrency.Return(null));
+           return Concurrency.Zero();
+          })):(scanNext(),Concurrency.Zero());
          }))
         };
        }
@@ -952,16 +952,16 @@
           m$3=scanner($this.mailbox.n.v);
           return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
           {
-           return waiting[0]?(waiting[0]=false,clearTimeout(pending),ok({
+           return waiting[0]?(waiting[0]=false,window.clearTimeout(pending),ok({
             $:1,
             $0:a$1
-           }),Concurrency.Return(null)):Concurrency.Return(null);
-          })):(scanNext$1(),Concurrency.Return(null));
+           }),Concurrency.Zero()):Concurrency.Zero();
+          })):(scanNext$1(),Concurrency.Zero());
          }))
         };
        }
        waiting=[true];
-       pending=setTimeout(function()
+       pending=window.setTimeout(function()
        {
         if(waiting[0])
          {
@@ -1033,7 +1033,7 @@
         }
       }));
       $this.resume();
-      setTimeout(function()
+      window.setTimeout(function()
       {
        if(waiting[0])
         {
@@ -1090,14 +1090,14 @@
           $:1,
           $0:$this.dequeue()
          });
-         return Concurrency.Return(null);
+         return Concurrency.Zero();
         }))
        };
       }
      else
       {
        waiting=[true];
-       pending=setTimeout(function()
+       pending=window.setTimeout(function()
        {
         if(waiting[0])
          {
@@ -1110,10 +1110,10 @@
         $:1,
         $0:(b$1=null,Concurrency.Delay(function()
         {
-         return waiting[0]?(waiting[0]=false,clearTimeout(pending),ok({
+         return waiting[0]?(waiting[0]=false,window.clearTimeout(pending),ok({
           $:1,
           $0:$this.dequeue()
-         }),Concurrency.Return(null)):Concurrency.Return(null);
+         }),Concurrency.Zero()):Concurrency.Zero();
         }))
        };
       }
@@ -1144,7 +1144,7 @@
     }),function(a)
     {
      $this.errorEvent.event.Trigger(a);
-     return Concurrency.Return(null);
+     return Concurrency.Zero();
     });
    }))));
   },

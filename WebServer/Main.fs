@@ -7,6 +7,11 @@ open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI.Next
 
+WebSharper.Web.Remoting.AddAllowedOrigin "http://localhost"
+WebSharper.Web.Remoting.AddAllowedOrigin "http://*"
+WebSharper.Web.Remoting.AddAllowedOrigin "file://"
+WebSharper.Web.Remoting.DisableCsrfProtection()
+
 type WebServerError =
     | ErrUserIsNotLoggedIn
     | ExceptionThrown      of exn

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,JavaScript,JSModule,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,PrintfHelpers,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Nullable,Operators,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,Runtime;
+ var WebSharper,JavaScript,JSModule,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,PrintfHelpers,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Nullable,Operators,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,Date,console,String,Math;
  WebSharper=window.WebSharper=window.WebSharper||{};
  JavaScript=WebSharper.JavaScript=WebSharper.JavaScript||{};
  JSModule=JavaScript.JSModule=JavaScript.JSModule||{};
@@ -74,7 +74,13 @@
  TaskCompletionSource=WebSharper.TaskCompletionSource=WebSharper.TaskCompletionSource||{};
  Unchecked=WebSharper.Unchecked=WebSharper.Unchecked||{};
  Numeric=WebSharper.Numeric=WebSharper.Numeric||{};
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ JSON=window.JSON;
+ Date=window.Date;
+ console=window.console;
+ String=window.String;
+ Math=window.Math;
  JSModule.GetFieldValues=function(o)
  {
   var r,k;
@@ -226,7 +232,7 @@
    else
     if(typeof x=="object")
     {
-     if(x instanceof Array)
+     if(x instanceof window.Array)
       return Json.shallowMap(decode,x);
      else
       {
@@ -263,7 +269,7 @@
  Json.shallowMap=function(f,x)
  {
   var r,k;
-  if(x instanceof Array)
+  if(x instanceof window.Array)
    return Arrays.map(f,x);
   else
    if(typeof x=="object")
@@ -402,8 +408,8 @@
  Remoting.ajax=function(async,url,headers,data,ok,err,csrf)
  {
   var xhr,csrf$1,h;
-  xhr=new XMLHttpRequest();
-  csrf$1=document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*csrftoken\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1");
+  xhr=new window.XMLHttpRequest();
+  csrf$1=window.document.cookie.replace(new window.RegExp("(?:(?:^|.*;)\\s*csrftoken\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1");
   xhr.open("POST",url,async);
   if(async==true)
    xhr.withCredentials=true;
@@ -421,7 +427,7 @@
     else
      {
       msg="Response status is not 200: ";
-      err(new Error(msg+xhr.status));
+      err(new window.Error(msg+xhr.status));
      }
   }
   if("onload"in xhr)
@@ -485,13 +491,13 @@
  PrintfHelpers.prettyPrint=function(o)
  {
   var t,s,m;
-  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof Array?"[|"+Strings.concat("; ",Arrays.map(PrintfHelpers.prettyPrint,o))+"|]":(s=String(o),s==="[object Object]"?"{"+Strings.concat("; ",(m=function(k,v)
+  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof window.Array?"[|"+Strings.concat("; ",Arrays.map(PrintfHelpers.prettyPrint,o))+"|]":(s=window.String(o),s==="[object Object]"?"{"+Strings.concat("; ",(m=function(k,v)
   {
    return k+" = "+PrintfHelpers.prettyPrint(v);
   },Arrays.map(function($1)
   {
    return m($1[0],$1[1]);
-  },JSModule.GetFields(o))))+"}":s):String(o));
+  },JSModule.GetFields(o))))+"}":s):window.String(o));
  };
  PrintfHelpers.printArray2D=function(p,o)
  {
@@ -553,7 +559,7 @@
     else
      {
       (this.robin.shift())();
-      Date.now()-t>40?(setTimeout(function()
+      Date.now()-t>40?(window.setTimeout(function()
       {
        $this.tick();
       },0),loop=false):void 0;
@@ -564,7 +570,7 @@
    var $this;
    $this=this;
    this.robin.push(action);
-   this.idle?(this.idle=false,setTimeout(function()
+   this.idle?(this.idle=false,window.setTimeout(function()
    {
     $this.tick();
    },0)):void 0;
@@ -641,7 +647,7 @@
    queue=[];
    tReg=t!=null&&t.$==1?{
     $:1,
-    $0:setTimeout(function()
+    $0:window.setTimeout(function()
     {
      var err;
      inTime[0]=false;
@@ -665,7 +671,7 @@
           $:1,
           $0:res
          };
-         tReg!=null&&tReg.$==1?clearTimeout(tReg.$0):void 0;
+         tReg!=null&&tReg.$==1?window.clearTimeout(tReg.$0):void 0;
          while(queue.length>0)
           (queue.shift())(res);
         }
@@ -701,7 +707,7 @@
    var n,o,a,accept;
    n=cs$1.length;
    o=[n];
-   a=new Array(n);
+   a=new window.Array(n);
    accept=function(i,x)
    {
     var $1,$2;
@@ -751,7 +757,7 @@
    var pending,creg;
    pending=void 0;
    creg=void 0;
-   pending=setTimeout(function()
+   pending=window.setTimeout(function()
    {
     creg.Dispose();
     Concurrency.scheduler().Fork(function()
@@ -764,7 +770,7 @@
    },ms);
    creg=Concurrency.Register(c.ct,function()
    {
-    clearTimeout(pending);
+    window.clearTimeout(pending);
     Concurrency.scheduler().Fork(function()
     {
      Concurrency.cancel(c);
@@ -1104,6 +1110,11 @@
    });
   });
  };
+ Concurrency.Zero=function()
+ {
+  SC$2.$cctor();
+  return SC$2.Zero;
+ };
  Concurrency.Return=function(x)
  {
   return function(c)
@@ -1171,6 +1182,7 @@
   };
   SC$2.scheduler=new Scheduler.New();
   SC$2.defCTS=[new CancellationTokenSource.New()];
+  SC$2.Zero=Concurrency.Return();
   SC$2.GetCT=function(c)
   {
    c.k({
@@ -1208,11 +1220,11 @@
  },T);
  Enumerator.Get0=function(x)
  {
-  return x instanceof Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):"GetEnumerator0"in x?x.GetEnumerator0():x.GetEnumerator();
+  return x instanceof window.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):"GetEnumerator0"in x?x.GetEnumerator0():x.GetEnumerator();
  };
  Enumerator.Get=function(x)
  {
-  return x instanceof Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):x.GetEnumerator();
+  return x instanceof window.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):x.GetEnumerator();
  };
  Enumerator.StringEnumerator=function(s)
  {
@@ -1244,20 +1256,20 @@
  },SingleNode);
  Activator.hasDocument=function()
  {
-  return typeof document!=="undefined";
+  return typeof window.document!=="undefined";
  };
  Activator.Activate=function()
  {
   var meta;
   if(Activator.hasDocument())
    {
-    meta=document.getElementById("websharper-data");
-    meta?jQuery(document).ready(function()
+    meta=window.document.getElementById("websharper-data");
+    meta?window.jQuery(window.document).ready(function()
     {
      var a;
      a=function(k,v)
      {
-      v.Body().ReplaceInDom(document.getElementById(k));
+      v.Body().ReplaceInDom(window.document.getElementById(k));
      };
      return Arrays.iter(function($1)
      {
@@ -1341,7 +1353,7 @@
  Arrays.mapFold=function(f,zero,arr)
  {
   var acc,r,i,$1,p;
-  r=new Array(arr.length);
+  r=new window.Array(arr.length);
   acc=zero;
   for(i=0,$1=arr.length-1;i<=$1;i++){
    p=f(acc,arr[i]);
@@ -1353,7 +1365,7 @@
  Arrays.mapFoldBack=function(f,arr,zero)
  {
   var acc,$1,r,len,j,$2,i,p;
-  r=new Array(arr.length);
+  r=new window.Array(arr.length);
   acc=zero;
   len=arr.length;
   for(j=1,$2=len;j<=$2;j++){
@@ -1719,11 +1731,11 @@
  };
  Arrays.average=function(arr)
  {
-  return Number(Arrays.sum(arr))/Number(arr.length);
+  return window.Number(Arrays.sum(arr))/window.Number(arr.length);
  };
  Arrays.averageBy=function(f,arr)
  {
-  return Number(Arrays.sumBy(f,arr))/Number(arr.length);
+  return window.Number(Arrays.sumBy(f,arr))/window.Number(arr.length);
  };
  Arrays.blit=function(arr1,start1,arr2,start2,length)
  {
@@ -1744,16 +1756,16 @@
  };
  Arrays.collect=function(f,x)
  {
-  return Array.prototype.concat.apply([],Arrays.map(f,x));
+  return window.Array.prototype.concat.apply([],Arrays.map(f,x));
  };
  Arrays.concat=function(xs)
  {
-  return Array.prototype.concat.apply([],Arrays.ofSeq(xs));
+  return window.Array.prototype.concat.apply([],Arrays.ofSeq(xs));
  };
  Arrays.create=function(size,value)
  {
   var r,i,$1;
-  r=new Array(size);
+  r=new window.Array(size);
   for(i=0,$1=size-1;i<=$1;i++)r[i]=value;
   return r;
  };
@@ -1873,7 +1885,7 @@
  {
   var r,i,$1;
   size<0?Operators.FailWith("Negative size given."):null;
-  r=new Array(size);
+  r=new window.Array(size);
   for(i=0,$1=size-1;i<=$1;i++)r[i]=f(i);
   return r;
  };
@@ -1902,7 +1914,7 @@
  Arrays.map=function(f,arr)
  {
   var r,i,$1;
-  r=new Array(arr.length);
+  r=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)r[i]=f(arr[i]);
   return r;
  };
@@ -1910,14 +1922,14 @@
  {
   var r,i,$1;
   Arrays.checkLength(arr1,arr2);
-  r=new Array(arr2.length);
+  r=new window.Array(arr2.length);
   for(i=0,$1=arr2.length-1;i<=$1;i++)r[i]=f(arr1[i],arr2[i]);
   return r;
  };
  Arrays.mapi=function(f,arr)
  {
   var y,i,$1;
-  y=new Array(arr.length);
+  y=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)y[i]=f(i,arr[i]);
   return y;
  };
@@ -1925,7 +1937,7 @@
  {
   var res,i,$1;
   Arrays.checkLength(arr1,arr2);
-  res=new Array(arr1.length);
+  res=new window.Array(arr1.length);
   for(i=0,$1=arr1.length-1;i<=$1;i++)res[i]=f(i,arr1[i],arr2[i]);
   return res;
  };
@@ -1972,7 +1984,7 @@
  Arrays.ofSeq=function(xs)
  {
   var q,o;
-  if(xs instanceof Array)
+  if(xs instanceof window.Array)
    return xs.slice();
   else
    if(xs instanceof T$1)
@@ -2008,7 +2020,7 @@
  Arrays.permute=function(f,arr)
  {
   var ret,i,$1;
-  ret=new Array(arr.length);
+  ret=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)ret[f(i)]=arr[i];
   return ret;
  };
@@ -2038,7 +2050,7 @@
  Arrays.scan=function(f,zero,arr)
  {
   var ret,i,$1;
-  ret=new Array(1+arr.length);
+  ret=new window.Array(1+arr.length);
   ret[0]=zero;
   for(i=0,$1=arr.length-1;i<=$1;i++)ret[i+1]=f(ret[i],arr[i]);
   return ret;
@@ -2047,7 +2059,7 @@
  {
   var len,ret,i,$1;
   len=arr.length;
-  ret=new Array(1+len);
+  ret=new window.Array(1+len);
   ret[len]=zero;
   for(i=0,$1=len-1;i<=$1;i++)ret[len-i-1]=f(arr[len-i-1],ret[len-i]);
   return ret;
@@ -2288,7 +2300,7 @@
   var r,i,$1;
   Arrays.checkLength(arr1,arr2);
   Arrays.checkLength(arr1,arr3);
-  r=new Array(arr3.length);
+  r=new window.Array(arr3.length);
   for(i=0,$1=arr3.length-1;i<=$1;i++)r[i]=f(arr1[i],arr2[i],arr3[i]);
   return r;
  };
@@ -2416,9 +2428,9 @@
   {
    var $this,o;
    $this=this;
-   !this.c?(o=this.pending,o==null?void 0:clearTimeout(o.$0),this.pending={
+   !this.c?(o=this.pending,o==null?void 0:window.clearTimeout(o.$0),this.pending={
     $:1,
-    $0:setTimeout(function()
+    $0:window.setTimeout(function()
     {
      $this.Cancel$1();
     },delay)
@@ -2497,7 +2509,7 @@
  },CancellationTokenSource);
  Char.IsWhiteSpace=function(c)
  {
-  return String.fromCharCode(c).match(new RegExp("\\s"))!==null;
+  return String.fromCharCode(c).match(new window.RegExp("\\s"))!==null;
  };
  Char.Parse=function(s)
  {
@@ -2529,7 +2541,7 @@
  };
  Char.GetNumericValue=function(c)
  {
-  return c>=48&&c<=57?Number(c)-Number(48):-1;
+  return c>=48&&c<=57?window.Number(c)-window.Number(48):-1;
  };
  Util.observer=function(h)
  {
@@ -2581,7 +2593,7 @@
  {
   var d;
   d=Date.parse(s);
-  return isNaN(d)?null:{
+  return window.isNaN(d)?null:{
    $:1,
    $0:d
   };
@@ -2750,7 +2762,7 @@
    },d)?DictionaryUtil.alreadyAdded():void 0,this.count=this.count+1,d.push({
     K:k,
     V:v
-   })):(this.count=this.count+1,this.data[h]=new Array({
+   })):(this.count=this.count+1,this.data[h]=new window.Array({
     K:k,
     V:v
    }));
@@ -2770,7 +2782,7 @@
    })):d[m.$0]={
     K:k,
     V:v
-   }):(this.count=this.count+1,this.data[h]=new Array({
+   }):(this.count=this.count+1,this.data[h]=new window.Array({
     K:k,
     V:v
    }));
@@ -3023,7 +3035,7 @@
  };
  Guid.NewGuid=function()
  {
-  return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(new RegExp("[xy]","g"),function(c)
+  return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(new window.RegExp("[xy]","g"),function(c)
   {
    var r,v;
    r=Math.random()*16|0;
@@ -3705,7 +3717,7 @@
   if(s instanceof T$1)
    return s;
   else
-   if(s instanceof Array)
+   if(s instanceof window.Array)
     return List.ofArray(s);
    else
     {
@@ -3807,7 +3819,7 @@
  {
   var a;
   a=Arrays.ofList(l);
-  Arrays.sortInPlaceByDescending(id,a);
+  Arrays.sortInPlaceByDescending(window.id,a);
   return List.ofArray(a);
  };
  List.sortWith=function(f,l)
@@ -4079,7 +4091,7 @@
  };
  Operators.FailWith=function(msg)
  {
-  throw Error(msg);
+  throw window.Error(msg);
  };
  Slice.string=function(source,start,finish)
  {
@@ -4108,7 +4120,7 @@
   start2$1=start2!=null&&start2.$==1?start2.$0:0;
   finish2$1=finish2!=null&&finish2.$==1?finish2.$0:(arr.length?arr[0].length:0)-1;
   len2=finish2$1-start2$1+1;
-  dst=new Array(len2);
+  dst=new window.Array(len2);
   for(j=0,$1=len2-1;j<=$1;j++)Arrays.set(dst,j,Arrays.get2D(arr,fixed1,start2$1+j));
   return dst;
  };
@@ -4118,7 +4130,7 @@
   start1$1=start1!=null&&start1.$==1?start1.$0:0;
   finish1$1=finish1!=null&&finish1.$==1?finish1.$0:arr.length-1;
   len1=finish1$1-start1$1+1;
-  dst=new Array(len1);
+  dst=new window.Array(len1);
   for(i=0,$1=len1-1;i<=$1;i++)Arrays.set(dst,i,Arrays.get2D(arr,start1$1+i,fixed2));
   return dst;
  };
@@ -4566,7 +4578,7 @@
  };
  Seq.distinct=function(s)
  {
-  return Seq.distinctBy(id,s);
+  return Seq.distinctBy(window.id,s);
  };
  Seq.distinctBy=function(f,s)
  {
@@ -4890,7 +4902,7 @@
  };
  Seq.mapi=function(f,s)
  {
-  return Seq.map2(f,Seq.initInfinite(id),s);
+  return Seq.map2(f,Seq.initInfinite(window.id),s);
  };
  Seq.map2=function(f,s1,s2)
  {
@@ -5084,7 +5096,7 @@
  };
  Seq.sort=function(s)
  {
-  return Seq.sortBy(id,s);
+  return Seq.sortBy(window.id,s);
  };
  Seq.sortBy=function(f,s)
  {
@@ -5108,7 +5120,7 @@
  };
  Seq.sortDescending=function(s)
  {
-  return Seq.sortByDescending(id,s);
+  return Seq.sortByDescending(window.id,s);
  };
  Seq.sum=function(s)
  {
@@ -5387,7 +5399,7 @@
   return Seq.map3(function($1,$2,$3)
   {
    return((f($1))($2))($3);
-  },Seq.initInfinite(id),s1,s2);
+  },Seq.initInfinite(window.id),s1,s2);
  };
  Seq.mapFold=function(f,zero,s)
  {
@@ -5471,7 +5483,7 @@
  };
  Strings.RegexEscape=function(s)
  {
-  return s.replace(new RegExp("[-\\/\\\\^$*+?.()|[\\]{}]","g"),"\\$&");
+  return s.replace(new window.RegExp("[-\\/\\\\^$*+?.()|[\\]{}]","g"),"\\$&");
  };
  Strings.SplitWith=function(str,pat)
  {
@@ -5483,15 +5495,15 @@
  };
  Strings.TrimEndWS=function(s)
  {
-  return s.replace(new RegExp("\\s+$"),"");
+  return s.replace(new window.RegExp("\\s+$"),"");
  };
  Strings.TrimStartWS=function(s)
  {
-  return s.replace(new RegExp("^\\s+"),"");
+  return s.replace(new window.RegExp("^\\s+"),"");
  };
  Strings.Trim=function(s)
  {
-  return s.replace(new RegExp("^\\s+"),"").replace(new RegExp("\\s+$"),"");
+  return s.replace(new window.RegExp("^\\s+"),"").replace(new window.RegExp("\\s+$"),"");
  };
  Strings.StartsWith=function(t,s)
  {
@@ -5511,11 +5523,11 @@
  };
  Strings.PadRightWith=function(s,n,c)
  {
-  return n>s.length?s+Array(n-s.length+1).join(String.fromCharCode(c)):s;
+  return n>s.length?s+window.Array(n-s.length+1).join(String.fromCharCode(c)):s;
  };
  Strings.PadLeftWith=function(s,n,c)
  {
-  return n>s.length?Array(n-s.length+1).join(String.fromCharCode(c))+s:s;
+  return n>s.length?window.Array(n-s.length+1).join(String.fromCharCode(c))+s:s;
  };
  Strings.LastIndexOf=function(s,c,i)
  {
@@ -5523,7 +5535,7 @@
  };
  Strings.IsNullOrWhiteSpace=function(x)
  {
-  return x==null||(new RegExp("^\\s*$")).test(x);
+  return x==null||(new window.RegExp("^\\s*$")).test(x);
  };
  Strings.IsNullOrEmpty=function(x)
  {
@@ -5603,7 +5615,7 @@
  };
  Strings.SFormat=function(format,args)
  {
-  return format.replace(new RegExp("{(0|[1-9]\\d*)(?:,(-?[1-9]\\d*|0))?(?::(.*?))?}","g"),function($1,$2,w)
+  return format.replace(new window.RegExp("{(0|[1-9]\\d*)(?:,(-?[1-9]\\d*|0))?(?::(.*?))?}","g"),function($1,$2,w)
   {
    var r,w1,w2;
    r=String(Arrays.get(args,+$2));
@@ -5622,11 +5634,11 @@
  };
  Strings.SplitStrings=function(s,sep,opts)
  {
-  return Strings.Split(s,new RegExp(Strings.concat("|",Arrays.map(Strings.RegexEscape,sep))),opts);
+  return Strings.Split(s,new window.RegExp(Strings.concat("|",Arrays.map(Strings.RegexEscape,sep))),opts);
  };
  Strings.SplitChars=function(s,sep,opts)
  {
-  return Strings.Split(s,new RegExp("["+Strings.RegexEscape(String.fromCharCode.apply(void 0,sep))+"]"),opts);
+  return Strings.Split(s,new window.RegExp("["+Strings.RegexEscape(String.fromCharCode.apply(void 0,sep))+"]"),opts);
  };
  Strings.Split=function(s,pat,opts)
  {
@@ -5842,7 +5854,7 @@
   var target,completed,results,tcs,i,$1;
   target=Arrays.length(tasks);
   completed=[0];
-  results=new Array(target);
+  results=new window.Array(target);
   tcs=new TaskCompletionSource.New();
   for(i=0,$1=target-1;i<=$1;i++)(function(i$1)
   {
@@ -6032,7 +6044,7 @@
  {
   var m;
   m=typeof o;
-  return m=="function"?0:m=="boolean"?o?1:0:m=="number"?o:m=="string"?Unchecked.hashString(o):m=="object"?o==null?0:o instanceof Array?Unchecked.hashArray(o):Unchecked.hashObject(o):0;
+  return m=="function"?0:m=="boolean"?o?1:0:m=="number"?o:m=="string"?Unchecked.hashString(o):m=="object"?o==null?0:o instanceof window.Array?Unchecked.hashArray(o):Unchecked.hashObject(o):0;
  };
  Unchecked.hashObject=function(o)
  {
@@ -6090,7 +6102,7 @@
       if("Equals"in a)
        return a.Equals(b);
       else
-       if(a instanceof Array&&b instanceof Array)
+       if(a instanceof window.Array&&b instanceof window.Array)
         return Unchecked.arrayEquals(a,b);
        else
         if(a instanceof Date&&b instanceof Date)
@@ -6173,7 +6185,7 @@
          if("CompareTo0"in a)
           $2=a.CompareTo0(b);
          else
-          if(a instanceof Array&&b instanceof Array)
+          if(a instanceof window.Array&&b instanceof window.Array)
            $2=Unchecked.compareArrays(a,b);
           else
            if(a instanceof Date&&b instanceof Date)

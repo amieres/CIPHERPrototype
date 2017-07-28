@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Unchecked,List$1,Runtime,Enumerator,Operators,HashSet,Dictionary,Nullable;
+ var WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Unchecked,List$1,IntelliFactory,Runtime,Enumerator,Operators,HashSet,Dictionary,Nullable;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
  BalancedTree=Collections.BalancedTree=Collections.BalancedTree||{};
@@ -28,6 +28,7 @@
  Seq=WebSharper&&WebSharper.Seq;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  List$1=WebSharper&&WebSharper.List;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Enumerator=WebSharper&&WebSharper.Enumerator;
  Operators=WebSharper&&WebSharper.Operators;
@@ -661,7 +662,7 @@
  },List);
  ResizeArray.splice=function(arr,index,howMany,items)
  {
-  return Array.prototype.splice.apply(arr,[index,howMany].concat(items));
+  return window.Array.prototype.splice.apply(arr,[index,howMany].concat(items));
  };
  LinkedListEnumerator=Collections.LinkedListEnumerator=Runtime.Class({
   Reset:function()
@@ -1593,7 +1594,7 @@
        x.push((c$1=e.Current(),Nullable.get(c$1)));
       }
     }
-   return Arrays.length(x)===0?null:Seq.sum(x)/Number(Arrays.length(x));
+   return Arrays.length(x)===0?null:Seq.sum(x)/window.Number(Arrays.length(x));
   }
   finally
   {
