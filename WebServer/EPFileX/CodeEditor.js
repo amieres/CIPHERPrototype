@@ -86,12 +86,12 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/Remote.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
- var FSSGlobal,FSStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
+ var FSSGlobal,FsStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
- FSStationShared=FSSGlobal.FSStationShared=FSSGlobal.FSStationShared||{};
- CodeSnippetId=FSStationShared.CodeSnippetId=FSStationShared.CodeSnippetId||{};
- CodeSnippet=FSStationShared.CodeSnippet=FSStationShared.CodeSnippet||{};
- FSMessage=FSStationShared.FSMessage=FSStationShared.FSMessage||{};
+ FsStationShared=FSSGlobal.FsStationShared=FSSGlobal.FsStationShared||{};
+ CodeSnippetId=FsStationShared.CodeSnippetId=FsStationShared.CodeSnippetId||{};
+ CodeSnippet=FsStationShared.CodeSnippet=FsStationShared.CodeSnippet||{};
+ FSMessage=FsStationShared.FSMessage=FsStationShared.FSMessage||{};
  HtmlNode=FSSGlobal.HtmlNode=FSSGlobal.HtmlNode||{};
  Val=HtmlNode.Val=HtmlNode.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
@@ -153,10 +153,10 @@
    $0:Guid.NewGuid()
   };
  };
- CodeSnippet=FSStationShared.CodeSnippet=Runtime.Class({
+ CodeSnippet=FsStationShared.CodeSnippet=Runtime.Class({
   get_Name:function()
   {
-   return FSStationShared.snippetName(this.name,this.content);
+   return FsStationShared.snippetName(this.name,this.content);
   }
  },null,CodeSnippet);
  CodeSnippet.New=function(name,content,parent,predecessors,companions,id,expanded)
@@ -174,7 +174,7 @@
  FSMessage.GetIdentification={
   $:7
  };
- FSStationShared.sanitize=function(n)
+ FsStationShared.sanitize=function(n)
  {
   var illegal;
   illegal=[34,60,62,124,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,58,42,63,92,47];
@@ -183,7 +183,7 @@
    return!Arrays.contains(c,illegal);
   },n);
  };
- FSStationShared.snippetName=function(name,content)
+ FsStationShared.snippetName=function(name,content)
  {
   var o;
   return name!==""?name:(o=Seq.tryHead(Seq.filter(function(l)
@@ -2438,7 +2438,7 @@
   {
    return function(c)
    {
-    return FSStationShared.snippetName(n,c);
+    return FsStationShared.snippetName(n,c);
    };
   },FSharpStation.curSnippetNameOf(code.id),FSharpStation.curSnippetCodeOf(code.id))),new HtmlNode$1({
    $:5,
@@ -2952,7 +2952,7 @@
  };
  FSharpStation["CodeSnippet.get_NameSanitized"]=function(_this,u)
  {
-  return"F# "+FSStationShared.sanitize(_this.get_Name())+".fsx";
+  return"F# "+FsStationShared.sanitize(_this.get_Name())+".fsx";
  };
  FSharpStation["CodeSnippet.Level"]=function(_this,u)
  {
@@ -3239,8 +3239,8 @@
         }))(function(s$5)
         {
          console.log(s$5);
-        }))(file))(FSStationShared.sanitize(name));
-        file===FSStationShared.sanitize(name)?window.setTimeout(function()
+        }))(file))(FsStationShared.sanitize(name));
+        file===FsStationShared.sanitize(name)?window.setTimeout(function()
         {
          ((((function(t)
          {
