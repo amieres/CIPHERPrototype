@@ -86,17 +86,17 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/Remote.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
- var FSharpStationNS,FSStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
- FSharpStationNS=window.FSharpStationNS=window.FSharpStationNS||{};
- FSStationShared=FSharpStationNS.FSStationShared=FSharpStationNS.FSStationShared||{};
+ var FSSGlobal,FSStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
+ FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
+ FSStationShared=FSSGlobal.FSStationShared=FSSGlobal.FSStationShared||{};
  CodeSnippetId=FSStationShared.CodeSnippetId=FSStationShared.CodeSnippetId||{};
  CodeSnippet=FSStationShared.CodeSnippet=FSStationShared.CodeSnippet||{};
  FSMessage=FSStationShared.FSMessage=FSStationShared.FSMessage||{};
- HtmlNode=FSharpStationNS.HtmlNode=FSharpStationNS.HtmlNode||{};
+ HtmlNode=FSSGlobal.HtmlNode=FSSGlobal.HtmlNode||{};
  Val=HtmlNode.Val=HtmlNode.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
  HtmlNode$1=HtmlNode.HtmlNode=HtmlNode.HtmlNode||{};
- Template=FSharpStationNS.Template=FSharpStationNS.Template||{};
+ Template=FSSGlobal.Template=FSSGlobal.Template||{};
  Button=Template.Button=Template.Button||{};
  Input=Template.Input=Template.Input||{};
  Hoverable=Template.Hoverable=Template.Hoverable||{};
@@ -105,13 +105,13 @@
  CodeMirror=Template.CodeMirror=Template.CodeMirror||{};
  SplitterBar=Template.SplitterBar=Template.SplitterBar||{};
  Grid=Template.Grid=Template.Grid||{};
- RunCode=FSharpStationNS.RunCode=FSharpStationNS.RunCode||{};
+ RunCode=FSSGlobal.RunCode=FSSGlobal.RunCode||{};
  EditorRpc=RunCode.EditorRpc=RunCode.EditorRpc||{};
  RunNode=RunCode.RunNode=RunCode.RunNode||{};
- FSharpStation=FSharpStationNS.FSharpStation=FSharpStationNS.FSharpStation||{};
+ FSharpStation=FSSGlobal.FSharpStation=FSSGlobal.FSharpStation||{};
  Position=FSharpStation.Position=FSharpStation.Position||{};
  CodeSnippet$1=FSharpStation.CodeSnippet=FSharpStation.CodeSnippet||{};
- SC$1=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# module FSharpStationMD   ="]=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# module FSharpStationMD   ="]||{};
+ SC$1=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# FSSGlobal"]=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# FSSGlobal"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]||{};
  WebSharper=window.WebSharper;
@@ -2935,10 +2935,10 @@
  {
   var lvl,x;
   lvl=FSharpStation["CodeSnippet.Level"](_this);
-  x=Strings.Replace(lvl===0||lvl===1?_this.content:Strings.concat("\n",Arrays.map(function(l)
+  x=Strings.Replace(Strings.Replace(lvl===0||lvl===1?_this.content:Strings.concat("\n",Arrays.map(function(l)
   {
    return Strings.StartsWith(l,"#")?l:Strings.replicate(lvl,"  ")+l;
-  },Strings.SplitChars(_this.content,[10],0))),"##"+"FSHARPSTATION_ID"+"##",FSharpStation.fsIds());
+  },Strings.SplitChars(_this.content,[10],0))),"##"+"FSHARPSTATION_ID"+"##",FSharpStation.fsIds()),"##"+"FSHARPSTATION_ENDPOINT"+"##",window.location.href);
   return((((Runtime.Curried(function($1,$2,$3,$4)
   {
    return $1("# 1 @\""+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3)+"\"\n"+PrintfHelpers.toSafe($4));

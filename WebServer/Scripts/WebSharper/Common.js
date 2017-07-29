@@ -391,6 +391,14 @@
    $1:List.T.Empty
   };
  };
+ Wrap.StartAsTask=function(w,options,cancToken)
+ {
+  return Concurrency.StartAsTask(Wrap.getAsyncR(w),cancToken);
+ };
+ Wrap.Start=function(w,cancToken)
+ {
+  Concurrency.Start(Wrap.getAsync(w),cancToken);
+ };
  Builder=Wrap.Builder=Runtime.Class({
   Using:function(resource,body)
   {
@@ -454,6 +462,40 @@
  Builder.New=Runtime.Ctor(function()
  {
  },Builder);
+ Wrap.getAsync=function(w)
+ {
+  var vo,b,vr,b$1,vra,b$2;
+  return w.$==3?Concurrency.Return(w.$0):w.$==4?(vo=w.$0,(b=null,Concurrency.Delay(function()
+  {
+   var $1,$2;
+   if(vo==null)
+    throw window.Error(Result.getMessages(List.ofArray([Wrap.errOptionIsNone()])));
+   else
+    $2=vo.$0;
+   return Concurrency.Return($2);
+  }))):w.$==0?(vr=w.$0,(b$1=null,Concurrency.Delay(function()
+  {
+   var $1,$2,a;
+   a=Result.Success(vr);
+   if(a.$==1)
+    throw window.Error(Result.getMessages(a.$0));
+   else
+    $2=a.$0[0];
+   return Concurrency.Return($2);
+  }))):w.$==2?(vra=w.$0,(b$2=null,Concurrency.Delay(function()
+  {
+   return Concurrency.Bind(vra,function(a)
+   {
+    var $1,$2,a$1;
+    a$1=Result.Success(a);
+    if(a$1.$==1)
+     throw window.Error(Result.getMessages(a$1.$0));
+    else
+     $2=a$1.$0[0];
+    return Concurrency.Return($2);
+   });
+  }))):w.$0;
+ };
  Wrap.getAsyncWithDefault=function(f,wb)
  {
   var b;

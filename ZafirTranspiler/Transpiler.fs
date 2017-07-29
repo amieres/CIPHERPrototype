@@ -36,7 +36,7 @@ let webSharperError2TranspilerError: WebSharperError -> ErrMsg =
 let fsharpChecker = 
     lazy ResourceAgent<_, unit>(20, fun _ -> FSharpChecker.Create(keepAssemblyContents = true) )
 
-let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
+let CompileToJsW: Context -> WsConfig -> Wrap<string> =
     fun           context    config   -> Wrap.wrapper {
         do!  config.ProjectFile  = null       |> Result.failIfTrue  MustProvideProjectPath
         do!  config.AssemblyFile = null       |> Result.failIfTrue  MustProvideAssemblyOutputPath
@@ -119,7 +119,7 @@ let CompileToJsW: Context -> WsConfig -> Wrap.Wrapper<string> =
         return          sprintf "CIPHERSpaceLoadFiles([%s], %s);" incs f
     }
 
-let compileMainW: Context -> seq<string> -> Wrap.Wrapper<string> =
+let compileMainW: Context -> seq<string> -> Wrap<string> =
   fun             context    argv        ->
     let wsArgs    = ref WsConfig.Empty
     let refs      = ResizeArray()
@@ -192,7 +192,7 @@ let compileMainW: Context -> seq<string> -> Wrap.Wrapper<string> =
         }
     CompileToJsW context !wsArgs
 
-let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap.Wrapper<string> =
+let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap<string> =
   fun         context    code      assemblies     defines     ->
     Wrap.wrapper {
         do!  Result.tryProtection()
@@ -236,7 +236,7 @@ let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap.Wrapper<st
         return! compileMainW context options
     }
 
-let processJSW: string -> seq<string> -> seq<string> -> Wrap.Wrapper<string> =
+let processJSW: string -> seq<string> -> seq<string> -> Wrap<string> =
   fun           fs        assemblies     defines     ->
     Wrap.wrapper {
         let pu = P.PathUtility.VirtualPaths("/")
@@ -271,7 +271,7 @@ type PreproDirective =
 | PrepoLoad   of string
 | NoPrepo
 
-let processCode: (string -> seq<string> -> seq<string> -> Wrap.Wrapper<string>) -> string -> Wrap.Wrapper<string> =
+let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> string -> Wrap<string> =
   fun            processor                                          fsx    ->
     let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
     let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
@@ -289,13 +289,13 @@ let processCode: (string -> seq<string> -> seq<string> -> Wrap.Wrapper<string>) 
         return! processor fs assembs defines
     }
 
-let getJSW: bool     -> string -> Wrap.Wrapper<string> =
+let getJSW: bool     -> string -> Wrap<string> =
   fun       minified    fsx    -> processCode processJSW fsx
 
-let evalFSI: string -> Wrap.Wrapper<string> =
+let evalFSI: string -> Wrap<string> =
   fun        fsx    -> processCode processFSI fsx
 
-let evalFsiExe: string -> Wrap.Wrapper<string> =
+let evalFsiExe: string -> Wrap<string> =
   fun           fsx    -> processCode processFsiExe fsx
 
 let nl = "\r\n"

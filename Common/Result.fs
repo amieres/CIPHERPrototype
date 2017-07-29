@@ -201,16 +201,16 @@ module Result =
  
 open Result
 
+type Wrap<'T> =
+| WResult of Result<'T>
+| WAsync  of Async<'T>
+| WAsyncR of Async<Result<'T>>
+| WSimple of 'T
+| WOption of 'T option
+
 [<JavaScript>]
 module Wrap =
     let errOptionIsNone = ErrOptionIsNone() :> ErrMsg
-
-    type Wrapper<'T> =
-    | WResult of Result<'T>
-    | WAsync  of Async<'T>
-    | WAsyncR of Async<Result<'T>>
-    | WSimple of 'T
-    | WOption of 'T option
 
     let wb2arb ms = 
         function
@@ -223,11 +223,11 @@ module Wrap =
         | WOption (Some b) -> async { return succeedWithMsgs b                   ms }
         | WOption None     -> async { return failWithMsgs      (errOptionIsNone::ms)}
 
-    let tryCall (f: 'a -> Wrapper<'b>) (a:'a) = 
+    let tryCall (f: 'a -> Wrap<'b>) (a:'a) = 
         try f a 
         with e -> failException e |> fail |> WResult
 
-    let bind (f: 'a -> Wrapper<'b>) (wa: Wrapper<'a>) :Wrapper<'b> =
+    let bind (f: 'a -> Wrap<'b>) (wa: Wrap<'a>) :Wrap<'b> =
         match wa with
         | WSimple         a       
         | WOption(Some    a)       
@@ -258,7 +258,7 @@ module Wrap =
                                          return! arb
                                      } |> WAsyncR
 
-    let wrapper2Async (f: 'a -> Wrapper<'b>) a : Async<Result<'b>> =
+    let wrapper2Async (f: 'a -> Wrap<'b>) a : Async<Result<'b>> =
         let wb = tryCall f a
         match wb with
         | WSimple _
@@ -295,22 +295,25 @@ module Wrap =
         | WResult (Result(_, ms))  -> wb |> addMsgs errOptionIsNone ms
 
     type Builder() =
-//        member        this.Bind (wrapped: Async<Result<'a>>, restOfCExpr: 'a -> Wrapper<'b>) = wrapped |> WAsyncR |> bind restOfCExpr //<< cannot differentiate from next 
-        member        this.Bind (wrapped: Wrapper<'a>      , restOfCExpr: 'a -> Wrapper<'b>) = wrapped            |> bind restOfCExpr 
-        member        this.Bind (wrapped: Async<'a>        , restOfCExpr: 'a -> Wrapper<'b>) = wrapped |> WAsync  |> bind restOfCExpr  
-        member        this.Bind (wrapped: Result<'a>       , restOfCExpr: 'a -> Wrapper<'b>) = wrapped |> WResult |> bind restOfCExpr 
-        member        this.Bind (wrapped: 'a option        , restOfCExpr: 'a -> Wrapper<'b>) = wrapped |> WOption |> bind restOfCExpr 
+//        member        this.Bind (wrapped: Async<Result<'a>>, restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WAsyncR |> bind restOfCExpr //<< cannot differentiate from next 
+        member        this.Bind (wrapped: Wrap<'a>         , restOfCExpr: 'a -> Wrap<'b>) = wrapped            |> bind restOfCExpr 
+        member        this.Bind (wrapped: Async<'a>        , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WAsync  |> bind restOfCExpr  
+        member        this.Bind (wrapped: Result<'a>       , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WResult |> bind restOfCExpr 
+        member        this.Bind (wrapped: 'a option        , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WOption |> bind restOfCExpr 
         member inline this.Zero         ()  = WSimple ()
         member inline this.Return       (x) = WSimple x
         member inline this.ReturnFrom   (w) = w
+//        member inline this.ReturnFrom   (w) = WAsync  w
+//        member inline this.ReturnFrom   (w) = WResult w
+//        member inline this.ReturnFrom   (w) = WOption w        
         member inline this.Delay        (f) = f()
         member        this.Combine   (a, b) = combine errOptionIsNone a b
-        member        this.Using (resource, body: 'a -> Wrapper<'b>) =
+        member        this.Using (resource, body: 'a -> Wrap<'b>) =
             async.Using(resource, wrapper2Async body) |> WAsyncR
                     
     let wrapper = Builder()
 
-    let getResult callback (wb: Wrapper<'T>) =
+    let getResult callback (wb: Wrap<'T>) =
         match wb with
         | WSimple      s  -> s               |> succeed                                      |> callback
         | WOption(Some s) -> s               |> succeed                                      |> callback
@@ -323,7 +326,7 @@ module Wrap =
                                                                (fun exc -> failException exc |> fail |> callback), 
                                                                 fun can -> failException can |> fail |> callback)
 
-    let getAsyncR (wb: Wrapper<'T>) =
+    let getAsyncR (wb: Wrap<'T>) =
         match wb with
         | WAsync      va  -> async {
                                let! v = va
@@ -333,11 +336,42 @@ module Wrap =
         | WResult     v   -> async.Return                                    v
         | WAsyncR     vra -> vra
         
-    let getAsyncWithDefault f (wb: Wrapper<'T>) = 
+    let getAsyncWithDefault f (wb: Wrap<'T>) = 
         async {
             let!   vR = getAsyncR wb
             return vR |> Result.withError f
         }
 
+    let getAsync w =
+        match w with
+        | WAsync      va  ->              va
+        | WSimple     v   -> async.Return v
+        | WOption     vo  -> async {
+                                return
+                                    match vo with 
+                                    | Some v         -> v
+                                    | None           -> raise (exn(getMessages [errOptionIsNone]))
+                             }
+        | WResult     vr  -> async {
+                                return
+                                    match vr with 
+                                    | Success (v, _) -> v
+                                    | Failure ms     -> raise (exn(getMessages ms))
+                             }
+        | WAsyncR     vra -> async {
+                                let! vr = vra
+                                return
+                                    match vr with 
+                                    | Success (v, _) -> v
+                                    | Failure ms     -> raise (exn(getMessages ms))
+                             }
 //    let call wb = wb |> getR Rop.notifyMessages
+
+open Wrap
+type Wrap<'T> with
+    [<JavaScript>]
+    static member Start           (w:Wrap<unit>,           ?cancToken) = Async.Start         (getAsync  w,                                ?cancellationToken= cancToken)
+    [<JavaScript>]
+    static member StartAsTask     (w:Wrap<'T>, ?options, ?cancToken) = Async.StartAsTask     (getAsyncR w, ?taskCreationOptions= options, ?cancellationToken= cancToken)
+    static member RunSynchronously(w:Wrap<'T>, ?timeout, ?cancToken) = Async.RunSynchronously(getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
 

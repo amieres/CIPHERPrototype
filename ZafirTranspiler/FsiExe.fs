@@ -141,7 +141,7 @@ type ResourceAgent<'T, 'C when 'C : equality>(restartAfter:int, ctor: 'C option 
             }
         )
     do agent.Error.AddHandler <| Handler (fun _ _ -> respawn())
-    member x.Process (work:'T -> Wrap.Wrapper<'a>, ?config) =
+    member x.Process (work:'T -> Wrap<'a>, ?config) =
         agent.PostAndAsyncReply
             (fun reply ->
                  (config, fun resource ->
@@ -159,7 +159,7 @@ let getIndentFile input =
 
 let fsiExe = lazy ResourceAgent<_, string> (20, (fun config -> new FsiExe(["--nologo" ; "--quiet" ; defaultArg config ""] )), (fun fsi -> (fsi :> System.IDisposable).Dispose()), (fun fsi -> fsi.IsAlive), "")
 
-let processFsiExe (code:string) (assemblies: string seq) (defines: string seq) : Wrap.Wrapper<string> =
+let processFsiExe (code:string) (assemblies: string seq) (defines: string seq) : Wrap<string> =
     let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "
     Wrap.wrapper {
         let! resR = fsiExe.Value.Process(fun fsi -> 
