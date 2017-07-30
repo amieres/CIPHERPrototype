@@ -96,6 +96,12 @@
       <Project>{4abce9dd-36a4-4096-aa32-a37c41cc66fc}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\Common\packages\FSharp.Data\lib\net40\FSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Data.DesignTime">
+      <HintPath>..\Common\packages\FSharp.Data\lib\net40\FSharp.Data.DesignTime.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\Common\packages\HtmlAgilityPack\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>

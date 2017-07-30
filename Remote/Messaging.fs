@@ -91,10 +91,8 @@ let sendRequest  toId fromId content =
                                     fs fe fc
     Async.FromContinuations startAsync
 
-type RpcResponse = {
-    ``$TYPES`` : string[]
-    ``$DATA``  : string
-}
+open FSharp.Data
+open FSharp.Data.JsonExtensions
 
 let RpcCall (url:string) method (data:string) =
     async {
@@ -111,26 +109,53 @@ let RpcCall (url:string) method (data:string) =
         
         // Obtain response and download the resulting page 
         // (The sample contains the first & last name from POST data)
-        let resp = req.GetResponse() 
-        let stream = resp.GetResponseStream() 
-        let reader = new StreamReader(stream) 
-        return 
-            reader.ReadToEnd()
-            |> Json.Deserialize<RpcResponse>
-            |> fun r -> r.``$DATA``
+        let resp   = req.GetResponse() 
+        use stream = resp.GetResponseStream() 
+        use reader = new StreamReader(stream)
+        let msg    = reader.ReadToEnd()
+        let json   = JsonValue.Parse msg
+        return       json.["$DATA"]
     }
 
-
+let serializeAddressId aId =
+    match aId with
+    | AddressId v -> sprintf """{"$":0,"$0":"%s"}""" v
 
 let sendRequestRpc (toId: AddressId) (fromId: AddressId) (content: string): Async<string> =
-    let serialize aId =
-        match aId with
-        | AddressId v -> sprintf """{"$":0,"$0":"%s"}""" v
     async {
-        let! res =
-            [| serialize toId ; serialize fromId ; Json.Serialize content |]
+        let! msg =
+            [| serializeAddressId toId ; serializeAddressId fromId ; Json.Serialize content |]
             |> String.concat ", "
             |> sprintf "[%s]"
             |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.sendRequest:1096816393"
-        return res
+        return msg.AsString()
     }
+
+let awaitRequestForRpc (listener:AddressId) =
+    async {
+        let! msg =
+            [| serializeAddressId listener |]
+            |> String.concat ", "
+            |> sprintf "[%s]"
+            |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570"
+        let  v = msg.["$V"]
+        let req    =
+            {
+                toId      = AddressId <| v?toId  .["$V"].["$0"].AsString()
+                fromId    = AddressId <| v?fromId.["$V"].["$0"].AsString()
+                content   = v?content                          .AsString()
+                messageId = Some <| v?messageId  .["$V"].["$0"].AsGuid  ()
+            }
+        return req
+    }
+
+let replyToRpc (reply:Guid) response =
+    async {
+        let! msg =
+            [| sprintf "\"%s\"" <| reply.ToString() ; Json.Serialize response |]
+            |> String.concat ", "
+            |> sprintf "[%s]"
+            |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.replyTo:-1092841374"
+        return ()
+    }
+

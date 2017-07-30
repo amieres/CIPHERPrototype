@@ -59,6 +59,12 @@
     <Compile Include="Messaging.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Data">
+      <HintPath>..\Common\packages\FSharp.Data\lib\net40\FSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Data.DesignTime">
+      <HintPath>..\Common\packages\FSharp.Data\lib\net40\FSharp.Data.DesignTime.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
       <Name>FSharp.Core</Name>
