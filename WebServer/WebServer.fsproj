@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Remoting.fs" />
+    <Compile Include="RemoteLogin.fs" />
     <Compile Include="Login.fs" />
     <Compile Include="LoginUINext.fs" />
     <Compile Include="TestForm.fs" />

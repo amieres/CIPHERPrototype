@@ -83,7 +83,7 @@
             try { window[key].$cctor(); } catch (e) {} 
         } 
       })
-                       CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/Remote.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
+                       CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
  var FSSGlobal,FsStationShared,CodeSnippetId,CodeSnippet,FSMessage,MessagingClient,FsStationClientErr,FsStationClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Concurrency,JSON,Remoting,AjaxRemotingProvider,Rop,Option,Wrap,Result,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Json,Provider,Slice,Option$1,ListModel,console;
@@ -214,11 +214,23 @@
      return true;
     },Concurrency.Delay(function()
     {
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[$this.fromId]),function(a)
+     return Concurrency.Bind(Concurrency.StartChild((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[$this.fromId]),{
+      $:1,
+      $0:60000
+     }),function(a)
      {
-      return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a.messageId.$0,respond($this.clientId,a.content)]),function()
+      return Concurrency.TryWith(Concurrency.Delay(function()
       {
-       return Concurrency.Return(null);
+       return Concurrency.Bind(a,function(a$1)
+       {
+        return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a$1.messageId.$0,respond($this.clientId,a$1.content)]),function()
+        {
+         return Concurrency.Return(null);
+        });
+       });
+      }),function()
+      {
+       return Concurrency.Zero();
       });
      });
     }));
@@ -373,11 +385,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-362703e5-e01a-4bac-a083-6fc6eefe0f26";
+  return"FSharpStation-95f35679-11de-41dd-86b9-894618c4720b";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,endPoint)
  {
-  this.fsIds=Option.defaultValue("FSharpStation-362703e5-e01a-4bac-a083-6fc6eefe0f26",fsStationId);
+  this.fsIds=Option.defaultValue("FSharpStation-95f35679-11de-41dd-86b9-894618c4720b",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,{
    $:1,
    $0:Option.defaultValue("http://localhost:9000/FSharpStation.html",endPoint)

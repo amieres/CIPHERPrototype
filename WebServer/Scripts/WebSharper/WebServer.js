@@ -1,8 +1,9 @@
 (function()
 {
  "use strict";
- var CIPHERPrototype,LoginForm,Model,Message,LoginUINext,CodeMirror,EditorRpc,TestFormModule,Button,WebServer,Client,WebServer_Templates,App,App$1,IntelliFactory,Runtime,WebSharper,List,Rop,Result,Wrap,CIPHERHtml,Remoting,AjaxRemotingProvider,Seq,UI,Next,Var,Doc,View,AttrModule,Concurrency,Val,Html,AttrProxy,PrintfHelpers,ListModel,$;
+ var CIPHERPrototype,RemoteError,LoginForm,Model,Message,LoginUINext,CodeMirror,EditorRpc,TestFormModule,Button,WebServer,Client,WebServer_Templates,IntelliFactory,Runtime,WebSharper,PrintfHelpers,App,App$1,List,Rop,Result,Wrap,CIPHERHtml,Remoting,AjaxRemotingProvider,Seq,UI,Next,Var,Doc,View,AttrModule,Concurrency,Val,Html,AttrProxy,ListModel,$;
  CIPHERPrototype=window.CIPHERPrototype=window.CIPHERPrototype||{};
+ RemoteError=CIPHERPrototype.RemoteError=CIPHERPrototype.RemoteError||{};
  LoginForm=CIPHERPrototype.LoginForm=CIPHERPrototype.LoginForm||{};
  Model=LoginForm.Model=LoginForm.Model||{};
  Message=LoginForm.Message=LoginForm.Message||{};
@@ -14,11 +15,12 @@
  WebServer=CIPHERPrototype.WebServer=CIPHERPrototype.WebServer||{};
  Client=WebServer.Client=WebServer.Client||{};
  WebServer_Templates=window.WebServer_Templates=window.WebServer_Templates||{};
- App=CIPHERPrototype&&CIPHERPrototype.App;
- App$1=App&&App.App;
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  WebSharper=window.WebSharper;
+ PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
+ App=CIPHERPrototype&&CIPHERPrototype.App;
+ App$1=App&&App.App;
  List=WebSharper&&WebSharper.List;
  Rop=window.Rop;
  Result=Rop&&Rop.Result;
@@ -37,9 +39,24 @@
  Val=CIPHERPrototype&&CIPHERPrototype.Val;
  Html=Val&&Val.Html;
  AttrProxy=Next&&Next.AttrProxy;
- PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  ListModel=Next&&Next.ListModel;
  $=window.jQuery;
+ RemoteError=CIPHERPrototype.RemoteError=Runtime.Class({
+  Rop_ErrMsg$get_IsWarning:function()
+  {
+   return false;
+  },
+  Rop_ErrMsg$get_ErrMsg:function()
+  {
+   return(function($1)
+   {
+    return function($2)
+    {
+     return $1("Login Failed "+PrintfHelpers.toSafe($2));
+    };
+   }(window.id))(this.$0);
+  }
+ },null,RemoteError);
  Model.New=function(userName,password,inProgress,goLink,error)
  {
   return{
@@ -136,7 +153,7 @@
    {
     return b.Bind$3({
      $:2,
-     $0:(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.RemoteLogin.guestLoginAR_:1736357544",[])
+     $0:(new AjaxRemotingProvider.New()).Async("WebServer:CIPHERPrototype.RemoteLogin.guestLoginAR_:1736357544",[])
     },function()
     {
      window.location.href=model.goLink;
@@ -161,7 +178,7 @@
    {
     return b.Bind$3({
      $:2,
-     $0:(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.RemoteLogin.LoginAR_:479691151",[model.userName,model.password])
+     $0:(new AjaxRemotingProvider.New()).Async("WebServer:CIPHERPrototype.RemoteLogin.LoginAR_:479691151",[model.userName,model.password])
     },function()
     {
      window.location.href=model.goLink;
@@ -224,7 +241,7 @@
     $0:"clickguest",
     $1:(f=($1=function()
     {
-     return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.RemoteLogin.guestLoginAR_:1736357544",[]);
+     return(new AjaxRemotingProvider.New()).Async("WebServer:CIPHERPrototype.RemoteLogin.guestLoginAR_:1736357544",[]);
     },function($3)
     {
      return processAction($1,$3);
@@ -243,7 +260,7 @@
      $0:"clicksubmit",
      $1:(f$1=($2=function()
      {
-      return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.RemoteLogin.LoginAR_:479691151",[email.c,pwd.c]);
+      return(new AjaxRemotingProvider.New()).Async("WebServer:CIPHERPrototype.RemoteLogin.LoginAR_:479691151",[email.c,pwd.c]);
      },function($3)
      {
       return processAction($2,$3);

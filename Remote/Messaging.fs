@@ -48,7 +48,15 @@ type PostOffice() =
                         if request.toId <> listener then None else
                         requests <- Array.append requests .[0..i-1]  requests .[i+1..requests .Length - 1]
                         Some(lfs, request, rfs))
-                    |> (fun v -> (if v.IsNone then listeners <- listeners |> Array.append [| listener, lfs, lfe, lfc |]); v)
+                    |> (fun v -> (if v.IsNone then 
+                                    listeners <- 
+                                        listeners 
+                                        |> Array.filter(fun (lnr, _, exn, cen) -> 
+                                            if lnr = listener then
+                                                exn <| TimeoutException()
+                                                false
+                                            else true) 
+                                        |> Array.append [| listener, lfs, lfe, lfc |]); v)
                 | Request                     (request , rfs, rfe, rfc)  ->
                     listeners
                     |> Array.indexed
