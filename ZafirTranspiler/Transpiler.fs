@@ -236,9 +236,9 @@ let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap<string> =
         return! compileMainW context options
     }
 
-let processJSW: string -> seq<string> -> seq<string> -> Wrap<string> =
-  fun           fs        assemblies     defines     ->
+let getJSW (minified:bool) code =
     Wrap.wrapper {
+        let fs, assemblies, defines = prepareCode code
         let pu = P.PathUtility.VirtualPaths("/")
         let ctx : Resources.Context =
             {
@@ -265,12 +265,6 @@ let processJSW: string -> seq<string> -> seq<string> -> Wrap<string> =
         return! compileW ctx fs assemblies defines
     }
 
-type PreproDirective =
-| PrepoR      of string
-| PrepoDefine of string
-| PrepoLoad   of string
-| NoPrepo
-
 let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> string -> Wrap<string> =
   fun            processor                                          fsx    ->
     let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
@@ -288,15 +282,6 @@ let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> strin
         let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toList
         return! processor fs assembs defines
     }
-
-let getJSW: bool     -> string -> Wrap<string> =
-  fun       minified    fsx    -> processCode processJSW fsx
-
-let evalFSI: string -> Wrap<string> =
-  fun        fsx    -> processCode processFSI fsx
-
-let evalFsiExe: string -> Wrap<string> =
-  fun           fsx    -> processCode processFsiExe fsx
 
 let nl = "\r\n"
 

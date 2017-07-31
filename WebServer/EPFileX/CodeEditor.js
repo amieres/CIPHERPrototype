@@ -86,12 +86,15 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/Remote.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
- var FSSGlobal,FsStationShared,CodeSnippetId,CodeSnippet,FSMessage,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Remoting,AjaxRemotingProvider,Concurrency,JSON,Json,Provider,Slice,Option,ListModel,console;
+ var FSSGlobal,FsStationShared,CodeSnippetId,CodeSnippet,FSMessage,MessagingClient,FsStationClientErr,FsStationClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,WebSharper,Guid,IntelliFactory,Runtime,Concurrency,JSON,Remoting,AjaxRemotingProvider,Rop,Option,Wrap,Result,Strings,Arrays,Seq,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,List,Collections,FSharpSet,BalancedTree,Unchecked,PrintfHelpers,Json,Provider,Slice,Option$1,ListModel,console;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  FsStationShared=FSSGlobal.FsStationShared=FSSGlobal.FsStationShared||{};
  CodeSnippetId=FsStationShared.CodeSnippetId=FsStationShared.CodeSnippetId||{};
  CodeSnippet=FsStationShared.CodeSnippet=FsStationShared.CodeSnippet||{};
  FSMessage=FsStationShared.FSMessage=FsStationShared.FSMessage||{};
+ MessagingClient=FsStationShared.MessagingClient=FsStationShared.MessagingClient||{};
+ FsStationClientErr=FsStationShared.FsStationClientErr=FsStationShared.FsStationClientErr||{};
+ FsStationClient=FsStationShared.FsStationClient=FsStationShared.FsStationClient||{};
  HtmlNode=FSSGlobal.HtmlNode=FSSGlobal.HtmlNode||{};
  Val=HtmlNode.Val=HtmlNode.Val||{};
  HelperType=Val.HelperType=Val.HelperType||{};
@@ -112,12 +115,21 @@
  Position=FSharpStation.Position=FSharpStation.Position||{};
  CodeSnippet$1=FSharpStation.CodeSnippet=FSharpStation.CodeSnippet||{};
  SC$1=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# FSSGlobal"]=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$ F# FSSGlobal"]||{};
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]||{};
  WebSharper=window.WebSharper;
  Guid=WebSharper&&WebSharper.Guid;
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ Concurrency=WebSharper&&WebSharper.Concurrency;
+ JSON=window.JSON;
+ Remoting=WebSharper&&WebSharper.Remoting;
+ AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
+ Rop=window.Rop;
+ Option=Rop&&Rop.Option;
+ Wrap=Rop&&Rop.Wrap;
+ Result=Rop&&Rop.Result;
  Strings=WebSharper&&WebSharper.Strings;
  Arrays=WebSharper&&WebSharper.Arrays;
  Seq=WebSharper&&WebSharper.Seq;
@@ -136,14 +148,10 @@
  BalancedTree=Collections&&Collections.BalancedTree;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
- Remoting=WebSharper&&WebSharper.Remoting;
- AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- Concurrency=WebSharper&&WebSharper.Concurrency;
- JSON=window.JSON;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
  Slice=WebSharper&&WebSharper.Slice;
- Option=WebSharper&&WebSharper.Option;
+ Option$1=WebSharper&&WebSharper.Option;
  ListModel=Next&&Next.ListModel;
  console=window.console;
  CodeSnippetId.get_New=function()
@@ -174,6 +182,211 @@
  FSMessage.GetIdentification={
   $:7
  };
+ MessagingClient=FsStationShared.MessagingClient=Runtime.Class({
+  poMessage:function(msg)
+  {
+   var $this,b;
+   $this=this;
+   b=null;
+   return Concurrency.Delay(function()
+   {
+    return Concurrency.Bind($this.sendMessage({
+     $:0,
+     $0:"WebServer:PostOffice"
+    },JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4())(msg))),function(a)
+    {
+     return Concurrency.Return((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$4())(JSON.parse(a)));
+    });
+   });
+  },
+  sendMessage:function(toId,msg)
+  {
+   return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.sendRequest:1096816393",[toId,this.fromId,msg]);
+  },
+  awaitMessage:function(respond)
+  {
+   var $this,b;
+   $this=this;
+   Concurrency.Start((b=null,Concurrency.Delay(function()
+   {
+    return Concurrency.While(function()
+    {
+     return true;
+    },Concurrency.Delay(function()
+    {
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[$this.fromId]),function(a)
+     {
+      return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a.messageId.$0,respond($this.clientId,a.content)]),function()
+      {
+       return Concurrency.Return(null);
+      });
+     });
+    }));
+   })),null);
+  },
+  get_EndPoint:function()
+  {
+   return this.wsEndPoint;
+  },
+  POListeners:function()
+  {
+   var $this,b;
+   $this=this;
+   b=null;
+   return Concurrency.Delay(function()
+   {
+    return Concurrency.Bind($this.poMessage({
+     $:1
+    }),function(a)
+    {
+     return Concurrency.Return(a.$==1?a.$0:[a.$0]);
+    });
+   });
+  },
+  POMessage:function(msg)
+  {
+   return this.poMessage(msg);
+  },
+  SendMessage:function(toId,msg)
+  {
+   return this.sendMessage(toId,msg);
+  },
+  AwaitMessage:function(respond)
+  {
+   this.awaitMessage(respond);
+  }
+ },null,MessagingClient);
+ MessagingClient.get_EndPoint_=function()
+ {
+  return"http://localhost:9000/FSharpStation.html";
+ };
+ MessagingClient.New=Runtime.Ctor(function(clientId,endPoint)
+ {
+  this.clientId=clientId;
+  this.wsEndPoint=Option.defaultValue("http://localhost:9000/FSharpStation.html",endPoint);
+  this.fromId={
+   $:0,
+   $0:this.clientId
+  };
+  Remoting.set_EndPoint(this.wsEndPoint);
+ },MessagingClient);
+ FsStationClientErr=FsStationShared.FsStationClientErr=Runtime.Class({
+  Rop_ErrMsg$get_IsWarning:function()
+  {
+   return false;
+  },
+  Rop_ErrMsg$get_ErrMsg:function()
+  {
+   return(function($1)
+   {
+    return function($2)
+    {
+     return $1(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p($2));
+    };
+   }(window.id))(this);
+  }
+ },null,FsStationClientErr);
+ FsStationClient=FsStationShared.FsStationClient=Runtime.Class({
+  genericMessage:function(txt)
+  {
+   var $this,b;
+   $this=this;
+   b=Wrap.wrapper();
+   return b.Delay(function()
+   {
+    return b.Bind$3($this.sendMessage($this.toId,{
+     $:6,
+     $0:txt
+    }),function(a)
+    {
+     var $1,$2;
+     return b.Bind$1(a.$==1&&(($2=a.$0,$2!=null&&$2.$==1)&&($1=a.$0.$0,true))?Result.succeed($1):Result.fail(new FsStationClientErr({
+      $:0,
+      $0:window.String(a)
+     })),function(a$1)
+     {
+      return b.Return(a$1);
+     });
+    });
+   });
+  },
+  requestCode:function(snpName)
+  {
+   var $this,b;
+   $this=this;
+   b=Wrap.wrapper();
+   return b.Delay(function()
+   {
+    return b.Bind$3($this.sendMessage($this.toId,{
+     $:4,
+     $0:Strings.SplitChars(snpName,[47],0)
+    }),function(a)
+    {
+     var $1,$2;
+     return b.Bind$1(a.$==1&&(($2=a.$0,$2!=null&&$2.$==1)&&($1=a.$0.$0,true))?Result.succeed($1):Result.fail(new FsStationClientErr({
+      $:0,
+      $0:window.String(a)
+     })),function(a$1)
+     {
+      return b.Return(a$1);
+     });
+    });
+   });
+  },
+  sendMessage:function(toId2,msg)
+  {
+   var $this,b;
+   $this=this;
+   b=Wrap.wrapper();
+   return b.Delay(function()
+   {
+    return b.Bind$2($this.msgClient.SendMessage(toId2,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5())(msg))),function(a)
+    {
+     return b.Return((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$5())(JSON.parse(a)));
+    });
+   });
+  },
+  get_MessagingClient:function()
+  {
+   return this.msgClient;
+  },
+  get_FSStationId:function()
+  {
+   return this.fsIds;
+  },
+  GenericMessage:function(txt)
+  {
+   return this.genericMessage(txt);
+  },
+  RequestCode:function(snpPath)
+  {
+   return this.requestCode(snpPath);
+  },
+  SendMessage:function(toId2,msg)
+  {
+   return this.sendMessage(toId2,msg);
+  },
+  SendMessage$1:function(msg)
+  {
+   return this.sendMessage(this.toId,msg);
+  }
+ },null,FsStationClient);
+ FsStationClient.get_FSStationId_=function()
+ {
+  return"FSharpStation-362703e5-e01a-4bac-a083-6fc6eefe0f26";
+ };
+ FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,endPoint)
+ {
+  this.fsIds=Option.defaultValue("FSharpStation-362703e5-e01a-4bac-a083-6fc6eefe0f26",fsStationId);
+  this.msgClient=new MessagingClient.New(clientId,{
+   $:1,
+   $0:Option.defaultValue("http://localhost:9000/FSharpStation.html",endPoint)
+  });
+  this.toId={
+   $:0,
+   $0:this.fsIds
+  };
+ },FsStationClient);
  FsStationShared.sanitize=function(n)
  {
   var illegal;
@@ -2142,69 +2355,54 @@
   SC$1.$cctor();
   return SC$1.spl1;
  };
- FSharpStation.awaitMessage=function()
+ FSharpStation.respondMessage=function(fromId,txt)
  {
-  var b;
-  Concurrency.Start((b=null,Concurrency.Delay(function()
-  {
-   return Concurrency.While(function()
-   {
-    return true;
-   },Concurrency.Delay(function()
-   {
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[FSharpStation.fsId()]),function(a)
-    {
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a.messageId.$0,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(FSharpStation.respondMessage((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a.content)))))]),function()
-     {
-      return Concurrency.Return(null);
-     });
-    });
-   }));
-  })),null);
- };
- FSharpStation.respondMessage=function(fsMsg)
- {
-  var o,o$1,o$2,o$3;
-  return fsMsg.$==1?{
+  var m,o,o$1,o$2,o$3;
+  return JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())((m=(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(txt)),m.$==1?{
    $:1,
-   $0:(o=CodeSnippet$1.FetchO(fsMsg.$0),o==null?null:{
+   $0:(o=CodeSnippet$1.FetchO(m.$0),o==null?null:{
     $:1,
     $0:FSharpStation["CodeSnippet.Code"](o.$0)
    })
-  }:fsMsg.$==2?{
+  }:m.$==2?{
    $:0,
-   $0:CodeSnippet$1.FetchO(fsMsg.$0)
-  }:fsMsg.$==3?{
+   $0:CodeSnippet$1.FetchO(m.$0)
+  }:m.$==3?{
    $:1,
-   $0:(o$1=CodeSnippet$1.FetchByPathO(fsMsg.$0),o$1==null?null:{
+   $0:(o$1=CodeSnippet$1.FetchByPathO(m.$0),o$1==null?null:{
     $:1,
     $0:o$1.$0.content
    })
-  }:fsMsg.$==4?{
+  }:m.$==4?{
    $:1,
-   $0:(o$2=CodeSnippet$1.FetchByPathO(fsMsg.$0),o$2==null?null:{
+   $0:(o$2=CodeSnippet$1.FetchByPathO(m.$0),o$2==null?null:{
     $:1,
     $0:FSharpStation["CodeSnippet.Code"](o$2.$0)
    })
-  }:fsMsg.$==5?{
+  }:m.$==5?{
    $:0,
-   $0:CodeSnippet$1.FetchByPathO(fsMsg.$0)
-  }:fsMsg.$==6?{
+   $0:CodeSnippet$1.FetchByPathO(m.$0)
+  }:m.$==6?{
    $:1,
    $0:{
     $:1,
-    $0:"Message received: "+fsMsg.$0
+    $0:"Message received: "+m.$0
    }
-  }:fsMsg.$==7?{
+  }:m.$==7?{
    $:2,
-   $0:FSharpStation.fsId()
+   $0:fromId
   }:{
    $:1,
-   $0:(o$3=CodeSnippet$1.FetchO(fsMsg.$0),o$3==null?null:{
+   $0:(o$3=CodeSnippet$1.FetchO(m.$0),o$3==null?null:{
     $:1,
     $0:o$3.$0.content
    })
-  };
+  })));
+ };
+ FSharpStation.fsStationClient=function()
+ {
+  SC$1.$cctor();
+  return SC$1.fsStationClient;
  };
  FSharpStation.prior=function()
  {
@@ -2272,7 +2470,7 @@
  FSharpStation.downloadFile=function()
  {
   var x,m;
-  window.saveAs(new window.Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4))())(x)))],{
+  window.saveAs(new window.Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3))())(x)))],{
    type:"text/plain;charset=utf-8"
   }),(m=FSharpStation.justFileName(FSharpStation.fileName().c),m===""?"snippets.fsjson":m));
   FSharpStation.setClean();
@@ -2974,7 +3172,7 @@
    var hd;
    return ins.$==1?(hd=ins.$0,preds(List.collect(window.id,List.ofArray([ins.$1,List.collect(function(s)
    {
-    return List.append(Option.toList(s.parent),s.predecessors);
+    return List.append(Option$1.toList(s.parent),s.predecessors);
    },CodeSnippet$1.FetchL(hd))])),Seq.contains(hd,outs)?outs:new List.T({
     $:1,
     $0:hd,
@@ -3019,7 +3217,7 @@
  };
  CodeSnippet$1.FetchL=function(id)
  {
-  return Option.toList(CodeSnippet$1.FetchO(id));
+  return Option$1.toList(CodeSnippet$1.FetchO(id));
  };
  CodeSnippet$1.FetchO=function(id)
  {
@@ -3040,11 +3238,6 @@
  FSharpStation.tryPickI=function(f,s)
  {
   return Seq.tryHead(Seq.filter(f,Seq.indexed(s)));
- };
- FSharpStation.fsId=function()
- {
-  SC$1.$cctor();
-  return SC$1.fsId;
  };
  FSharpStation.fsIds=function()
  {
@@ -3097,10 +3290,6 @@
    return s$5.id;
   },List.T.Empty);
   SC$1.fsIds="FSharpStation-"+window.String(Guid.NewGuid());
-  SC$1.fsId={
-   $:0,
-   $0:FSharpStation.fsIds()
-  };
   SC$1.missingVar=Var.Create$1("");
   SC$1.currentCodeSnippetId=Var.Create$1(CodeSnippetId.get_New());
   s="CodeEditor."+"currentCodeSnippetId";
@@ -3300,9 +3489,13 @@
     return[msgs,curO];
    };
   },FSharpStation.codeMsgs(),FSharpStation.currentCodeSnippetO()));
+  SC$1.fsStationClient=new FsStationClient.New(FSharpStation.fsIds(),{
+   $:1,
+   $0:FSharpStation.fsIds()
+  },null);
   window.setTimeout(function()
   {
-   FSharpStation.awaitMessage();
+   FSharpStation.fsStationClient().get_MessagingClient().AwaitMessage(FSharpStation.respondMessage);
   },1000);
   SC$1.spl1=SplitterBar.New$1(20).Children([HtmlNode.style("grid-row: 2 / 4")]);
   s$2="CodeEditor."+"splitterV1";
@@ -3341,21 +3534,21 @@
   },FSharpStation.directionVertical())),(HtmlNode.renderDoc())(x)).ReplaceInDom(window.document.body);
   SC$1.$cctor=window.ignore;
  });
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p=function($1)
+ {
+  return"SnippetNotFound "+PrintfHelpers.prettyPrint($1.$0);
+ };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j=function()
  {
   return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4,1]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3,0]]]]))();
- };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["companions",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0],["expanded",Provider.Id(),0]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3,1]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",Provider.Id(),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["companions",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0],["expanded",Provider.Id(),0]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2=function()
  {
@@ -3364,6 +3557,22 @@
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3=function()
  {
   return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3=(Provider.DecodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,1],["predecessors",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j),0],["companions",Provider.DecodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0],["expanded",Provider.Id(),0]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$4=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[]],[2,[]],[3,[]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$5=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3,1]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",Provider.Id(),0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[1,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[3,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[4,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[5,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[6,[["$0","Item",Provider.Id(),0]]],[7,[]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j=function()
  {

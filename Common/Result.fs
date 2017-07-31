@@ -326,7 +326,7 @@ module Wrap =
                                                                (fun exc -> failException exc |> fail |> callback), 
                                                                 fun can -> failException can |> fail |> callback)
 
-    let getAsyncR (wb: Wrap<'T>) =
+    let inline getAsyncR (wb: Wrap<'T>) =
         match wb with
         | WAsync      va  -> async {
                                let! v = va
@@ -336,13 +336,13 @@ module Wrap =
         | WResult     v   -> async.Return                                    v
         | WAsyncR     vra -> vra
         
-    let getAsyncWithDefault f (wb: Wrap<'T>) = 
+    let inline getAsyncWithDefault f (wb: Wrap<'T>) = 
         async {
             let!   vR = getAsyncR wb
             return vR |> Result.withError f
         }
 
-    let getAsync w =
+    let inline getAsync w =
         match w with
         | WAsync      va  ->              va
         | WSimple     v   -> async.Return v
@@ -370,8 +370,8 @@ module Wrap =
 open Wrap
 type Wrap<'T> with
     [<JavaScript>]
-    static member Start           (w:Wrap<unit>,           ?cancToken) = Async.Start         (getAsync  w,                                ?cancellationToken= cancToken)
+    static member Start           (w:Wrap<_   >,           ?cancToken) = Async.Start           (getAsync  w,                                ?cancellationToken= cancToken)
     [<JavaScript>]
-    static member StartAsTask     (w:Wrap<'T>, ?options, ?cancToken) = Async.StartAsTask     (getAsyncR w, ?taskCreationOptions= options, ?cancellationToken= cancToken)
-    static member RunSynchronously(w:Wrap<'T>, ?timeout, ?cancToken) = Async.RunSynchronously(getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
+    static member StartAsTask     (w:Wrap<'T  >, ?options, ?cancToken) = Async.StartAsTask     (getAsyncR w, ?taskCreationOptions= options, ?cancellationToken= cancToken)
+    static member RunSynchronously(w:Wrap<'T  >, ?timeout, ?cancToken) = Async.RunSynchronously(getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
 

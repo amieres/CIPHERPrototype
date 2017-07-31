@@ -46,8 +46,9 @@ let startSession() : FsiEvaluationSession =
 
 let fsharpInteractive = lazy ResourceAgent<_, unit>(20, (fun _ -> startSession()), fun fsi -> (fsi :> IDisposable).Dispose())
 
-let processFSI (code:string) (assemblies: string seq) (definesNotUSINGIT: string seq) : Wrap<string> =
+let evalFSI preCode =
     Wrap.wrapper {
+        let code, assemblies, defines = prepareCode preCode
         let! evalR = fsharpInteractive.Value.Process(fun fsi -> 
             Wrap.wrapper {
               return

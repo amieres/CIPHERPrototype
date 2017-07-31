@@ -13,14 +13,24 @@ type AddressId = AddressId of string
 type Request = {
     toId              : AddressId
     fromId            : AddressId
-    mutable messageId : Guid option
     content           : string
+    mutable messageId : Guid option
 }
 
 type MBMessage =
 | Listener of AddressId * (Request->unit) * (exn->unit) * (OperationCanceledException->unit)
 | Request  of Request   * (string ->unit) * (exn->unit) * (OperationCanceledException->unit)
 | Reply    of Guid      *  string
+
+type POMessage =
+| POEcho   of string
+| POListeners
+| POPendingRequests
+| POPendingReplys
+
+type POResponse =
+| POString  of string
+| POStrings of string[]
 
 type PostOffice() =
     let mutable listeners = [| |]
@@ -67,6 +77,9 @@ type PostOffice() =
         member this.AwaitRequest    listener  fs fe fc = agent.Post <| Listener (listener, fs, fe, fc)
         member this.SendRequest     request   fs fe fc = agent.Post <| Request  (request , fs, fe, fc)
         member this.ReplyTo         request   response = agent.Post <| Reply    (request , response  )
+        member this.Listeners       ()                 = listeners |> Array.map (function | AddressId id, _, _, _ -> id)
+        member this.Requests        ()                 = requests  |> Array.map (sprintf "%A")
+        member this.Sent            ()                 = sent      |> Array.map (sprintf "%A")
 
 let postOffice = PostOffice()
 
@@ -81,8 +94,23 @@ let replyTo    (reply:Guid) response =
         postOffice.ReplyTo reply response
     }
 
+open FSharp.Data
+open FSharp.Data.JsonExtensions
+
 [<Rpc>]
 let sendRequest  toId fromId content =
+    if toId = AddressId "WebServer:PostOffice" then
+        async {
+            let msg = Json.Deserialize<POMessage> content
+            return
+                match msg with
+                | POListeners       -> POStrings <| postOffice.Listeners()
+                | POPendingRequests -> POStrings <| postOffice.Requests ()
+                | POPendingReplys   -> POStrings <| postOffice.Sent     ()
+                | POEcho        txt -> POString     txt
+                |> Json.Serialize 
+        }
+    else
     let startAsync (fs, fe, fc) = postOffice.SendRequest   
                                     { toId      = toId   
                                       fromId    = fromId 
@@ -90,9 +118,6 @@ let sendRequest  toId fromId content =
                                       messageId = None }
                                     fs fe fc
     Async.FromContinuations startAsync
-
-open FSharp.Data
-open FSharp.Data.JsonExtensions
 
 let RpcCall (url:string) method (data:string) =
     async {

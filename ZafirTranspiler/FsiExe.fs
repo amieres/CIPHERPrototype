@@ -159,9 +159,40 @@ let getIndentFile input =
 
 let fsiExe = lazy ResourceAgent<_, string> (20, (fun config -> new FsiExe(["--nologo" ; "--quiet" ; defaultArg config ""] )), (fun fsi -> (fsi :> System.IDisposable).Dispose()), (fun fsi -> fsi.IsAlive), "")
 
-let processFsiExe (code:string) (assemblies: string seq) (defines: string seq) : Wrap<string> =
-    let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "
+type PreproDirective =
+| PrepoR      of string
+| PrepoDefine of string
+| PrepoLoad   of string
+| PrepoLine   of string //* int
+| PrepoNoWarn of string
+| PrepoOther  of string
+| NoPrepo
+
+let prepareCode (code:string) =
+    let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
+    let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
+    let  prepro (line:string) = match true with 
+                                | true when line.StartsWith("#define") -> ("//" + line, line |> define |> PrepoDefine)
+                                | true when line.StartsWith("#r"     ) -> ("//" + line, line |> quoted |> PrepoR     )
+                                | true when line.StartsWith("#load"  ) -> ("//" + line, line |> quoted |> PrepoLoad  )
+                                | true when line.StartsWith("#nowarn") -> ("//" + line, line |> quoted |> PrepoNoWarn)
+                                | true when line.StartsWith("# "     ) -> (       line, line |> quoted |> PrepoLine  )
+                                | true when line.StartsWith("#line"  ) -> (       line, line |> quoted |> PrepoLine  )
+                                | true when line.StartsWith("#"      ) -> (       line, line           |> PrepoOther )
+                                | _                                    -> (       line,                   NoPrepo    ) 
+    let  fsNass   = code.Split([| "\r\n"; "\n" ; "\r" |], System.StringSplitOptions.None) |> Seq.map prepro
+    let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.toArray
+    let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toArray
+    let  nowarns  = fsNass |> Seq.choose (snd >> (function | PrepoNoWarn d -> Some d      | _ -> None)) |> Seq.toArray
+    let  nowarnsL = if nowarns |> Seq.isEmpty then [] else 
+                    [ nowarns |> Seq.map (sprintf "\"%s\"") |> String.concat " " |> ((+) "#nowarn ") ]
+    let  code     = fsNass |> Seq.map     fst |> Seq.append nowarnsL |> String.concat "\r\n"
+    code, assembs, defines
+
+let evalFsiExe preCode =
     Wrap.wrapper {
+        let code, assemblies, defines = prepareCode preCode
+        let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "
         let! resR = fsiExe.Value.Process(fun fsi -> 
             Wrap.wrapper {
               do! Result.tryProtection()
