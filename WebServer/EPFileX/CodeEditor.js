@@ -278,16 +278,19 @@
       };
      }(window.id),x$1)),Seq.delay(function()
      {
-      var x$2;
-      return Seq.append((x$2=Seq.distinct(nowarns),Seq.map(function($1)
+      return Seq.append(addLinePrepos?["# 1 \"required for nowarns to work\""]:[],Seq.delay(function()
       {
-       return function($2)
+       var x$2;
+       return Seq.append((x$2=Seq.distinct(nowarns),Seq.map(function($1)
        {
-        return $1("#nowarn \""+PrintfHelpers.toSafe($2)+"\"");
-       };
-      }(window.id),x$2)),Seq.delay(function()
-      {
-       return code;
+        return function($2)
+        {
+         return $1("#nowarn \""+PrintfHelpers.toSafe($2)+"\"");
+        };
+       }(window.id),x$2)),Seq.delay(function()
+       {
+        return code;
+       }));
       }));
      }));
     }));
@@ -398,7 +401,7 @@
        });
       }),function(a$1)
       {
-       ((function($1)
+       return a$1 instanceof WebSharper.TimeoutException?Concurrency.Zero():((function($1)
        {
         return function($2)
         {
@@ -407,8 +410,7 @@
        }(function(s)
        {
         console.log(s);
-       }))(a$1));
-       return Concurrency.Zero();
+       }))(a$1),Concurrency.Zero());
       });
      });
     }));
@@ -448,12 +450,12 @@
  },null,MessagingClient);
  MessagingClient.get_EndPoint_=function()
  {
-  return"http://localhost:9000/EPTest";
+  return"http://localhost:9000/FSharpStation.html";
  };
  MessagingClient.New=Runtime.Ctor(function(clientId,timeout,endPoint)
  {
   this.clientId=clientId;
-  this.wsEndPoint=Option$1.defaultValue("http://localhost:9000/EPTest",endPoint);
+  this.wsEndPoint=Option$1.defaultValue("http://localhost:9000/FSharpStation.html",endPoint);
   this.tout=Option$1.defaultValue(60000,timeout);
   this.fromId={
    $:0,
@@ -660,11 +662,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-4ed17495-e864-40d8-bc3b-0c1c2ed86717";
+  return"FSharpStation-f847dd76-41fa-4cdc-8f0d-25f16cb97182";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-4ed17495-e864-40d8-bc3b-0c1c2ed86717",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-f847dd76-41fa-4cdc-8f0d-25f16cb97182",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,

@@ -212,7 +212,7 @@ module TestForm =
         let runFS () =
             freeMsgs.Value <- "Compiling to JavaScript..."
             freeJS.Value   <- ""
-            compile (fun msgs js -> freeJS.Value <- js ; runJS() ) sendMsg freeFS.Value
+            compile (fun msgs js -> sendMsg msgs; freeJS.Value <- js ; runJS() ) sendMsg freeFS.Value
         div [ style "height: 100%"
               Button.New("Eval F#").Style("vertical-align:top").OnClick(fun _ _ -> runFS()                                                           ).Render  
               someElt <| Doc.InputArea [ attr.placeholder "F#:"         ; attr.title "Add F# code and invoke with Eval F#" ; attr.spellcheck "false" ] freeFS

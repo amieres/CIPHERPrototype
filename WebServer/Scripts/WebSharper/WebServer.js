@@ -485,10 +485,11 @@
   {
    Var.Set(freeMsgs,"Compiling to JavaScript...");
    Var.Set(freeJS,"");
-   compile(function()
+   compile(function(msgs)
    {
     return function(js)
     {
+     sendMsg(msgs);
      Var.Set(freeJS,js);
      return runJS();
     };

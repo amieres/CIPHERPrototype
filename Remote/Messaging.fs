@@ -33,6 +33,8 @@ type POResponse =
 | POString  of string
 | POStrings of string[]
 
+let extract n (s:string) = s.Substring(0, min n s.Length)
+
 type PostOffice() =
     let mutable listeners = [| |]
     let mutable requests  = [| |]
@@ -52,9 +54,16 @@ type PostOffice() =
                     |> (fun v -> (if v.IsNone then 
                                     listeners <- 
                                         listeners 
-                                        |> Array.filter(fun (lnr, _, exn, cen) -> 
+                                        |> Array.filter(fun (lnr, lfs, exn, cen) -> 
                                             if lnr = listener then
-                                                exn <| TimeoutException()
+                                                //exn <| DivideByZeroException ()
+                                                //exn <| TimeoutException ()
+                                                lfs <| {
+                                                            toId      = AddressId ""
+                                                            fromId    = AddressId ""
+                                                            content   = "{\"$\":0}"
+                                                            messageId = None
+                                                        }
                                                 false
                                             else true) 
                                         |> Array.append [| listener, lfs, lfe, lfc |]); v)
@@ -84,8 +93,12 @@ type PostOffice() =
     )
     with
         member this.AwaitRequest    listener  fs fe fc = agent.Post <| Listener (listener, fs, fe, fc)
-        member this.SendRequest     request   fs fe fc = agent.Post <| Request  (request , fs, fe, fc)
-        member this.ReplyTo         request   response = agent.Post <| Reply    (request , response  )
+        member this.SendRequest     request   fs fe fc = 
+            printfn "Request: %A %A %A" request.toId request.fromId (extract 80 request.content)
+            agent.Post <| Request  (request , fs, fe, fc)
+        member this.ReplyTo         request   response = 
+            printfn "Reply:   %s" (extract 100 response)
+            agent.Post <| Reply    (request , response  )
         member this.Listeners       ()                 = listeners |> Array.map (function | AddressId id, _, _, _ -> id)
         member this.Requests        ()                 = requests  |> Array.map (sprintf "%A")
         member this.Sent            ()                 = sent      |> Array.map (sprintf "%A")
@@ -131,7 +144,9 @@ let sendRequest  toId fromId content =
 
 let RpcCall (url:string) method (data:string) =
     async {
+        //printfn "RpcCall %s" (extract 100 data)
         let req = WebRequest.Create(url) :?> HttpWebRequest 
+        req.Timeout         <- 600_000
         req.ProtocolVersion <- HttpVersion.Version10
         req.Method          <- "POST"
         req.ContentType     <-  "application/json"
@@ -144,10 +159,11 @@ let RpcCall (url:string) method (data:string) =
         
         // Obtain response and download the resulting page 
         // (The sample contains the first & last name from POST data)
-        let resp   = req.GetResponse() 
+        use resp   = req.GetResponse() 
         use stream = resp.GetResponseStream() 
         use reader = new StreamReader(stream)
         let msg    = reader.ReadToEnd()
+        //printfn "RpcCallResponse %s" (extract 100 msg)
         let json   = JsonValue.Parse msg
         return       json.["$DATA"]
     }
