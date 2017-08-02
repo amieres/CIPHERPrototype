@@ -265,23 +265,23 @@ let getJSW (minified:bool) code =
         return! compileW ctx fs assemblies defines
     }
 
-let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> string -> Wrap<string> =
-  fun            processor                                          fsx    ->
-    let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
-    let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
-    let  prepro (line:string) = match true with 
-                                | true when line.StartsWith("#define") -> ("//" + line, line |> define |> PrepoDefine)
-                                | true when line.StartsWith("#r"     ) -> ("//" + line, line |> quoted |> PrepoR     )
-                                | true when line.StartsWith("#load"  ) -> ("//" + line, line |> quoted |> PrepoLoad  )
-                                | _                                    -> (       line,                   NoPrepo    ) 
-    Wrap.wrapper {
-        do!  Result.tryProtection()
-        let  fsNass   = fsx.Split([| "\r\n"; "\n" ; "\r" |], System.StringSplitOptions.None) |> Seq.map prepro
-        let  fs       = fsNass |> Seq.map fst |> String.concat "\r\n"
-        let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.toList
-        let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toList
-        return! processor fs assembs defines
-    }
+//let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> string -> Wrap<string> =
+//  fun            processor                                          fsx    ->
+//    let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
+//    let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
+//    let  prepro (line:string) = match true with 
+//                                | true when line.StartsWith("#define") -> ("//" + line, line |> define |> PrepoDefine)
+//                                | true when line.StartsWith("#r"     ) -> ("//" + line, line |> quoted |> PrepoR     )
+//                                | true when line.StartsWith("#load"  ) -> ("//" + line, line |> quoted |> PrepoLoad  )
+//                                | _                                    -> (       line,                   NoPrepo    ) 
+//    Wrap.wrapper {
+//        do!  Result.tryProtection()
+//        let  fsNass   = fsx.Split([| "\r\n"; "\n" ; "\r" |], System.StringSplitOptions.None) |> Seq.map prepro
+//        let  fs       = fsNass |> Seq.map fst |> String.concat "\r\n"
+//        let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.toList
+//        let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toList
+//        return! processor fs assembs defines
+//    }
 
 let nl = "\r\n"
 

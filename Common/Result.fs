@@ -257,6 +257,8 @@ module Wrap =
                                                     | Failure    ms  -> async { return failWithMsgs ms }
                                          return! arb
                                      } |> WAsyncR
+    let Return = WSimple 
+    let map  (f: 'a -> 'b  ) = bind (f >> Return)     
 
     let wrapper2Async (f: 'a -> Wrap<'b>) a : Async<Result<'b>> =
         let wb = tryCall f a

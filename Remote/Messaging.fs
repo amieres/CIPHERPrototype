@@ -23,6 +23,7 @@ type MBMessage =
 | Reply    of Guid      *  string
 
 type POMessage =
+| POIdentification
 | POEcho   of string
 | POListeners
 | POPendingRequests
@@ -112,10 +113,11 @@ let sendRequest  toId fromId content =
             let msg = Json.Deserialize<POMessage> content
             return
                 match msg with
+                | POIdentification  -> POString     "WebServer:PostOffice"
+                | POEcho        txt -> POString     txt
                 | POListeners       -> POStrings <| postOffice.Listeners()
                 | POPendingRequests -> POStrings <| postOffice.Requests ()
                 | POPendingReplys   -> POStrings <| postOffice.Sent     ()
-                | POEcho        txt -> POString     txt
                 |> Json.Serialize 
         }
     else
