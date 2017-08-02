@@ -192,8 +192,8 @@ let compileMainW: Context -> seq<string> -> Wrap<string> =
         }
     CompileToJsW context !wsArgs
 
-let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap<string> =
-  fun         context    code      assemblies     defines     ->
+let compileW: Context -> string -> seq<string> -> Wrap<string> =
+  fun         context    code      options0     ->
     Wrap.wrapper {
         do!  Result.tryProtection()
         let codeBase  = System.Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).LocalPath
@@ -216,7 +216,7 @@ let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap<string> =
                                   "--tailcalls-" 
                                   "--target:library"
                                   "--warn:3"
-                                  "--nowarn:76"
+                                 // "--nowarn:76"
                                   "--vserrors"
                                   "--LCID:1033" 
                                   "--utf8output" 
@@ -230,15 +230,22 @@ let compileW: Context -> string -> seq<string> -> seq<string> -> Wrap<string> =
                                   "--project:project.xxx"
                                   src 
                                   |]
-                           yield! assemblies |> Seq.map ((+) "-r:") |> Seq.toArray 
-                           yield! defines    |> Seq.map ((+) "-d:") |> Seq.toArray
+                           yield! options0 |> Seq.toArray 
                         |]
         return! compileMainW context options
     }
 
-let getJSW (minified:bool) code =
+let getJSW (minified:bool) (code:string) =
     Wrap.wrapper {
-        let fs, assemblies, defines = prepareCode code
+        let config  = extractConfig code
+        let defines = if config <> "" then config.Split ' ' else [||]
+        let fs, assembs, prepIs = prepareCode code
+        let options =
+           [
+            yield! defines
+            yield! prepIs  |> Seq.distinct |> Seq.map ((+)"-I:")
+            yield! assembs |> Seq.distinct |> Seq.map ((+)"-r:")
+           ]
         let pu = P.PathUtility.VirtualPaths("/")
         let ctx : Resources.Context =
             {
@@ -262,7 +269,7 @@ let getJSW (minified:bool) code =
                 RenderingCache = System.Collections.Concurrent.ConcurrentDictionary()
                 ResourceDependencyCache = System.Collections.Concurrent.ConcurrentDictionary()
             }
-        return! compileW ctx fs assemblies defines
+        return! compileW ctx fs options
     }
 
 //let processCode: (string -> seq<string> -> seq<string> -> Wrap<string>) -> string -> Wrap<string> =
@@ -344,7 +351,7 @@ let translate source minified =
         return r |> Result.mapMsgs Result.getMessages
     }
 
-let evaluate source           = 
+let evaluate source = 
     async {
         let! r = Transpiler(source).EvalFsiExe() |> Wrap.getAsyncR
         return r |> Result.mapMsgs (Seq.map (fun m -> m.ErrMsg) >> String.concat "\n")

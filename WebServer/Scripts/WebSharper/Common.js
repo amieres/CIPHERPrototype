@@ -644,6 +644,25 @@
     break;
   }
  };
+ Wrap.map=function(f)
+ {
+  var f$1;
+  f$1=function(x)
+  {
+   return Wrap.Return(f(x));
+  };
+  return function(w)
+  {
+   return Wrap.bind(f$1,w);
+  };
+ };
+ Wrap.Return=function(a)
+ {
+  return{
+   $:3,
+   $0:a
+  };
+ };
  Wrap.bind=function(f,wa)
  {
   var $1,a,ms,b,b$1;

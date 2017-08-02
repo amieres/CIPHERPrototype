@@ -165,42 +165,53 @@ type PreproDirective =
 | PrepoLoad   of string
 | PrepoLine   of string //* int
 | PrepoNoWarn of string
+| PrepoI      of string
+| PrepoIf     of string
+| PrepoElse   
+| PrepoEndIf
+| PrepoLight  of bool
 | PrepoOther  of string
 | NoPrepo
 
 let prepareCode (code:string) =
     let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
     let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
+    let  comment = ((+)"//") 
     let  prepro (line:string) = match true with 
-                                | true when line.StartsWith("#define") -> ("//" + line, line |> define |> PrepoDefine)
-                                | true when line.StartsWith("#r"     ) -> ("//" + line, line |> quoted |> PrepoR     )
-                                | true when line.StartsWith("#load"  ) -> ("//" + line, line |> quoted |> PrepoLoad  )
-                                | true when line.StartsWith("#nowarn") -> ("//" + line, line |> quoted |> PrepoNoWarn)
-                                | true when line.StartsWith("# "     ) -> (       line, line |> quoted |> PrepoLine  )
-                                | true when line.StartsWith("#line"  ) -> (       line, line |> quoted |> PrepoLine  )
-                                | true when line.StartsWith("#"      ) -> (       line, line           |> PrepoOther )
-                                | _                                    -> (       line,                   NoPrepo    ) 
+                                | true when line.StartsWith("#define") -> (comment line, line |> define |> PrepoDefine)
+                                | true when line.StartsWith("#r"     ) -> (comment line, line |> quoted |> PrepoR     )
+                                | true when line.StartsWith("#load"  ) -> (comment line, line |> quoted |> PrepoLoad  )
+                                | true when line.StartsWith("#nowarn") -> (        line, line |> quoted |> PrepoNoWarn)
+                                | true when line.StartsWith("# "     ) -> (        line, line |> quoted |> PrepoLine  )
+                                | true when line.StartsWith("#line"  ) -> (        line, line |> quoted |> PrepoLine  )
+                                | true when line.StartsWith("#I"     ) -> (comment line, line |> quoted |> PrepoI     )
+                                | true when line.StartsWith("#if"    ) -> (        line, line           |> PrepoIf    )
+                                | true when line.StartsWith("#else"  ) -> (        line,                   PrepoElse  )
+                                | true when line.StartsWith("#endif" ) -> (        line,                   PrepoEndIf )
+                                | true when line.StartsWith("#light" ) -> (        line, false          |> PrepoLight )
+                                | true when line.StartsWith("#"      ) -> (comment line, line           |> PrepoOther )
+                                | _                                    -> (        line,                   NoPrepo    ) 
     let  fsNass   = code.Split([| "\r\n"; "\n" ; "\r" |], System.StringSplitOptions.None) |> Seq.map prepro
     let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.toArray
-    let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.toArray
-    let  nowarns  = fsNass |> Seq.choose (snd >> (function | PrepoNoWarn d -> Some d      | _ -> None)) |> Seq.toArray
-    let  nowarnsL = if nowarns |> Seq.isEmpty then [] else 
-                    [ nowarns |> Seq.map (sprintf "\"%s\"") |> String.concat " " |> ((+) "#nowarn ") ]
-    let  code     = fsNass |> Seq.map     fst |> Seq.append nowarnsL |> String.concat "\r\n"
-    code, assembs, defines
+    let  prepoIs  = fsNass |> Seq.choose (snd >> (function | PrepoI      d -> Some d      | _ -> None)) |> Seq.toArray
+    let  code     = fsNass |> Seq.map     fst |> String.concat "\r\n"
+    code, assembs, prepoIs
 
-let evalFsiExe preCode =
+let extractConfig (code:string) =
+    let n = code.IndexOf("\n")
+    if n > 5 && code.StartsWith "////-d:" then code.Substring(4, n - 4) else ""
+
+let evalFsiExe (code:string) =
     Wrap.wrapper {
-        let code, assemblies, defines = prepareCode preCode
-        let config = Set defines |> Set.toSeq |> Seq.map ((+) "-d:") |> String.concat " "
+        let config = extractConfig code
         let! resR = fsiExe.Value.Process(fun fsi -> 
             Wrap.wrapper {
               do! Result.tryProtection()
-              let! res =
-                Seq.map (fun assem -> sprintf "#r @\"%s\"" assem) assemblies
-                |> Seq.append    <| [ code ]
-                |> String.concat "\n" 
-                |> fsi.Eval
+              let! res = fsi.Eval code
+//                Seq.map (fun assem -> sprintf "#r @\"%s\"" assem) assemblies
+//                |> Seq.append    <| [ code ]
+//                |> String.concat "\n" 
+//                |> fsi.Eval
               return res
             }
         , config)
