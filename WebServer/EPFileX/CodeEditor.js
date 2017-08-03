@@ -707,11 +707,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-eda6a6fa-88e7-4527-a8f5-c16bbceb3e89";
+  return"FSharpStation-7d0fe40b-a74f-4ebe-8b97-ab84b7abc930";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-eda6a6fa-88e7-4527-a8f5-c16bbceb3e89",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-7d0fe40b-a74f-4ebe-8b97-ab84b7abc930",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,
@@ -3268,7 +3268,7 @@
    {
     var code$1;
     code$1=t[2];
-    return[[t[0].id,[t[1],firstLine,firstLine+Arrays.length(code$1)]],firstLine+Arrays.length(code$1)];
+    return[[t[0].get_NameSanitized(),[t[1],firstLine,firstLine+Arrays.length(code$1)]],firstLine+Arrays.length(code$1)];
    },part1.get_Length(),p[2]))[0]);
    code=Strings.concat("\n",List.ofSeq(Seq.delay(function()
    {
@@ -3279,13 +3279,8 @@
    })));
    return Concurrency.Bind(FSharpStation.autoCompleteClient().Parse$1(FSharpStation.parseFile(),code,starts),function(a)
    {
-    FSharpStation.sendMsg((function($1)
-    {
-     return function($2)
-     {
-      return $1(PrintfHelpers.prettyPrint($2));
-     };
-    }(window.id))(a));
+    FSharpStation.sendMsg(a);
+    FSharpStation.sendMsg("Parsed!");
     return Concurrency.Zero();
    });
   })),null));
@@ -4186,7 +4181,7 @@
     el.value="";
    };
   })]).Id(FSharpStation.fileInputElementId()).get_Render()]));
-  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { text-decoration: underline blue } \r\n      .Error   { text-decoration: underline red  } \r\n          ";
+  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { text-decoration: underline lightblue } \r\n      .Error   { text-decoration: underline red  } \r\n          ";
   SC$1.autoCompleteClient=new FSAutoCompleteClient.New("FSharpStation");
   SC$1.parseFile="..\\F#.fsx";
   SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$12)
@@ -4214,17 +4209,18 @@
   {
    ed.addKeyMap(KeyMapF2.New(function()
    {
-    var b;
-    Concurrency.Start((b=null,Concurrency.Delay(function()
+    var o,cur,b;
+    o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+    o==null?void 0:(cur=o.$0,Concurrency.Start((b=null,Concurrency.Delay(function()
     {
      var pos;
      pos=ed.getCursor();
-     return Concurrency.Bind(FSharpStation.autoCompleteClient().ToolTip(FSharpStation.parseFile(),pos.line+1,pos.ch+1,FSharpStation.currentCodeSnippetId().c),function(a)
+     return Concurrency.Bind(FSharpStation.autoCompleteClient().ToolTip(FSharpStation.parseFile(),pos.line+1,pos.ch+1,cur.get_NameSanitized()),function(a)
      {
       window.alert(a);
       return Concurrency.Zero();
      });
-    })),null);
+    })),null));
    }));
   }).Style("height: 100%");
   SC$1.rex1="\\((\\d+)\\) F# (.+).fsx\\((\\d+)\\,(\\d+)\\): (error|warning) ((.|\\b)+)";
@@ -4582,7 +4578,7 @@
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.Id(),0]]],[3,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.Id(),0],["$3","Item4",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[4,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.EncodeArray(Provider.EncodeTuple([_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,Provider.EncodeTuple([Provider.Id(),Provider.Id(),Provider.Id()])])),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.Id(),0]]],[3,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.Id(),0],["$3","Item4",Provider.Id(),0]]],[4,[["$0","Item1",Provider.Id(),0],["$1","Item2",Provider.Id(),0],["$2","Item3",Provider.EncodeArray(Provider.EncodeTuple([Provider.Id(),Provider.EncodeTuple([Provider.Id(),Provider.Id(),Provider.Id()])])),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j=function()
  {
