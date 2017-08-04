@@ -717,11 +717,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-00841d4d-4bf0-4a74-9555-6d492a3cc74c";
+  return"FSharpStation-a1843b77-11ef-45ec-a7c6-b26c429c1f9b";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-00841d4d-4bf0-4a74-9555-6d492a3cc74c",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-a1843b77-11ef-45ec-a7c6-b26c429c1f9b",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,
@@ -1482,6 +1482,12 @@
  HtmlNode$1.HtmlEmpty=new HtmlNode$1({
   $:3
  });
+ HtmlNode.findRootElement=function(e)
+ {
+  var root;
+  root=e.getRootNode();
+  return!root.body?root.firstChild:root.body;
+ };
  HtmlNode.createIFrame=function(f)
  {
   var cover;
@@ -2247,27 +2253,27 @@
    return CodeMirror.New(this._class,this.style,this.id,this["var"],this.onChange,{
     $:1,
     $0:f
-   },this.hintF,this.editorO);
+   },this.editorO);
   },
   OnChange:function(f)
   {
-   return CodeMirror.New(this._class,this.style,this.id,this["var"],f,this.onRender,this.hintF,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,this["var"],f,this.onRender,this.editorO);
   },
   Style:function(sty)
   {
-   return CodeMirror.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
+   return CodeMirror.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.onRender,this.editorO);
   },
   SetVar:function(v)
   {
-   return CodeMirror.New(this._class,this.style,this.id,v,this.onChange,this.onRender,this.hintF,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,v,this.onChange,this.onRender,this.editorO);
   },
   Id:function(id)
   {
-   return CodeMirror.New(this._class,this.style,id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
+   return CodeMirror.New(this._class,this.style,id,this["var"],this.onChange,this.onRender,this.editorO);
   },
   Class:function(clas)
   {
-   return CodeMirror.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
+   return CodeMirror.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.onRender,this.editorO);
   },
   get_Render:function()
   {
@@ -2331,9 +2337,9 @@
  {
   return CodeMirror.New(Val.fixit(""),Val.fixit(""),"",_var,function()
   {
-  },null,null,null);
+  },null,null);
  };
- CodeMirror.New=function(_class,style,id,_var,onChange,onRender,hintF,editorO)
+ CodeMirror.New=function(_class,style,id,_var,onChange,onRender,editorO)
  {
   return new CodeMirror({
    _class:_class,
@@ -2342,7 +2348,6 @@
    "var":_var,
    onChange:onChange,
    onRender:onRender,
-   hintF:hintF,
    editorO:editorO
   });
  };
@@ -3335,25 +3340,22 @@
  };
  FSharpStation.loadFile=function(e)
  {
-  var body;
   if(!FSharpStation.dirty().c||window.confirm("Changes have not been saved, do you really want to load?"))
+   FSharpStation.loadTextFile(HtmlNode.findRootElement(e).querySelector("#"+FSharpStation.fileInputElementId()),function(txt)
    {
-    FSharpStation.loadTextFile((body=e.getRootNode().body,!body?e.getRootNode().firstChild:body).querySelector("#"+FSharpStation.fileInputElementId()),function(txt)
+    var a;
+    try
     {
-     var a;
-     try
-     {
-      a=((Provider.DecodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3))())(JSON.parse(txt));
-      FSharpStation.codeSnippets().Set(a);
-      FSharpStation.setClean();
-      FSharpStation.refreshView();
-     }
-     catch(e$1)
-     {
-      window.alert(window.String(e$1));
-     }
-    });
-   }
+     a=((Provider.DecodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$3))())(JSON.parse(txt));
+     FSharpStation.codeSnippets().Set(a);
+     FSharpStation.setClean();
+     FSharpStation.refreshView();
+    }
+    catch(e$1)
+    {
+     window.alert(window.String(e$1));
+    }
+   });
  };
  FSharpStation.fileInputElementId=function()
  {
