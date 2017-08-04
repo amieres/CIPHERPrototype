@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/Common.js", "/Scripts/WebSharper/WebSharper.UI.Next.js"], function()
 {
  "use strict";
- var FSSGlobal,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapF2,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,Guid,List,Option,Seq,Strings,Arrays,PrintfHelpers,Unchecked,Concurrency,JSON,Remoting,AjaxRemotingProvider,console,Rop,Option$1,Result,Wrap,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,Collections,FSharpSet,BalancedTree,Json,Provider,Slice,ListModel;
+ var FSSGlobal,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapF2,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,Guid,List,Option,Seq,Strings,Arrays,PrintfHelpers,Unchecked,Concurrency,JSON,Remoting,AjaxRemotingProvider,Date,n,console,Rop,Option$1,Result,Wrap,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,Collections,FSharpSet,BalancedTree,Json,Provider,Slice,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  FsStationShared=FSSGlobal.FsStationShared=FSSGlobal.FsStationShared||{};
  PreproDirective=FsStationShared.PreproDirective=FsStationShared.PreproDirective||{};
@@ -164,6 +164,8 @@
  JSON=window.JSON;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
+ Date=window.Date;
+ n=window.n;
  console=window.console;
  Rop=window.Rop;
  Option$1=Rop&&Rop.Option;
@@ -322,7 +324,7 @@
       };
      }(window.id),x$1)),Seq.delay(function()
      {
-      return Seq.append(addLinePrepos?["# 1 \"required for nowarns to work\""]:[],Seq.delay(function()
+      return Seq.append(addLinePrepos&&!Seq.isEmpty(nowarns)?["# 1 \"required for nowarns to work\""]:[],Seq.delay(function()
       {
        var x$2;
        x$2=Seq.distinct(nowarns);
@@ -430,6 +432,14 @@
      return true;
     },Concurrency.Delay(function()
     {
+     window.n=new window.Date(Date.now());
+     n.getFullYear();
+     n.getMonth();
+     n.getDate();
+     n.getHours();
+     n.getMinutes();
+     n.getSeconds();
+     n.getMilliseconds();
      return Concurrency.Bind(Concurrency.StartChild((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[$this.fromId]),{
       $:1,
       $0:$this.tout
@@ -501,7 +511,7 @@
  {
   this.clientId=clientId;
   this.wsEndPoint=Option$1.defaultValue("http://localhost:9000/FSharpStation.html",endPoint);
-  this.tout=Option$1.defaultValue(60000,timeout);
+  this.tout=Option$1.defaultValue(100000,timeout);
   this.fromId={
    $:0,
    $0:this.clientId
@@ -707,25 +717,25 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-7d0fe40b-a74f-4ebe-8b97-ab84b7abc930";
+  return"FSharpStation-00841d4d-4bf0-4a74-9555-6d492a3cc74c";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-7d0fe40b-a74f-4ebe-8b97-ab84b7abc930",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-00841d4d-4bf0-4a74-9555-6d492a3cc74c",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,
    $0:this.fsIds
   };
  },FsStationClient);
- FsStationShared.sanitize=function(n)
+ FsStationShared.sanitize=function(n$1)
  {
   var illegal;
   illegal=[34,60,62,124,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,58,42,63,92,47];
   return Strings.Filter(function(c)
   {
    return!Arrays.contains(c,illegal);
-  },n);
+  },n$1);
  };
  FsStationShared.snippetName=function(name,content)
  {
@@ -1574,10 +1584,10 @@
  {
   return HtmlNode.styleH([HtmlNode.htmlText(v)]);
  };
- HtmlNode.style1=function(n,v)
+ HtmlNode.style1=function(n$1,v)
  {
   var x;
-  return HtmlNode.style(Val.map((x=n+":",function(y)
+  return HtmlNode.style(Val.map((x=n$1+":",function(y)
   {
    return x+y;
   }),v));
@@ -1898,9 +1908,9 @@
  HtmlNode.groupAttr=function(name,sep,children)
  {
   var ss,r,f;
-  ss=Seq.choose(function(n)
+  ss=Seq.choose(function(n$1)
   {
-   return HtmlNode.chooseThisAttr(name,n);
+   return HtmlNode.chooseThisAttr(name,n$1);
   },children);
   return Seq.isEmpty(ss)?null:{
    $:1,
@@ -2237,27 +2247,27 @@
    return CodeMirror.New(this._class,this.style,this.id,this["var"],this.onChange,{
     $:1,
     $0:f
-   },this.editorO);
+   },this.hintF,this.editorO);
   },
   OnChange:function(f)
   {
-   return CodeMirror.New(this._class,this.style,this.id,this["var"],f,this.onRender,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,this["var"],f,this.onRender,this.hintF,this.editorO);
   },
   Style:function(sty)
   {
-   return CodeMirror.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.onRender,this.editorO);
+   return CodeMirror.New(this._class,Val.fixit(sty),this.id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
   },
   SetVar:function(v)
   {
-   return CodeMirror.New(this._class,this.style,this.id,v,this.onChange,this.onRender,this.editorO);
+   return CodeMirror.New(this._class,this.style,this.id,v,this.onChange,this.onRender,this.hintF,this.editorO);
   },
   Id:function(id)
   {
-   return CodeMirror.New(this._class,this.style,id,this["var"],this.onChange,this.onRender,this.editorO);
+   return CodeMirror.New(this._class,this.style,id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
   },
   Class:function(clas)
   {
-   return CodeMirror.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.onRender,this.editorO);
+   return CodeMirror.New(Val.fixit(clas),this.style,this.id,this["var"],this.onChange,this.onRender,this.hintF,this.editorO);
   },
   get_Render:function()
   {
@@ -2310,7 +2320,7 @@
       },$this["var"].RView());
      });
     })
-   })]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/editor.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/codemirror.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/theme/rubyblue.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/display/fullscreen.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/dialog/dialog.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.css(".CodeMirror { height: 100% }")]);
+   })]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/editor.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/codemirror.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/content/theme/rubyblue.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/display/fullscreen.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/dialog/dialog.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/codemirror/scripts/addon/hint/show-hint.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.css(".CodeMirror { height: 100% }")]);
   }
  },null,CodeMirror);
  CodeMirror.New$1=function(v)
@@ -2321,9 +2331,9 @@
  {
   return CodeMirror.New(Val.fixit(""),Val.fixit(""),"",_var,function()
   {
-  },null,null);
+  },null,null,null);
  };
- CodeMirror.New=function(_class,style,id,_var,onChange,onRender,editorO)
+ CodeMirror.New=function(_class,style,id,_var,onChange,onRender,hintF,editorO)
  {
   return new CodeMirror({
    _class:_class,
@@ -2332,6 +2342,7 @@
    "var":_var,
    onChange:onChange,
    onRender:onRender,
+   hintF:hintF,
    editorO:editorO
   });
  };
@@ -3386,12 +3397,12 @@
  };
  FSharpStation.addCode=function()
  {
-  var n,o,o$1;
-  n=(o=(o$1=CodeSnippet$1.PickIO(FSharpStation.currentCodeSnippetId().c),o$1==null?null:{
+  var n$1,o,o$1;
+  n$1=(o=(o$1=CodeSnippet$1.PickIO(FSharpStation.currentCodeSnippetId().c),o$1==null?null:{
    $:1,
    $0:CodeSnippet$1.New(o$1.$0[0]+1,"",o$1.$0[1].parent,List.T.Empty,List.T.Empty,"")
   }),o==null?CodeSnippet$1.New$2(""):o.$0);
-  Var.Set(FSharpStation.currentCodeSnippetId(),n.id);
+  Var.Set(FSharpStation.currentCodeSnippetId(),n$1.id);
   FSharpStation.setDirty();
   FSharpStation.refreshView();
  };
@@ -3479,11 +3490,11 @@
    {
     return $1(window.String($2)+"em");
    };
-  }(window.id))(code.Level(CodeSnippet$1.FetchO))),HtmlNode.style("white-space: pre"),HtmlNode.htmlText(Val.map2(function(n)
+  }(window.id))(code.Level(CodeSnippet$1.FetchO))),HtmlNode.style("white-space: pre"),HtmlNode.htmlText(Val.map2(function(n$1)
   {
    return function(c)
    {
-    return FsStationShared.snippetName(n,c);
+    return FsStationShared.snippetName(n$1,c);
    };
   },FSharpStation.curSnippetNameOf(code.id),FSharpStation.curSnippetCodeOf(code.id))),new HtmlNode$1({
    $:5,
@@ -3874,9 +3885,9 @@
   },(a=function(s)
   {
    return s.content;
-  },(a$1=function(s,n)
+  },(a$1=function(s,n$1)
   {
-   return CodeSnippet.New(s.name,n,s.parent,s.predecessors,s.companions,s.id,s.expanded);
+   return CodeSnippet.New(s.name,n$1,s.parent,s.predecessors,s.companions,s.id,s.expanded);
   },function(a$2)
   {
    return FSharpStation.codeSnippets().LensInto(a,a$1,a$2);
@@ -3891,9 +3902,9 @@
   },(a=function(s)
   {
    return s.get_Name();
-  },(a$1=function(s,n)
+  },(a$1=function(s,n$1)
   {
-   return CodeSnippet.New(n,s.content,s.parent,s.predecessors,s.companions,s.id,s.expanded);
+   return CodeSnippet.New(n$1,s.content,s.parent,s.predecessors,s.companions,s.id,s.expanded);
   },function(a$2)
   {
    return FSharpStation.codeSnippets().LensInto(a,a$1,a$2);
@@ -4080,11 +4091,11 @@
   {
    return g(HtmlNode.chooseNode(x$1));
   });
-  SC$1.string2Styles=(g$1=(m=function(n,v$12)
+  SC$1.string2Styles=(g$1=(m=function(n$1,v$12)
   {
    return new HtmlNode$1({
     $:5,
-    $0:AttrModule.Style(n,v$12)
+    $0:AttrModule.Style(n$1,v$12)
    });
   },function(a)
   {
@@ -4096,7 +4107,7 @@
   {
    return g$1(HtmlNode.style2pairs(x$1));
   });
-  SC$1.codeMirrorIncludes=["/EPFileX/codemirror/scripts/codemirror/codemirror.js","/EPFileX/codemirror/scripts/intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js","/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js","/EPFileX/codemirror/scripts/addon/search/searchcursor.js","/EPFileX/codemirror/scripts/addon/search/search.js","/EPFileX/codemirror/scripts/addon/search/jump-to-line.js","/EPFileX/codemirror/scripts/addon/dialog/dialog.js","/EPFileX/codemirror/scripts/addon/edit/matchbrackets.js","/EPFileX/codemirror/scripts/addon/selection/active-line.js","/EPFileX/codemirror/scripts/addon/display/fullscreen.js"];
+  SC$1.codeMirrorIncludes=["/EPFileX/codemirror/scripts/codemirror/codemirror.js","/EPFileX/codemirror/scripts/intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js","/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js","/EPFileX/codemirror/scripts/addon/search/searchcursor.js","/EPFileX/codemirror/scripts/addon/search/search.js","/EPFileX/codemirror/scripts/addon/search/jump-to-line.js","/EPFileX/codemirror/scripts/addon/dialog/dialog.js","/EPFileX/codemirror/scripts/addon/edit/matchbrackets.js","/EPFileX/codemirror/scripts/addon/selection/active-line.js","/EPFileX/codemirror/scripts/addon/display/fullscreen.js","/EPFileX/codemirror/scripts/addon/hint/show-hint.js"];
   SC$1.codeSnippets=ListModel.Create(function(s$5)
   {
    return s$5.id;

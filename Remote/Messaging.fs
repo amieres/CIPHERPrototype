@@ -34,6 +34,7 @@ type POResponse =
 | POStrings of string[]
 
 let extract n (s:string) = s.Substring(0, min n s.Length)
+let now() = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture)
 
 type PostOffice() =
     let mutable listeners = [| |]
@@ -94,10 +95,10 @@ type PostOffice() =
     with
         member this.AwaitRequest    listener  fs fe fc = agent.Post <| Listener (listener, fs, fe, fc)
         member this.SendRequest     request   fs fe fc = 
-            printfn "Request: %A %A %A" request.toId request.fromId (extract 80 request.content)
+            printfn "%s Request: %A %A %A" (now()) request.toId request.fromId (extract 80 request.content)
             agent.Post <| Request  (request , fs, fe, fc)
         member this.ReplyTo         request   response = 
-            printfn "Reply:   %s" (extract 100 response)
+            printfn "%s Reply:   %s"       (now()) (extract 100 response)
             agent.Post <| Reply    (request , response  )
         member this.Listeners       ()                 = listeners |> Array.map (function | AddressId id, _, _, _ -> id)
         member this.Requests        ()                 = requests  |> Array.map (sprintf "%A")
@@ -146,10 +147,10 @@ let RpcCall (url:string) method (data:string) =
     async {
         //printfn "RpcCall %s" (extract 100 data)
         let req = WebRequest.Create(url) :?> HttpWebRequest 
-        req.Timeout         <- 600_000
+        req.Timeout         <- 300_000
         req.ProtocolVersion <- HttpVersion.Version10
         req.Method          <- "POST"
-        req.ContentType     <-  "application/json"
+        req.ContentType     <- "application/json"
         req.Headers.Add("x-websharper-rpc", method            )
         let postBytes = Encoding.ASCII.GetBytes(data)
         req.ContentLength <- int64 postBytes.Length
