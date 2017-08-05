@@ -759,11 +759,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-0c5c7be1-f685-4da3-8006-4314a203e502";
+  return"FSharpStation-e76adcdc-e112-4501-8908-dd3ff1f916c9";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-0c5c7be1-f685-4da3-8006-4314a203e502",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-e76adcdc-e112-4501-8908-dd3ff1f916c9",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,
@@ -3363,6 +3363,11 @@
   SC$1.$cctor();
   return SC$1.fsStationClient;
  };
+ FSharpStation.styleEditor=function()
+ {
+  SC$1.$cctor();
+  return SC$1.styleEditor;
+ };
  FSharpStation.prior=function()
  {
   SC$1.$cctor();
@@ -3419,7 +3424,7 @@
   {
    var m,cur;
    m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
-   return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur),function()
+   return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur,true),function()
    {
     var pos,word,a$1,t;
     pos=ed.getCursor();
@@ -3446,7 +3451,7 @@
   {
    var m,cur;
    m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
-   return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur),function()
+   return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur,false),function()
    {
     var pos;
     pos=ed.getCursor();
@@ -3458,15 +3463,18 @@
    })):Concurrency.Zero();
   })),null);
  };
- FSharpStation.parseIfMustThen=function(cur)
+ FSharpStation.parseIfMustThen=function(cur,silent)
  {
   var b;
   b=null;
   return Concurrency.Delay(function()
   {
-   return Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   return!FSharpStation.parsed()?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
    {
-    return a?Concurrency.Bind(FSharpStation.parseFSA(),function()
+    return Concurrency.Return(null);
+   }):Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   {
+    return a?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
     {
      return Concurrency.Return(null);
     }):Concurrency.Zero();
@@ -3475,12 +3483,45 @@
  };
  FSharpStation.parseFS=function()
  {
-  Concurrency.Start(FSharpStation.parseFSA(),null);
+  Concurrency.Start(FSharpStation.parseFSA(false),null);
  };
- FSharpStation.parseFSA=function()
+ FSharpStation.parseFSA=function(silent)
  {
-  SC$1.$cctor();
-  return SC$1.parseFSA;
+  var b;
+  b=null;
+  return Concurrency.Delay(function()
+  {
+   var m,cur;
+   m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
+   return m!=null&&m.$==1?(cur=m.$0,Concurrency.Combine(!silent?(Var.Set(FSharpStation.codeMsgs(),"Parsing F#..."),Concurrency.Zero()):Concurrency.Zero(),Concurrency.Delay(function()
+   {
+    var p,part2,part1,starts,code;
+    p=FSharpStation["CodeSnippet.GetCodeParts"](cur,false);
+    part2=p[1];
+    part1=p[0];
+    starts=Arrays.ofSeq((Seq.mapFold(function(firstLine,t)
+    {
+     var code$1;
+     code$1=t[2];
+     return[[t[0].get_NameSanitized(),[t[1],firstLine,firstLine+Arrays.length(code$1)]],firstLine+Arrays.length(code$1)];
+    },part1.get_Length(),p[2]))[0]);
+    code=Strings.concat("\n",List.ofSeq(Seq.delay(function()
+    {
+     return Seq.append(part1,Seq.delay(function()
+     {
+      return part2;
+     }));
+    })));
+    return Concurrency.Bind(FSharpStation.autoCompleteClient().Parse$1(FSharpStation.parseFile(),code,starts),function(a)
+    {
+     FSharpStation.set_parsed(true);
+     return Concurrency.Combine(!silent?(FSharpStation.sendMsg(a),Concurrency.Zero()):Concurrency.Zero(),Concurrency.Delay(function()
+     {
+      return!silent?(FSharpStation.sendMsg("Parsed!"),Concurrency.Zero()):Concurrency.Zero();
+     }));
+    });
+   }))):Concurrency.Zero();
+  });
  };
  FSharpStation.parseFile=function()
  {
@@ -3491,11 +3532,6 @@
  {
   SC$1.$cctor();
   return SC$1.autoCompleteClient;
- };
- FSharpStation.styleEditor=function()
- {
-  SC$1.$cctor();
-  return SC$1.styleEditor;
  };
  FSharpStation.Do=function(f,a,a$1)
  {
@@ -3993,14 +4029,6 @@
   o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
   o==null?void 0:Var.Set(FSharpStation.codeFS(),FSharpStation["CodeSnippet.GetCodeFsx"](o.$0,true));
  };
- FSharpStation.setClean=function()
- {
-  Var.Set(FSharpStation.dirty(),false);
- };
- FSharpStation.setDirty=function()
- {
-  Var.Set(FSharpStation.dirty(),true);
- };
  FSharpStation.sendMsg=function(msg)
  {
   var $1,$2;
@@ -4010,6 +4038,30 @@
    {
     Var.Set(FSharpStation.codeMsgs(),($1=FSharpStation.codeMsgs().c,($2=window.String(msg),$1===null?$2:$1===""?$2:$2===null?$1:$2===""?$1:$1+"\n"+$2)));
    }
+ };
+ FSharpStation.setClean=function()
+ {
+  Var.Set(FSharpStation.dirty(),false);
+ };
+ FSharpStation.setDirty=function()
+ {
+  FSharpStation.set_parsed(false);
+  Var.Set(FSharpStation.dirty(),true);
+ };
+ FSharpStation.dirty=function()
+ {
+  SC$1.$cctor();
+  return SC$1.dirty;
+ };
+ FSharpStation.parsed=function()
+ {
+  SC$1.$cctor();
+  return SC$1.parsed;
+ };
+ FSharpStation.set_parsed=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.parsed=$1;
  };
  FSharpStation.codeMsgs=function()
  {
@@ -4025,11 +4077,6 @@
  {
   SC$1.$cctor();
   return SC$1.codeFS;
- };
- FSharpStation.dirty=function()
- {
-  SC$1.$cctor();
-  return SC$1.dirty;
  };
  FSharpStation.noSelectionVal=function()
  {
@@ -4252,7 +4299,7 @@
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
-  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,f,m$1,g$2,v$5,b,view,contentVar,changingIRefO,f$1,s$2,v$6,v$7,s$3,v$8,v$9,s$4,v$10,v$11,x;
+  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,f,m$1,g$2,v$5,view,contentVar,changingIRefO,f$1,s$2,v$6,v$7,s$3,v$8,v$9,s$4,v$10,v$11,x;
   SC$1.callAddClass=HtmlNode.addClass("a","b");
   SC$1.getClass=function(e)
   {
@@ -4323,10 +4370,11 @@
    return pos.$==1&&true;
   },FSharpStation.position());
   SC$1.noSelectionVal=Val.map(FSharpStation.noSelection,FSharpStation.currentCodeSnippetId());
-  SC$1.dirty=Var.Create$1(false);
   SC$1.codeFS=Var.Create$1("");
   SC$1.codeJS=Var.Create$1("");
   SC$1.codeMsgs=Var.Create$1("");
+  SC$1.parsed=false;
+  SC$1.dirty=Var.Create$1(false);
   Val.sink(function(m$2)
   {
    window.onbeforeunload=m$2?function(e)
@@ -4370,31 +4418,8 @@
     el.value="";
    };
   })]).Id(FSharpStation.fileInputElementId()).get_Render()]));
-  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { text-decoration: underline lightblue } \r\n      .Error   { text-decoration: underline red  } \r\n          ";
   SC$1.autoCompleteClient=new FSAutoCompleteClient.New("FSharpStation");
   SC$1.parseFile="..\\F#.fsx";
-  SC$1.parseFSA=(b=null,Concurrency.Delay(function()
-  {
-   var m$2,p,part2,part1,starts,code;
-   m$2=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
-   return m$2!=null&&m$2.$==1?(Var.Set(FSharpStation.codeMsgs(),"Parsing F#..."),p=FSharpStation["CodeSnippet.GetCodeParts"](m$2.$0,false),part2=p[1],part1=p[0],starts=Arrays.ofSeq((Seq.mapFold(function(firstLine,t)
-   {
-    var code$1;
-    code$1=t[2];
-    return[[t[0].get_NameSanitized(),[t[1],firstLine,firstLine+Arrays.length(code$1)]],firstLine+Arrays.length(code$1)];
-   },part1.get_Length(),p[2]))[0]),code=Strings.concat("\n",List.ofSeq(Seq.delay(function()
-   {
-    return Seq.append(part1,Seq.delay(function()
-    {
-     return part2;
-    }));
-   }))),Concurrency.Bind(FSharpStation.autoCompleteClient().Parse$1(FSharpStation.parseFile(),code,starts),function(a)
-   {
-    FSharpStation.sendMsg(a);
-    FSharpStation.sendMsg("Parsed!");
-    return Concurrency.Zero();
-   })):Concurrency.Zero();
-  }));
   SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$12)
   {
    var o,r;
@@ -4439,8 +4464,8 @@
   SC$1.prior=["",""];
   f$1=function(msgs,curO)
   {
-   var b$1;
-   Concurrency.Start((b$1=null,Concurrency.Delay(function()
+   var b;
+   Concurrency.Start((b=null,Concurrency.Delay(function()
    {
     var m$2,editor,cur;
     m$2=FSharpStation.codeMirror().editorO;
@@ -4533,6 +4558,7 @@
     return[msgs,curO];
    };
   },FSharpStation.codeMsgs(),FSharpStation.currentCodeSnippetO()));
+  SC$1.styleEditor="\r\n      div textarea {\r\n      font-family: monospace;\r\n      }\r\n      .code-editor-list-tile {\r\n      white-space: nowrap; \r\n      border-style: solid none none;\r\n      border-color: white;\r\n      border-width: 1px;\r\n      background-color: #D8D8D8;\r\n      display: flex;\r\n      }\r\n      .code-editor-list-text{\r\n      padding: 1px 10px 1px 5px;\r\n      overflow:hidden;\r\n      text-overflow: ellipsis;\r\n      white-space: nowrap;\r\n      flex: 1;\r\n      }\r\n      \r\n      .code-editor-list-tile.direct-predecessor {\r\n      font-weight: bold;\r\n      }\r\n      .code-editor-list-tile.indirect-predecessor {\r\n      color: blue;\r\n      }\r\n      .code-editor-list-tile.selected {\r\n      background-color: #77F;\r\n      color: white;\r\n      }\r\n      .code-editor-list-tile.hovering {\r\n      background: lightgray;\r\n      }\r\n      .code-editor-list-tile.hovering.selected {\r\n      background:  blue;\r\n      }\r\n      .code-editor-list-tile>.predecessor {\r\n      font-weight: bold;\r\n      border-style: inset;\r\n      border-width: 1px;\r\n      text-align: center;\r\n      color: transparent;\r\n      }\r\n      .code-editor-list-tile.direct-predecessor>.predecessor {\r\n      color: blue;\r\n      }\r\n      \r\n      .CodeMirror { height: 100%; }\r\n      \r\n      .node {\r\n          background-color:white; \r\n          width: 2ch; \r\n          color: #A03; \r\n          font-weight:bold; \r\n          text-align: center;\r\n          font-family: arial;\r\n      }\r\n      .Warning { text-decoration: underline lightblue } \r\n      .Error   { text-decoration: underline red  } \r\n          ";
   SC$1.fsStationClient=new FsStationClient.New(FSharpStation.fsIds(),{
    $:1,
    $0:FSharpStation.fsIds()
