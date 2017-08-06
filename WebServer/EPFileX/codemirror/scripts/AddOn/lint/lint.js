@@ -12,7 +12,7 @@
   "use strict";
   var GUTTER_ID = "CodeMirror-lint-markers";
 
-  function showTooltip(e, content, passOptions) {
+  function showTooltip(e, content, passOptions) {  // AMG: Added passOptions
     var tt = document.createElement("div");
     tt.className = "CodeMirror-lint-tooltip";
 	tt.appendChild(content.cloneNode(true));
@@ -38,8 +38,8 @@
     setTimeout(function() { rm(tt); }, 600);
   }
 
-  function showTooltipFor(e, content, node, passOptions) {
-	  var tooltip = showTooltip(e, content, passOptions);
+  function showTooltipFor(e, content, node, passOptions) { // AMG: Added passOptions
+	  var tooltip = showTooltip(e, content, passOptions);  // AMG: Added passOptions
     function hide() {
       CodeMirror.off(node, "mouseout", hide);
       if (tooltip) { hideTooltip(tooltip); tooltip = null; }
@@ -191,14 +191,14 @@
     state.timeout = setTimeout(function(){startLinting(cm);}, state.options.delay || 500);
   }
 
-  function popupTooltips(annotations, e, passOptions) {
+  function popupTooltips(annotations, e, passOptions) { // AMG: Added passOptions
     var target = e.target || e.srcElement;
     var tooltip = document.createDocumentFragment();
     for (var i = 0; i < annotations.length; i++) {
       var ann = annotations[i];
       tooltip.appendChild(annotationTooltip(ann));
     }
-	showTooltipFor(e, tooltip, target, passOptions);
+	showTooltipFor(e, tooltip, target, passOptions); // AMG: Added passOptions
   }
 
   function onMouseOver(cm, e) {
@@ -212,9 +212,8 @@
       var ann = spans[i].__annotation;
       if (ann) annotations.push(ann);
     }
-	var state = cm.state.lint, options = state.options;
-	var passOptions = options.options || options; // Support deprecated passing of `options` property in options
-	if (annotations.length) popupTooltips(annotations, e, passOptions);
+	var passOptions = cm.getOption("lint");							    // AMG: Added passOptions
+	if (annotations.length) popupTooltips(annotations, e, passOptions); // AMG: Added passOptions
   }
 
   CodeMirror.defineOption("lint", false, function(cm, val, old) {

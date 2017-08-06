@@ -760,11 +760,11 @@
  },null,FsStationClient);
  FsStationClient.get_FSStationId_=function()
  {
-  return"FSharpStation-cc40fe9d-59e5-411f-845a-b5bb81424376";
+  return"FSharpStation-2ca30d52-1d48-4d8c-86ca-af1a6a7d676a";
  };
  FsStationClient.New=Runtime.Ctor(function(clientId,fsStationId,timeout,endPoint)
  {
-  this.fsIds=Option$1.defaultValue("FSharpStation-cc40fe9d-59e5-411f-845a-b5bb81424376",fsStationId);
+  this.fsIds=Option$1.defaultValue("FSharpStation-2ca30d52-1d48-4d8c-86ca-af1a6a7d676a",fsStationId);
   this.msgClient=new MessagingClient.New(clientId,timeout,endPoint);
   this.toId={
    $:0,
@@ -3409,7 +3409,7 @@
     {
      return Strings.StartsWith(file,cur.id.get_Text())||file===FsStationShared.sanitize(cur.name)?{
       $:1,
-      $0:LintResponse.New(msg,Strings.StartsWith(sev.toUpperCase(),"ERR")?"error":"warning",Template.cmPos(fl-1,fc-1),Template.cmPos(tl-1,tc-1))
+      $0:LintResponse.New(msg,Strings.StartsWith(sev.toUpperCase(),"ERR")?"error":Strings.StartsWith(sev.toUpperCase(),"INFO")?"info":"warning",Template.cmPos(fl-1,fc-1),Template.cmPos(tl-1,tc-1))
      }:null;
     },Arrays.choose(function($1)
     {
@@ -3453,10 +3453,10 @@
    m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
    return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur,true),function()
    {
-    var pos,word,a$1,t;
+    var pos,word;
     pos=ed.getCursor();
-    word=(a$1=Useful.REGEX("([a-zA-Z_]\\w*)$","g",Strings.Substring(ed.getLine(pos.line),0,pos.ch)),a$1!=null&&a$1.$==1?(t=a$1.$0,t&&Arrays.length(t)===1)?Arrays.get(a$1.$0,0):"":"");
-    return Concurrency.Bind(FSharpStation.autoCompleteClient().Complete(FSharpStation.parseFile(),pos.line+1,pos.ch+1,cur.get_NameSanitized()),function(a$2)
+    word=FSharpStation.getStartWord(ed.getLine(pos.line),pos.ch);
+    return Concurrency.Bind(FSharpStation.autoCompleteClient().Complete(FSharpStation.parseFile(),pos.line+1,pos.ch+1,cur.get_NameSanitized()),function(a$1)
     {
      var m$1;
      cb(HintResponse.New((m$1=function(dis,rep,cls,chr)
@@ -3465,7 +3465,7 @@
      },Arrays.map(function($1)
      {
       return m$1($1[0],$1[1],$1[2],$1[3]);
-     },a$2)),CodeMirrorPos.New(pos.line,pos.ch-word.length),pos));
+     },a$1)),CodeMirrorPos.New(pos.line,pos.ch-word.length),pos));
      return Concurrency.Zero();
     });
    })):Concurrency.Zero();
@@ -3480,15 +3480,49 @@
    m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
    return m!=null&&m.$==1?(cur=m.$0,Concurrency.Bind(FSharpStation.parseIfMustThen(cur,false),function()
    {
-    var pos;
+    var pos,l,sub,add0,add;
     pos=ed.getCursor();
+    l=ed.getLine(pos.line);
+    sub=Strings.length(FSharpStation.getStartWord(l,pos.ch));
+    add0=Strings.length(FSharpStation.getEndWord(l,pos.ch));
+    add=sub===0&&add0===0?2:add0;
     return Concurrency.Bind(FSharpStation.autoCompleteClient().ToolTip(FSharpStation.parseFile(),pos.line+1,pos.ch+1,cur.get_NameSanitized()),function(a)
     {
-     window.alert(a);
+     var c;
+     FSharpStation.sendMsg(((((c=(Runtime.Curried(function($1,$2,$3,$4,$5)
+     {
+      return $1("InfoFSharp \""+PrintfHelpers.toSafe($2)+" "+("("+PrintfHelpers.prettyPrint($3[0])+", "+PrintfHelpers.prettyPrint($3[1])+")")+" - "+("("+PrintfHelpers.prettyPrint($4[0])+", "+PrintfHelpers.prettyPrint($4[1])+")")+" "+PrintfHelpers.toSafe($5)+" \"");
+     },5))(window.id),function(a$1)
+     {
+      var c$1;
+      c$1=c(a$1);
+      return function(t)
+      {
+       var c$2;
+       c$2=c$1([t[0],t[1]]);
+       return function(t$1)
+       {
+        return c$2([t$1[0],t$1[1]]);
+       };
+      };
+     })(cur.get_NameSanitized()))([pos.line+1,pos.ch-sub+1]))([pos.line+1,pos.ch+add+1]))(Strings.Replace(a,"\"","''")));
+     ed.performLint();
      return Concurrency.Zero();
     });
    })):Concurrency.Zero();
   })),null);
+ };
+ FSharpStation.getEndWord=function(line,ch)
+ {
+  var a,t;
+  a=Useful.REGEX("^([a-zA-Z_]\\w*)","g",line.substring(ch));
+  return a!=null&&a.$==1?(t=a.$0,t&&Arrays.length(t)===1)?Arrays.get(a.$0,0):"":"";
+ };
+ FSharpStation.getStartWord=function(line,ch)
+ {
+  var a,t;
+  a=Useful.REGEX("([a-zA-Z_]\\w*)$","g",Strings.Substring(line,0,ch));
+  return a!=null&&a.$==1?(t=a.$0,t&&Arrays.length(t)===1)?Arrays.get(a.$0,0):"":"";
  };
  FSharpStation.parseIfMustThen=function(cur,silent)
  {
@@ -4448,7 +4482,7 @@
   SC$1.autoCompleteClient=new FSAutoCompleteClient.New("FSharpStation");
   SC$1.parseFile="..\\F#.fsx";
   SC$1.rex1="\\((\\d+)\\) F# (.+).fsx\\((\\d+)\\,(\\d+)\\): (error|warning) ((.|\\b)+)";
-  SC$1.rex2="(Err|Warning)(FSharp|WebSharper)\\s+\"(\\((\\d+)\\) ?)?F?#? ?(.+?)(.fsx)? \\((\\d+)\\,\\s*(\\d+)\\) - \\((\\d+)\\,\\s*(\\d+)\\) ((.|\\s)+?)"+"\"";
+  SC$1.rex2="(Err|Warning|Info)(FSharp|WebSharper)\\s+\"(\\((\\d+)\\) ?)?F?#? ?(.+?)(.fsx)? \\((\\d+)\\,\\s*(\\d+)\\) - \\((\\d+)\\,\\s*(\\d+)\\) ((.|\\s)+?)"+"\"";
   SC$1.rex=FSharpStation.rex1()+"|"+FSharpStation.rex2();
   SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$12)
   {
