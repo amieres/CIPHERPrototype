@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency,Unchecked,Arrays,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,console,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,Collections,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency,Collections,Dictionary,Unchecked,Arrays,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,console,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -97,6 +97,7 @@
  Wrap=Useful.Wrap=Useful.Wrap||{};
  Builder=Wrap.Builder=Wrap.Builder||{};
  Async=Useful.Async=Useful.Async||{};
+ ResetableMemoize=Useful.ResetableMemoize=Useful.ResetableMemoize||{};
  FsStationShared=FSSGlobal.FsStationShared=FSSGlobal.FsStationShared||{};
  PreproDirective=FsStationShared.PreproDirective=FsStationShared.PreproDirective||{};
  CodeSnippetId=FsStationShared.CodeSnippetId=FsStationShared.CodeSnippetId||{};
@@ -171,6 +172,8 @@
  Seq=WebSharper&&WebSharper.Seq;
  MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
  Concurrency=WebSharper&&WebSharper.Concurrency;
+ Collections=WebSharper&&WebSharper.Collections;
+ Dictionary=Collections&&Collections.Dictionary;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
  Guid=WebSharper&&WebSharper.Guid;
@@ -189,7 +192,6 @@
  Var=Next&&Next.Var;
  Input$1=Next&&Next.Input;
  Mouse=Input$1&&Input$1.Mouse;
- Collections=WebSharper&&WebSharper.Collections;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
  Slice=WebSharper&&WebSharper.Slice;
@@ -1033,6 +1035,17 @@
    });
   });
  };
+ ResetableMemoize=Useful.ResetableMemoize=Runtime.Class({
+  ClearCache:function()
+  {
+   this.cache.Clear();
+  }
+ },null,ResetableMemoize);
+ ResetableMemoize.New=Runtime.Ctor(function(f)
+ {
+  this.f=f;
+  this.cache=new Dictionary.New$5();
+ },ResetableMemoize);
  Useful.REGEX=function(expr,opt,value)
  {
   var m;
@@ -4764,7 +4777,7 @@
   else
    {
     cur=curO.$0;
-    Unchecked.Equals(cur,pre)||FSharpStation.isIndirectPredecessor(cur.id,pre.UniquePredecessors(CodeSnippet$1.FetchO))?void 0:(preds=(List.contains(pre.id,cur.predecessors)?(p=(x=pre.id,function(y)
+    Unchecked.Equals(cur,pre)||FSharpStation.isIndirectPredecessor(cur.id,new FSharpSet.New$1(BalancedTree.OfSeq(pre.UniquePredecessors(CodeSnippet$1.FetchO))))?void 0:(preds=(List.contains(pre.id,cur.predecessors)?(p=(x=pre.id,function(y)
     {
      return!Unchecked.Equals(x,y);
     }),function(l)
@@ -4783,12 +4796,12 @@
       $:1,
       $0:CodeSnippet.New(c.name,c.content,c.parent,preds,c.id,c.expanded,c.level,c.properties)
      };
-    },cur.id),FSharpStation.setDirty(),FSharpStation.refreshView());
+    },cur.id),FSharpStation.setDirtyPred());
    }
  };
  FSharpStation.isIndirectPredecessor=function(pre,predecessors)
  {
-  return List.contains(pre,predecessors);
+  return predecessors.Contains(pre);
  };
  FSharpStation.curPredecessors=function()
  {
@@ -4824,7 +4837,7 @@
     $:1,
     $0:CodeSnippet.New(c.name,c.content,newP,c.predecessors,c.id,c.expanded,c.level,c.properties)
    };
-  },snp.id),FSharpStation.setDirty(),FSharpStation.refreshView());
+  },snp.id),FSharpStation.setDirtyPred());
  };
  FSharpStation.indentCodeIn=function()
  {
@@ -4864,8 +4877,7 @@
      };
     },snp.id),true);
    },j-1));
-   FSharpStation.setDirty();
-   FSharpStation.refreshView();
+   FSharpStation.setDirtyPred();
   }).apply(null,o.$0);
  };
  FSharpStation.reorderSnippet=function(toId,fromId)
@@ -4910,8 +4922,7 @@
     $0:CodeSnippet.New(c.name,c.content,tsn.parent,c.predecessors,c.id,c.expanded,c.level,c.properties)
    };
   },$1.$0[1].id)):void 0:void 0;
-  FSharpStation.setDirty();
-  FSharpStation.refreshView();
+  FSharpStation.setDirtyPred();
  };
  FSharpStation.evaluateFS=function()
  {
@@ -5053,13 +5064,20 @@
  };
  FSharpStation.setClean=function()
  {
+  FSharpStation.getPredecessorsM().ClearCache();
   Var.Set(FSharpStation.dirty(),false);
   FSharpStation.set_lastCodeAndStarts(null);
  };
+ FSharpStation.setDirtyPred=function()
+ {
+  FSharpStation.setDirty();
+  FSharpStation.getPredecessorsM().ClearCache();
+  FSharpStation.refreshView();
+ };
  FSharpStation.setDirty=function()
  {
-  FSharpStation.setDirtyPart();
   FSharpStation.set_lastCodeAndStarts(null);
+  FSharpStation.setDirtyPart();
  };
  FSharpStation.setDirtyPart=function()
  {
@@ -5095,6 +5113,21 @@
  {
   SC$1.$cctor();
   return SC$1.codeFS;
+ };
+ FSharpStation.getPredecessorsM=function()
+ {
+  SC$1.$cctor();
+  return SC$1.getPredecessorsM;
+ };
+ FSharpStation.getPredecessors=function(curO)
+ {
+  var v,o;
+  v=new FSharpSet.New$1(null);
+  o=curO==null?null:{
+   $:1,
+   $0:new FSharpSet.New$1(BalancedTree.OfSeq(curO.$0.UniquePredecessors(CodeSnippet$1.FetchO)))
+  };
+  return o==null?v:o.$0;
  };
  FSharpStation.lastCodeAndStarts=function()
  {
@@ -5343,7 +5376,7 @@
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
-  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,f,m$1,g$2,v$5,view,contentVar,changingIRefO,s$2,v$6,v$7,s$3,v$8,v$9,s$4,v$10,v$11,x;
+  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,view,contentVar,changingIRefO,s$2,v$5,v$6,s$3,v$7,v$8,s$4,v$9,v$10,x;
   SC$1.result=new ropBuilder.New();
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
@@ -5363,11 +5396,11 @@
   {
    return g(HtmlNode.chooseNode(x$1));
   });
-  SC$1.string2Styles=(g$1=(m=function(n,v$12)
+  SC$1.string2Styles=(g$1=(m=function(n,v$11)
   {
    return new HtmlNode$1({
     $:5,
-    $0:AttrModule.Style(n,v$12)
+    $0:AttrModule.Style(n,v$11)
    });
   },function(a)
   {
@@ -5391,9 +5424,9 @@
   v$1=FSharpStation.currentCodeSnippetId();
   v$2=window.localStorage.getItem(s);
   v$2!==null?v$1.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j())(JSON.parse(v$2))):void 0;
-  Val.sink(function(v$12)
+  Val.sink(function(v$11)
   {
-   window.localStorage.setItem(s,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j())(v$12)));
+   window.localStorage.setItem(s,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j())(v$11)));
   },v$1);
   SC$1.refresh=Var.Create$1();
   SC$1.currentCodeSnippetO=Val.map2(function(k)
@@ -5408,9 +5441,9 @@
   v$3=FSharpStation.position();
   v$4=window.localStorage.getItem(s$1);
   v$4!==null?v$3.set_RVal((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$1())(JSON.parse(v$4))):void 0;
-  Val.sink(function(v$12)
+  Val.sink(function(v$11)
   {
-   window.localStorage.setItem(s$1,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1())(v$12)));
+   window.localStorage.setItem(s$1,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$1())(v$11)));
   },v$3);
   SC$1.directionVertical=Val.map(function(pos)
   {
@@ -5418,39 +5451,40 @@
   },FSharpStation.position());
   SC$1.noSelectionVal=Val.map(FSharpStation.noSelection,FSharpStation.currentCodeSnippetId());
   SC$1.lastCodeAndStarts=null;
+  SC$1.getPredecessorsM=new ResetableMemoize.New(FSharpStation.getPredecessors);
   SC$1.codeFS=Var.Create$1("");
   SC$1.codeJS=Var.Create$1("");
   SC$1.codeMsgs=Var.Create$1("");
   SC$1.parsed=false;
   SC$1.dirty=Var.Create$1(false);
-  Val.sink(function(m$2)
+  Val.sink(function(m$1)
   {
-   window.onbeforeunload=m$2?function(e)
+   window.onbeforeunload=m$1?function(e)
    {
     e.returnValue="Changes you made may not be saved.";
    }:null;
   },FSharpStation.dirty());
   SC$1.draggedId=CodeSnippetId.get_New();
-  SC$1.curPredecessors=Val.map((f=(m$1=function(snp)
+  SC$1.curPredecessors=Val.map(function(a)
   {
-   return snp.UniquePredecessors(CodeSnippet$1.FetchO);
-  },function(o)
-  {
-   return o==null?null:{
-    $:1,
-    $0:m$1(o.$0)
-   };
-  }),(g$2=(v$5=List.T.Empty,function(o)
-  {
-   return o==null?v$5:o.$0;
-  }),function(x$1)
-  {
-   return g$2(f(x$1));
-  })),FSharpStation.currentCodeSnippetO());
+   var _this,res,res$1;
+   _this=FSharpStation.getPredecessorsM();
+   res=null;
+   return _this.cache.TryGetValue(a,{
+    get:function()
+    {
+     return res;
+    },
+    set:function(v$11)
+    {
+     res=v$11;
+    }
+   })?res:(res$1=_this.f(a),(_this.cache.set_Item(a,res$1),res$1));
+  },FSharpStation.currentCodeSnippetO());
   SC$1.fileName=Var.Create$1("");
-  SC$1.emptyFile=Val.map(function(v$12)
+  SC$1.emptyFile=Val.map(function(v$11)
   {
-   return v$12==="";
+   return v$11==="";
   },FSharpStation.fileName());
   SC$1.fileInputElementId="CodeEditorFileSel";
   SC$1.loadFileElement=Input.New$2(Var.Lens(FSharpStation.fileName(),FSharpStation.justFileName,window.id)).Prefix(HtmlNode.label([HtmlNode["class"]("btn btn-primary"),HtmlNode.htmlText("Load File..."),Input.New$2(FSharpStation.fileName()).Type("file").Style("display: none").Content([AttrModule.Handler("change",function(el)
@@ -5497,18 +5531,18 @@
    FSharpStation.setDirtyCond();
   }).OnRender(function(ed)
   {
-   var g$3;
+   var g$2;
    ed.addKeyMap(KeyMapAutoComplete.New(function(e)
    {
     FSharpStation.showToolTip(e);
-   },(g$3=function(e,c,a)
+   },(g$2=function(e,c,a)
    {
     FSharpStation.getHints(e,c,a);
    },function(a)
    {
     Template.showHints(ed,function($1)
     {
-     return g$3($1[0],$1[1],$1[2]);
+     return g$2($1[0],$1[1],$1[2]);
     },false,a);
    })));
    Template.setLint(ed,function(t)
@@ -5521,8 +5555,8 @@
    var b;
    Concurrency.Start((b=null,Concurrency.Delay(function()
    {
-    var m$2,ed,m$3;
-    return!FSharpStation.parsed()?Concurrency.Zero():(m$2=FSharpStation.codeMirror().editorO,m$2!=null&&m$2.$==1?(ed=m$2.$0,(m$3=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c),m$3!=null&&m$3.$==1?Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),m$3.$0.get_NameSanitized()),function(a)
+    var m$1,ed,m$2;
+    return!FSharpStation.parsed()?Concurrency.Zero():(m$1=FSharpStation.codeMirror().editorO,m$1!=null&&m$1.$==1?(ed=m$1.$0,(m$2=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c),m$2!=null&&m$2.$==1?Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),m$2.$0.get_NameSanitized()),function(a)
     {
      return a?Concurrency.Zero():(ed.performLint(),Concurrency.Zero());
     }):Concurrency.Zero())):Concurrency.Zero());
@@ -5539,34 +5573,34 @@
   },1000);
   SC$1.spl1=SplitterBar.New$1(20).Children([HtmlNode.style("grid-row: 2 / 4")]);
   s$2="CodeEditor."+"splitterV1";
-  v$6=FSharpStation.spl1().get_Var();
-  v$7=window.localStorage.getItem(s$2);
-  v$7!==null?v$6.set_RVal(((Provider.Id())())(JSON.parse(v$7))):void 0;
-  Val.sink(function(v$12)
+  v$5=FSharpStation.spl1().get_Var();
+  v$6=window.localStorage.getItem(s$2);
+  v$6!==null?v$5.set_RVal(((Provider.Id())())(JSON.parse(v$6))):void 0;
+  Val.sink(function(v$11)
   {
-   window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$12)));
-  },v$6);
+   window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$11)));
+  },v$5);
   SC$1.splitterMain1=SplitterBar.New$1(0).Vertical$1(FSharpStation.directionVertical()).Min(0).Max(35);
   SC$1.splitterMain2=SplitterBar.New$1(24).Vertical$1(FSharpStation.directionVertical()).Min(0.5).Max(Val.map(function(pos)
   {
    return pos.$===3?0.1:50;
   },FSharpStation.position())).get_Before();
   s$3="CodeEditor."+"splitterMain1";
-  v$8=FSharpStation.splitterMain1().get_Var();
-  v$9=window.localStorage.getItem(s$3);
-  v$9!==null?v$8.set_RVal(((Provider.Id())())(JSON.parse(v$9))):void 0;
-  Val.sink(function(v$12)
+  v$7=FSharpStation.splitterMain1().get_Var();
+  v$8=window.localStorage.getItem(s$3);
+  v$8!==null?v$7.set_RVal(((Provider.Id())())(JSON.parse(v$8))):void 0;
+  Val.sink(function(v$11)
   {
-   window.localStorage.setItem(s$3,JSON.stringify(((Provider.Id())())(v$12)));
-  },v$8);
+   window.localStorage.setItem(s$3,JSON.stringify(((Provider.Id())())(v$11)));
+  },v$7);
   s$4="CodeEditor."+"splitterMain2";
-  v$10=FSharpStation.splitterMain2().get_Var();
-  v$11=window.localStorage.getItem(s$4);
-  v$11!==null?v$10.set_RVal(((Provider.Id())())(JSON.parse(v$11))):void 0;
-  Val.sink(function(v$12)
+  v$9=FSharpStation.splitterMain2().get_Var();
+  v$10=window.localStorage.getItem(s$4);
+  v$10!==null?v$9.set_RVal(((Provider.Id())())(JSON.parse(v$10))):void 0;
+  Val.sink(function(v$11)
   {
-   window.localStorage.setItem(s$4,JSON.stringify(((Provider.Id())())(v$12)));
-  },v$10);
+   window.localStorage.setItem(s$4,JSON.stringify(((Provider.Id())())(v$11)));
+  },v$9);
   SC$1.grid=Grid.get_New().Padding(0).Content$1("editor",FSharpStation.CodeEditor()).Content(HtmlNode.style("height: 100vh; margin: 0px; ")).Content(HtmlNode.css("\r\n                 #CodeEditor              { grid-area: editor  ; overflow: hidden; }\r\n                 #TestNode                { grid-area: testNode; overflow: auto  ; }\r\n                 body > div:first-of-type { grid-area: header  ; overflow: hidden; }\r\n             "));
   (x=HtmlNode.bindHElem(HtmlNode.body,Val.map(function(dir)
   {
