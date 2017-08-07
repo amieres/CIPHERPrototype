@@ -238,7 +238,14 @@ module SelfHostedServer =
                                                    , Sitelet             = Some Site.Main
                                                    , BinDirectory        = "."
                                                    , Debug               = true))
-                |> ignore)
+                |> ignore
+                let listener = appB.Properties.["Microsoft.Owin.Host.HttpListener.OwinHttpListener"] |> unbox<Microsoft.Owin.Host.HttpListener.OwinHttpListener>
+                let maxA = ref 0
+                let maxB = ref 0
+                listener.SetRequestProcessingLimits(1000, 1000)
+                listener.GetRequestProcessingLimits(maxA, maxB)
+                printfn "Accepts: %d Requests:%d" !maxA !maxB
+                )
         stdout.WriteLine("Serving {0}", url)
         stdin.ReadLine() |> ignore
         0
