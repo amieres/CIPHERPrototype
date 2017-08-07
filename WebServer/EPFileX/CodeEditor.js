@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency,Unchecked,Arrays,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,console,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,Collections,FSharpSet,BalancedTree,Json,Provider,FSharpMap,Map,JavaScript,JSModule,Slice,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,MatchFailureException,Concurrency,Unchecked,Arrays,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,console,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,Collections,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -192,13 +192,13 @@
  Collections=WebSharper&&WebSharper.Collections;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
+ Slice=WebSharper&&WebSharper.Slice;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
  FSharpMap=Collections&&Collections.FSharpMap;
  Map=Collections&&Collections.Map;
  JavaScript=WebSharper&&WebSharper.JavaScript;
  JSModule=JavaScript&&JavaScript.JSModule;
- Slice=WebSharper&&WebSharper.Slice;
  ListModel=Next&&Next.ListModel;
  Option.modify=function(modifier)
  {
@@ -1195,7 +1195,7 @@
  };
  CodeSnippet.ReducedCode=function(addLinePrepos,snippets)
  {
-  var t,r;
+  var t,r,snps;
   t=(r=function(a,a$1,a$2,a$3,a$4,a$5)
   {
    return function(t$1)
@@ -1208,10 +1208,10 @@
    {
     return r($3[0],$3[1],$3[2],$3[3],$3[4],$3[5]);
    }($1))($2);
-  },Seq.map(function(snp)
+  },(snps=Seq.map(function(snp)
   {
    return snp.SeparateCode(addLinePrepos);
-  },snippets)));
+  },snippets),Seq.isEmpty(snps)?[[[],[],[],[],[],[]]]:snps)));
   return[t[0],[Strings.concat("\n",t[1])],t[2],t[3],t[4],t[5]];
  };
  CodeSnippet.AddSeps=function(lines1,code1,assembs1,defines1,prepIs1,nowarns1,lines2,code2,assembs2,defines2,prepIs2,nowarns2)
@@ -4364,7 +4364,15 @@
  };
  FSharpStation.parseFS=function()
  {
-  Concurrency.Start(FSharpStation.parseFSA(false),null);
+  var b;
+  Concurrency.Start((b=null,Concurrency.Delay(function()
+  {
+   FSharpStation.set_lastCodeAndStarts(null);
+   return Concurrency.Bind(FSharpStation.parseFSA(false),function()
+   {
+    return Concurrency.Return(null);
+   });
+  })),null);
  };
  FSharpStation.parseFSA=function(silent)
  {
@@ -4372,18 +4380,18 @@
   b=null;
   return Concurrency.Delay(function()
   {
-   var m,cur,runN;
+   var m,runN,p;
    m=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
-   return m!=null&&m.$==1?(cur=m.$0,(runN=FSharpStation.parseRun()+1,(FSharpStation.set_parseRun(runN),Concurrency.Combine(!silent?(Var.Set(FSharpStation.codeMsgs(),"Parsing F#..."),Concurrency.Zero()):Concurrency.Zero(),Concurrency.Delay(function()
+   return m!=null&&m.$==1?(runN=FSharpStation.parseRun()+1,(FSharpStation.set_parseRun(runN),p=FSharpStation.getCodeAndStartsFast(silent?function(v)
    {
-    var p;
-    p=FSharpStation["CodeSnippet.GetCodeAndStarts"](cur,false);
-    return Concurrency.Bind(FSharpStation.autoCompleteClient().Parse$1(FSharpStation.parseFile(),p[0],p[1]),function(a)
-    {
-     FSharpStation.set_parsed(true);
-     return!silent&&runN===FSharpStation.parseRun()?(FSharpStation.sendMsg(a),FSharpStation.sendMsg("Parsed!"),Concurrency.Zero()):Concurrency.Zero();
-    });
-   }))))):Concurrency.Zero();
+   }:function(txt)
+   {
+    Var.Set(FSharpStation.codeMsgs(),txt);
+   },m.$0,false),Concurrency.Bind(FSharpStation.autoCompleteClient().Parse$1(FSharpStation.parseFile(),p[0],p[1]),function(a)
+   {
+    FSharpStation.set_parsed(true);
+    return!silent&&runN===FSharpStation.parseRun()?(FSharpStation.sendMsg(a),FSharpStation.sendMsg("Parsed!"),Concurrency.Zero()):Concurrency.Zero();
+   }))):Concurrency.Zero();
   });
  };
  FSharpStation.parseRun=function()
@@ -4395,6 +4403,41 @@
  {
   SC$1.$cctor();
   SC$1.parseRun=$1;
+ };
+ FSharpStation.getCodeAndStartsFast=function(msgF,snp,addLinePrepos)
+ {
+  var p,$1,$2,pId,alp,preds,red,cur,red1,t;
+  p=($2=FSharpStation.lastCodeAndStarts(),$2!=null&&$2.$==1)&&((FSharpStation.lastCodeAndStarts(),pId=FSharpStation.lastCodeAndStarts().$0[0],alp=FSharpStation.lastCodeAndStarts().$0[1],Unchecked.Equals(pId,snp.id)&&Unchecked.Equals(alp,addLinePrepos))&&($1=[FSharpStation.lastCodeAndStarts().$0[1],FSharpStation.lastCodeAndStarts().$0[0],FSharpStation.lastCodeAndStarts().$0[2]],true))?(msgF("Reparsing..."),[$1[2],FSharpStation["CodeSnippet.get_PrepareSnippet"](snp)]):(msgF("Parsing..."),preds=FSharpStation["CodeSnippet.Predecessors"](snp),red=CodeSnippet.ReducedCode(addLinePrepos,Slice.array(preds,{
+   $:1,
+   $0:0
+  },{
+   $:1,
+   $0:Arrays.length(preds)-2
+  })),cur=Arrays.get(preds,Arrays.length(preds)-1),FSharpStation.set_lastCodeAndStarts({
+   $:1,
+   $0:[cur.id,addLinePrepos,red]
+  }),[red,cur]);
+  red1=CodeSnippet.ReducedCode(addLinePrepos,[p[1]]);
+  t=(function(t$1)
+  {
+   var a,a$1,a$2,a$3,a$4,a$5;
+   a=t$1[0];
+   a$1=t$1[1];
+   a$2=t$1[2];
+   a$3=t$1[3];
+   a$4=t$1[4];
+   a$5=t$1[5];
+   return function(t$2)
+   {
+    return CodeSnippet.AddSeps(a,a$1,a$2,a$3,a$4,a$5,t$2[0],t$2[1],t$2[2],t$2[3],t$2[4],t$2[5]);
+   };
+  }(p[0]))(red1);
+  return CodeSnippet.FinishCode(addLinePrepos,t[0],t[1],t[2],t[3],t[4],t[5]);
+ };
+ FSharpStation.setDirtyCond=function()
+ {
+  var $1,$2;
+  ($2=FSharpStation.lastCodeAndStarts(),$2!=null&&$2.$==1)&&((FSharpStation.lastCodeAndStarts(),Unchecked.Equals(FSharpStation.lastCodeAndStarts().$0[0],FSharpStation.currentCodeSnippetId().c))&&($1=[FSharpStation.lastCodeAndStarts().$0[0],FSharpStation.lastCodeAndStarts().$0[2]],true))?FSharpStation.setDirtyPart():FSharpStation.setDirty();
  };
  FSharpStation.parseFile=function()
  {
@@ -4973,8 +5016,14 @@
  FSharpStation.setClean=function()
  {
   Var.Set(FSharpStation.dirty(),false);
+  FSharpStation.set_lastCodeAndStarts(null);
  };
  FSharpStation.setDirty=function()
+ {
+  FSharpStation.setDirtyPart();
+  FSharpStation.set_lastCodeAndStarts(null);
+ };
+ FSharpStation.setDirtyPart=function()
  {
   FSharpStation.set_parsed(false);
   Var.Set(FSharpStation.dirty(),true);
@@ -5008,6 +5057,16 @@
  {
   SC$1.$cctor();
   return SC$1.codeFS;
+ };
+ FSharpStation.lastCodeAndStarts=function()
+ {
+  SC$1.$cctor();
+  return SC$1.lastCodeAndStarts;
+ };
+ FSharpStation.set_lastCodeAndStarts=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.lastCodeAndStarts=$1;
  };
  FSharpStation.noSelectionVal=function()
  {
@@ -5320,6 +5379,7 @@
    return pos.$==1&&true;
   },FSharpStation.position());
   SC$1.noSelectionVal=Val.map(FSharpStation.noSelection,FSharpStation.currentCodeSnippetId());
+  SC$1.lastCodeAndStarts=null;
   SC$1.codeFS=Var.Create$1("");
   SC$1.codeJS=Var.Create$1("");
   SC$1.codeMsgs=Var.Create$1("");
@@ -5394,7 +5454,7 @@
    return r.RView();
   },view)),contentVar))))).OnChange(function()
   {
-   FSharpStation.setDirty();
+   FSharpStation.setDirtyCond();
   }).OnRender(function(ed)
   {
    var g$3;
