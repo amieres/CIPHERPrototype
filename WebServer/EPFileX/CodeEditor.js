@@ -3216,11 +3216,12 @@
     {
      window.CIPHERSpaceLoadFiles(Template.codeMirrorIncludes(),function()
      {
-      var editor,o;
+      var editor,o,editorChanged,varChanged;
       editor=window.CodeMirror(el,{
        theme:"rubyblue",
        lineNumbers:true,
        matchBrackets:true,
+       gutters:["CodeMirror-lint-markers"],
        extraKeys:{
         Tab:function(cm)
         {
@@ -3236,21 +3237,26 @@
        $:1,
        $0:editor
       };
-      editor.on("change",function()
+      o=$this.onRender;
+      o==null?void 0:o.$0(editor);
+      editorChanged=[0];
+      varChanged=[0];
+      editor.on("changes",function()
       {
        var v;
        v=editor.getValue();
-       $this["var"].RVal()!==v?($this["var"].set_RVal(v),$this.onChange()):void 0;
+       $this["var"].RVal()!==v?(editorChanged[0]=editorChanged[0]+1,$this["var"].set_RVal(v),$this.onChange()):void 0;
       });
-      o=$this.onRender;
-      o==null?void 0:o.$0(editor);
-      View.Sink(function(v)
+      View.Sink(function()
       {
-       if(editor.getValue()!==v)
-        {
-         editor.setValue(v);
-         editor.getDoc().clearHistory();
-        }
+       if(editorChanged[0]>varChanged[0])
+        varChanged[0]=editorChanged[0];
+       else
+        if(editor.getValue()!==$this["var"].RVal())
+         {
+          editor.setValue($this["var"].RVal());
+          editor.getDoc().clearHistory();
+         }
       },$this["var"].RView());
      });
     })
@@ -4086,14 +4092,16 @@
   },FSharpStation.spl1().get_GetValue())).Children([HtmlNode.style("grid-row: 3 / 5")]).ColAuto(0).RowFixedPx(34).RowAuto(0).RowVariable(17).Children([HtmlNode.style("grid-column: 2 / 4")]).get_Before().RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   header  '\r\n                              'sidebar content1 content1'\r\n                              'sidebar content2 content3'\r\n                              'footer  footer   footer2 ';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.div([HtmlNode.style("overflow: auto"),new HtmlNode$1({
    $:4,
    $0:Doc.BindView(window.id,View.Map(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x))))
-  })])).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v)
+  })])).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function()
   {
    var o,r;
    o=changingIRefO[0];
-   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),v)?r.set_RVal(v):void 0);
-  },contentVar.v),View.Sink(function(v)
+   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),contentVar.c)?r.set_RVal(contentVar.c):void 0);
+  },contentVar.v),View.Sink(function()
   {
-   Var.Set(contentVar,v);
+   var o,r;
+   o=changingIRefO[0];
+   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),contentVar.c)?Var.Set(contentVar,r.RVal()):void 0);
   },View.Bind(function(cur)
   {
    var r;
@@ -4148,58 +4156,88 @@
  FSharpStation.respond=function(fromId,msg)
  {
   var o,o$1,o$2,o$3,o$4,o$5;
-  return msg.$==3?{
-   $:1,
-   $0:(o=CodeSnippet$1.FetchO(msg.$0),o==null?null:{
+  if(msg.$==2)
+   return{
     $:1,
-    $0:FSharpStation["CodeSnippet.GetCodeFsx"](o.$0,true)
-   })
-  }:msg.$==4?{
-   $:3,
-   $0:Option.defaultValue([],(o$1=CodeSnippet$1.FetchO(msg.$0),o$1==null?null:{
-    $:1,
-    $0:FSharpStation["CodeSnippet.Predecessors"](o$1.$0)
-   }))
-  }:msg.$==5?{
-   $:2,
-   $0:CodeSnippet$1.FetchO(msg.$0)
-  }:msg.$==6?{
-   $:1,
-   $0:(o$2=CodeSnippet$1.FetchByPathO(msg.$0),o$2==null?null:{
-    $:1,
-    $0:o$2.$0.content
-   })
-  }:msg.$==7?{
-   $:1,
-   $0:(o$3=CodeSnippet$1.FetchByPathO(msg.$0),o$3==null?null:{
-    $:1,
-    $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$3.$0,true)
-   })
-  }:msg.$==8?{
-   $:3,
-   $0:Option.defaultValue([],(o$4=CodeSnippet$1.FetchByPathO(msg.$0),o$4==null?null:{
-    $:1,
-    $0:FSharpStation["CodeSnippet.Predecessors"](o$4.$0)
-   }))
-  }:msg.$==9?{
-   $:2,
-   $0:CodeSnippet$1.FetchByPathO(msg.$0)
-  }:msg.$==1?{
-   $:1,
-   $0:{
-    $:1,
-    $0:"Message received: "+msg.$0
-   }
-  }:msg.$==0?{
-   $:0,
-   $0:fromId
-  }:{
-   $:1,
-   $0:(o$5=CodeSnippet$1.FetchO(msg.$0),o$5==null?null:{
-    $:1,
-    $0:o$5.$0.content
-   })
-  };
+    $0:(o=CodeSnippet$1.FetchO(msg.$0),o==null?null:{
+     $:1,
+     $0:o.$0.content
+    })
+   };
+  else
+   if(msg.$==3)
+    return{
+     $:1,
+     $0:(o$1=CodeSnippet$1.FetchO(msg.$0),o$1==null?null:{
+      $:1,
+      $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$1.$0,true)
+     })
+    };
+   else
+    if(msg.$==4)
+     return{
+      $:3,
+      $0:Option.defaultValue([],(o$2=CodeSnippet$1.FetchO(msg.$0),o$2==null?null:{
+       $:1,
+       $0:FSharpStation["CodeSnippet.Predecessors"](o$2.$0)
+      }))
+     };
+    else
+     if(msg.$==5)
+      return{
+       $:2,
+       $0:CodeSnippet$1.FetchO(msg.$0)
+      };
+     else
+      if(msg.$==6)
+       return{
+        $:1,
+        $0:(o$3=CodeSnippet$1.FetchByPathO(msg.$0),o$3==null?null:{
+         $:1,
+         $0:o$3.$0.content
+        })
+       };
+      else
+       if(msg.$==7)
+        return{
+         $:1,
+         $0:(o$4=CodeSnippet$1.FetchByPathO(msg.$0),o$4==null?null:{
+          $:1,
+          $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$4.$0,true)
+         })
+        };
+       else
+        if(msg.$==8)
+         return{
+          $:3,
+          $0:Option.defaultValue([],(o$5=CodeSnippet$1.FetchByPathO(msg.$0),o$5==null?null:{
+           $:1,
+           $0:FSharpStation["CodeSnippet.Predecessors"](o$5.$0)
+          }))
+         };
+        else
+         if(msg.$==9)
+          return{
+           $:2,
+           $0:CodeSnippet$1.FetchByPathO(msg.$0)
+          };
+         else
+          if(msg.$==1)
+           return{
+            $:1,
+            $0:{
+             $:1,
+             $0:"Message received: "+msg.$0
+            }
+           };
+          else
+           if(msg.$==0)
+            return{
+             $:0,
+             $0:fromId
+            };
+           else
+            throw new MatchFailureException.New("(6)95ca1e9f-4029-4fc1-8b1c-ab12db71c90b Messaging.fsx",8,16);
  };
  FSharpStation.fsStationClient=function()
  {
@@ -5224,16 +5262,16 @@
  };
  FSharpStation["CodeSnippet.get_Level"]=function(_this,u)
  {
-  function level(snp,out)
+  function level(out,snp)
   {
-   var o,o$1,o$2;
-   o=(o$1=(o$2=snp.parent,o$2==null?null:CodeSnippet$1.FetchO(o$2.$0)),o$1==null?null:{
+   var o,x,o$1;
+   o=(x=(o$1=snp.parent,o$1==null?null:CodeSnippet$1.FetchO(o$1.$0)),x==null?null:{
     $:1,
-    $0:level(o$1.$0,out+1)
+    $0:level(out+1,x.$0)
    });
    return o==null?out:o.$0;
   }
-  return level(_this,0);
+  return level(0,_this);
  };
  CodeSnippet$1.New=function(od,nm,pa,pred,co,cnt)
  {
@@ -5434,14 +5472,16 @@
   SC$1.rex1="\\((\\d+)\\) F# (.+).fsx\\((\\d+)\\,(\\d+)\\): (error|warning) ((.|\\b)+)";
   SC$1.rex2="(Err|Warning|Info)(FSharp|WebSharper)\\s+\"(\\((\\d+)\\) ?)?F?#? ?(.+?)(.fsx)? \\((\\d+)\\,\\s*(\\d+)\\) - \\((\\d+)\\,\\s*(\\d+)\\) ((.|\\s)+?)"+"\"";
   SC$1.rex=FSharpStation.rex1()+"|"+FSharpStation.rex2();
-  SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function(v$12)
+  SC$1.codeMirror=CodeMirror.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(View.Sink(function()
   {
    var o,r;
    o=changingIRefO[0];
-   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),v$12)?r.set_RVal(v$12):void 0);
-  },contentVar.v),View.Sink(function(v$12)
+   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),contentVar.c)?r.set_RVal(contentVar.c):void 0);
+  },contentVar.v),View.Sink(function()
   {
-   Var.Set(contentVar,v$12);
+   var o,r;
+   o=changingIRefO[0];
+   o==null?void 0:(r=o.$0,!Unchecked.Equals(r.RVal(),contentVar.c)?Var.Set(contentVar,r.RVal()):void 0);
   },View.Bind(function(cur)
   {
    var r;
@@ -5560,7 +5600,7 @@
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$4=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[6,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$4=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[6,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$5=function()
  {
@@ -5572,7 +5612,7 @@
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[6,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[6,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p$1=function($1)
  {
