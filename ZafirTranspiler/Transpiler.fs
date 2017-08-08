@@ -357,6 +357,24 @@ let evaluate source =
         return r |> Result.mapMsgs (Seq.map (fun m -> m.ErrMsg) >> String.concat "\n")
     }
 
+open WebSharper
+
+[<Rpc ; JavaScript >]
+let translate2 source minified = 
+    async {
+        let! r = Transpiler(source).GetJS(minified) |> Wrap.getAsyncR
+        return r |> Result.mapMsgs (Seq.map (fun m -> m.ErrMsg, m.IsWarning) >> Seq.toArray)
+    }
+
+[<Rpc ; JavaScript >]
+let evaluate2 source = 
+    async {
+        let! r = Transpiler(source).EvalFsiExe() |> Wrap.getAsyncR
+        return r |> Result.mapMsgs (Seq.map (fun m -> m.ErrMsg, m.IsWarning) >> Seq.toArray)
+    }
+
+
+
 (*
 #I @"D:\Abe\CIPHERWorkspace\CIPHERPrototype\ZafirTranspiler\bin\Debug\"
 #r "ZafirTranspiler.dll"
