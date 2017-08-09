@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,FsStationShared,PreproDirective,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,Collections,Dictionary,Unchecked,Arrays,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,console,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,HashSet,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Json,Provider,Slice,FSharpMap,Map,JavaScript,JSModule,HashSet,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -98,8 +98,8 @@
  Builder=Wrap.Builder=Wrap.Builder||{};
  Async=Useful.Async=Useful.Async||{};
  ResetableMemoize=Useful.ResetableMemoize=Useful.ResetableMemoize||{};
+ PreproDirective=Useful.PreproDirective=Useful.PreproDirective||{};
  FsStationShared=FSSGlobal.FsStationShared=FSSGlobal.FsStationShared||{};
- PreproDirective=FsStationShared.PreproDirective=FsStationShared.PreproDirective||{};
  CodeSnippetId=FsStationShared.CodeSnippetId=FsStationShared.CodeSnippetId||{};
  CodeSnippet=FsStationShared.CodeSnippet=FsStationShared.CodeSnippet||{};
  MessagingClient=FsStationShared.MessagingClient=FsStationShared.MessagingClient||{};
@@ -161,8 +161,8 @@
  CodeSnippet$1=FSharpStation.CodeSnippet=FSharpStation.CodeSnippet||{};
  SC$1=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal"]=window["StartupCode$D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project_xxx$bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonDecoder"]||{};
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]||{};
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_JsonEncoder"]||{};
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]=window["D:\\Abe\\CIPHERWorkspace\\CIPHERPrototype\\WebServer\\bin\\project$xxx_GeneratedPrintf"]||{};
  GeneratedPrintf=window.GeneratedPrintf=window.GeneratedPrintf||{};
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
@@ -172,16 +172,16 @@
  Strings=WebSharper&&WebSharper.Strings;
  Seq=WebSharper&&WebSharper.Seq;
  Concurrency=WebSharper&&WebSharper.Concurrency;
+ console=window.console;
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
- Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
+ Unchecked=WebSharper&&WebSharper.Unchecked;
  Guid=WebSharper&&WebSharper.Guid;
  Option$1=WebSharper&&WebSharper.Option;
  JSON=window.JSON;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- console=window.console;
  Date=window.Date;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
@@ -194,9 +194,9 @@
  Mouse=Input$1&&Input$1.Mouse;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
- Slice=WebSharper&&WebSharper.Slice;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
+ Slice=WebSharper&&WebSharper.Slice;
  FSharpMap=Collections&&Collections.FSharpMap;
  Map=Collections&&Collections.Map;
  JavaScript=WebSharper&&WebSharper.JavaScript;
@@ -640,6 +640,56 @@
  Builder.New=Runtime.Ctor(function()
  {
  },Builder);
+ Wrap.start=function(printMsg,w)
+ {
+  var f,f$1,f$2,g,g$1,f$3,f$4;
+  Concurrency.StartWithContinuations(Wrap.getAsyncR(w),(f=(f$1=(f$2=function(a)
+  {
+   return Result.mapMsgs(Result.getMessages,a);
+  },(g=function($1,$2)
+  {
+   return $1==null?(function($3)
+   {
+    return $3("Failed!");
+   }(function(s)
+   {
+    console.log(s);
+   }),$2):$2;
+  },function(x)
+  {
+   return g.apply(null,f$2(x));
+  })),(g$1=function($1)
+  {
+   return function($2)
+   {
+    return $1(PrintfHelpers.toSafe($2));
+   };
+  }(window.id),function(x)
+  {
+   return g$1(f$1(x));
+  })),function(x)
+  {
+   return printMsg(f(x));
+  }),(f$3=function($1)
+  {
+   return function($2)
+   {
+    return $1(PrintfHelpers.prettyPrint($2));
+   };
+  }(window.id),function(x)
+  {
+   return printMsg(f$3(x));
+  }),(f$4=function($1)
+  {
+   return function($2)
+   {
+    return $1(PrintfHelpers.prettyPrint($2));
+   };
+  }(window.id),function(x)
+  {
+   return printMsg(f$4(x));
+  }),null);
+ };
  Wrap.getAsync=function(w)
  {
   var vo,b,vr,b$1,vra,b$2;
@@ -1054,6 +1104,128 @@
   this.f=f;
   this.cache=new Dictionary.New$5();
  },ResetableMemoize);
+ PreproDirective.NoPrepo={
+  $:11
+ };
+ PreproDirective.PrepoEndIf={
+  $:8
+ };
+ PreproDirective.PrepoElse={
+  $:7
+ };
+ Useful.separateDirectives=function(fsNass)
+ {
+  var assembs,f,g,defines,f$1,g$1,prepoIs,f$2,g$2,nowarns,f$3,g$3;
+  assembs=Arrays.ofSeq(Seq.distinct(Seq.choose((f=function(t)
+  {
+   return t[1];
+  },(g=function(a)
+  {
+   return a.$==0?{
+    $:1,
+    $0:a.$0
+   }:null;
+  },function(x)
+  {
+   return g(f(x));
+  })),fsNass)));
+  defines=Arrays.ofSeq(Seq.distinct(Seq.choose((f$1=function(t)
+  {
+   return t[1];
+  },(g$1=function(a)
+  {
+   return a.$==1?{
+    $:1,
+    $0:a.$0
+   }:null;
+  },function(x)
+  {
+   return g$1(f$1(x));
+  })),fsNass)));
+  prepoIs=Arrays.ofSeq(Seq.distinct(Seq.choose((f$2=function(t)
+  {
+   return t[1];
+  },(g$2=function(a)
+  {
+   return a.$==5?{
+    $:1,
+    $0:a.$0
+   }:null;
+  },function(x)
+  {
+   return g$2(f$2(x));
+  })),fsNass)));
+  nowarns=Arrays.ofSeq(Seq.distinct(Seq.choose((f$3=function(t)
+  {
+   return t[1];
+  },(g$3=function(a)
+  {
+   return a.$==4?{
+    $:1,
+    $0:a.$0
+   }:null;
+  },function(x)
+  {
+   return g$3(f$3(x));
+  })),fsNass)));
+  return[Arrays.ofSeq(Seq.map(function(t)
+  {
+   return t[0];
+  },fsNass)),assembs,defines,prepoIs,nowarns];
+ };
+ Useful.separatePrepros=function(removePrepoLine,code)
+ {
+  var quoted,define,comment,preL;
+  quoted=function(line)
+  {
+   return Option.defaultValue(line,Seq.tryLast(Strings.SplitStrings(Strings.Trim(line),["\""],1)));
+  };
+  define=function(line)
+  {
+   return Option.defaultValue("",Seq.tryHead(Strings.SplitStrings(Strings.Trim(line),["#define "],1)));
+  };
+  comment=function(y)
+  {
+   return"//"+y;
+  };
+  preL=removePrepoLine?comment:window.id;
+  return Arrays.map(function(line)
+  {
+   var m,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12;
+   m=true;
+   return m&&(Strings.StartsWith(line,"#define")&&true)?[comment(line),{
+    $:1,
+    $0:define(line)
+   }]:m&&(Strings.StartsWith(line,"#r")&&true)?[comment(line),{
+    $:0,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"#load")&&true)?[comment(line),{
+    $:2,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"#nowarn")&&true)?[comment(line),{
+    $:4,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"# ")&&true)?[preL(line),{
+    $:3,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"#line")&&true)?[preL(line),{
+    $:3,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"#I")&&true)?[comment(line),{
+    $:5,
+    $0:quoted(line)
+   }]:m&&(Strings.StartsWith(line,"#if")&&true)?[line,{
+    $:6,
+    $0:line
+   }]:m&&(Strings.StartsWith(line,"#else")&&true)?[line,PreproDirective.PrepoElse]:m&&(Strings.StartsWith(line,"#endif")&&true)?[line,PreproDirective.PrepoEndIf]:m&&(Strings.StartsWith(line,"#light")&&true)?[line,{
+    $:9,
+    $0:false
+   }]:m&&(Strings.StartsWith(line,"#")&&true)?[comment(line),{
+    $:10,
+    $0:line
+   }]:[line,PreproDirective.NoPrepo];
+  },code);
+ };
  Useful.REGEX=function(expr,opt,value)
  {
   var m;
@@ -1077,15 +1249,6 @@
  {
   var b;
   return Strings.Substring(s,0,(b=s.length,Unchecked.Compare(n,b)===-1?n:b));
- };
- PreproDirective.NoPrepo={
-  $:11
- };
- PreproDirective.PrepoEndIf={
-  $:8
- };
- PreproDirective.PrepoElse={
-  $:7
  };
  CodeSnippetId=FsStationShared.CodeSnippetId=Runtime.Class({
   get_Text:function()
@@ -1121,7 +1284,7 @@
      return $1("("+window.String($2)+")");
     };
    }(window.id))(indent)];
-   p$1=FsStationShared.separateDirectives(p[0](FsStationShared.separatePrepros(!addLinePrepos,(!addLinePrepos?window.id:(a=[(((Runtime.Curried3(function($1,$2,$3)
+   p$1=Useful.separateDirectives(p[0](Useful.separatePrepros(!addLinePrepos,(!addLinePrepos?window.id:(a=[(((Runtime.Curried3(function($1,$2,$3)
    {
     return $1("# 1 @\""+PrintfHelpers.toSafe($2)+PrintfHelpers.toSafe($3)+"\"");
    }))(window.id))(p[1]))(this.get_NameSanitized())],function(a$1)
@@ -1290,7 +1453,7 @@
     return Concurrency.Bind($this.sendMessage({
      $:0,
      $0:"WebServer:PostOffice"
-    },JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5())(msg))),function(a)
+    },JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(msg))),function(a)
     {
      return Concurrency.Return(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$6())(JSON.parse(a))));
     });
@@ -1422,6 +1585,9 @@
   };
   Remoting.set_EndPoint(this.wsEndPoint);
  },MessagingClient);
+ FSMessage.GetWholeFile={
+  $:11
+ };
  FSMessage.GetIdentification={
   $:0
  };
@@ -1504,16 +1670,13 @@
   },
   GenericMessage:function(txt)
   {
-   var $this,t,toId,wrapMsg,checkResponse,b;
+   var $this,t,toId,msg,checkResponse,b;
    $this=this;
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:1,
-     $0:a
-    };
+   msg={
+    $:1,
+    $0:txt
    };
    checkResponse=function(r)
    {
@@ -1522,7 +1685,30 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(txt)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(msg))),function(a)
+    {
+     return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
+     {
+      return b.Return(a$1);
+     });
+    });
+   });
+  },
+  RequestWholeFile:function()
+  {
+   var $this,t,toId,msg,checkResponse,b;
+   $this=this;
+   t=this;
+   toId=this.toId;
+   msg=FSMessage.GetWholeFile;
+   checkResponse=function(r)
+   {
+    return $this.stringResponse(r);
+   };
+   b=Wrap.wrapper();
+   return b.Delay(function()
+   {
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(msg))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1533,16 +1719,13 @@
   },
   RequestPredsById:function(snpId)
   {
-   var $this,t,toId,wrapMsg,checkResponse,b;
+   var $this,t,toId,msg,checkResponse,b;
    $this=this;
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:4,
-     $0:a
-    };
+   msg={
+    $:4,
+    $0:snpId
    };
    checkResponse=function(r)
    {
@@ -1551,7 +1734,7 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(snpId)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(msg))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1562,18 +1745,14 @@
   },
   RequestPreds:function(snpPath)
   {
-   var $this,v,t,toId,wrapMsg,checkResponse,b;
+   var $this,m,t,toId,checkResponse,b;
    $this=this;
-   v=Strings.SplitChars(snpPath,[47],0);
+   m={
+    $:8,
+    $0:Strings.SplitChars(snpPath,[47],0)
+   };
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:8,
-     $0:a
-    };
-   };
    checkResponse=function(r)
    {
     return $this.snippetsResponse(r);
@@ -1581,7 +1760,7 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(v)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(m))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1592,18 +1771,14 @@
   },
   RequestJSCode:function(snpPath)
   {
-   var $this,v,t,toId,wrapMsg,checkResponse,b;
+   var $this,m,t,toId,checkResponse,b;
    $this=this;
-   v=Strings.SplitChars(snpPath,[47],0);
+   m={
+    $:10,
+    $0:Strings.SplitChars(snpPath,[47],0)
+   };
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:10,
-     $0:a
-    };
-   };
    checkResponse=function(r)
    {
     return $this.stringResponseR(r);
@@ -1611,7 +1786,7 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(v)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(m))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1622,18 +1797,14 @@
   },
   RequestCode:function(snpPath)
   {
-   var $this,v,t,toId,wrapMsg,checkResponse,b;
+   var $this,m,t,toId,checkResponse,b;
    $this=this;
-   v=Strings.SplitChars(snpPath,[47],0);
+   m={
+    $:7,
+    $0:Strings.SplitChars(snpPath,[47],0)
+   };
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:9,
-     $0:a
-    };
-   };
    checkResponse=function(r)
    {
     return $this.stringResponse(r);
@@ -1641,7 +1812,7 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(v)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(m))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1652,18 +1823,14 @@
   },
   RequestSnippet:function(snpPath)
   {
-   var $this,v,t,toId,wrapMsg,checkResponse,b;
+   var $this,m,t,toId,checkResponse,b;
    $this=this;
-   v=Strings.SplitChars(snpPath,[47],0);
+   m={
+    $:9,
+    $0:Strings.SplitChars(snpPath,[47],0)
+   };
    t=this;
    toId=this.toId;
-   wrapMsg=function(a)
-   {
-    return{
-     $:9,
-     $0:a
-    };
-   };
    checkResponse=function(r)
    {
     return $this.snippetResponse(r);
@@ -1671,7 +1838,7 @@
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(v)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(m))),function(a)
     {
      return b.Bind$1(checkResponse((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1682,14 +1849,13 @@
   },
   SendMessage:function(msg)
   {
-   var t,toId,wrapMsg,b;
+   var t,toId,b;
    t=this;
    toId=this.toId;
-   wrapMsg=window.id;
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(msg)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(msg))),function(a)
     {
      return b.Bind$1(Result.succeed((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1700,13 +1866,12 @@
   },
   SendMessage$1:function(toId2,msg)
   {
-   var t,wrapMsg,b;
+   var t,b;
    t=this;
-   wrapMsg=window.id;
    b=Wrap.wrapper();
    return b.Delay(function()
    {
-    return b.Bind$2(t.msgClient.SendMessage(toId2,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6())(wrapMsg(msg)))),function(a)
+    return b.Bind$2(t.msgClient.SendMessage(toId2,JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(msg))),function(a)
     {
      return b.Bind$1(Result.succeed((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$2())(JSON.parse(a))),function(a$1)
      {
@@ -1740,132 +1905,14 @@
  };
  FsStationShared.snippetName=function(name,content)
  {
-  var o;
-  return name!==""?name:(o=Seq.tryHead(Seq.filter(function(l)
+  return name!==""?name:Option.defaultValue("<empty>",Seq.tryHead(Seq.filter(function(l)
   {
    return!(Strings.StartsWith(l,"#")||Strings.StartsWith(l,"[<")||Strings.StartsWith(l,"//"));
-  },Seq.map(Strings.Trim,Strings.SplitChars(content,[10],1)))),o==null?"<empty>":o.$0);
+  },Seq.map(Strings.Trim,Strings.SplitChars(content,[10],1)))));
  };
  FsStationShared.swap=function(f,a,b)
  {
   return f(b,a);
- };
- FsStationShared.separateDirectives=function(fsNass)
- {
-  var assembs,f,g,defines,f$1,g$1,prepoIs,f$2,g$2,nowarns,f$3,g$3;
-  assembs=Arrays.ofSeq(Seq.distinct(Seq.choose((f=function(t)
-  {
-   return t[1];
-  },(g=function(a)
-  {
-   return a.$==0?{
-    $:1,
-    $0:a.$0
-   }:null;
-  },function(x)
-  {
-   return g(f(x));
-  })),fsNass)));
-  defines=Arrays.ofSeq(Seq.distinct(Seq.choose((f$1=function(t)
-  {
-   return t[1];
-  },(g$1=function(a)
-  {
-   return a.$==1?{
-    $:1,
-    $0:a.$0
-   }:null;
-  },function(x)
-  {
-   return g$1(f$1(x));
-  })),fsNass)));
-  prepoIs=Arrays.ofSeq(Seq.distinct(Seq.choose((f$2=function(t)
-  {
-   return t[1];
-  },(g$2=function(a)
-  {
-   return a.$==5?{
-    $:1,
-    $0:a.$0
-   }:null;
-  },function(x)
-  {
-   return g$2(f$2(x));
-  })),fsNass)));
-  nowarns=Arrays.ofSeq(Seq.distinct(Seq.choose((f$3=function(t)
-  {
-   return t[1];
-  },(g$3=function(a)
-  {
-   return a.$==4?{
-    $:1,
-    $0:a.$0
-   }:null;
-  },function(x)
-  {
-   return g$3(f$3(x));
-  })),fsNass)));
-  return[Arrays.ofSeq(Seq.map(function(t)
-  {
-   return t[0];
-  },fsNass)),assembs,defines,prepoIs,nowarns];
- };
- FsStationShared.separatePrepros=function(removePrepoLine,code)
- {
-  var quoted,define,comment,preL;
-  quoted=function(line)
-  {
-   var o;
-   o=Seq.tryLast(Strings.SplitStrings(Strings.Trim(line),["\""],1));
-   return o==null?line:o.$0;
-  };
-  define=function(line)
-  {
-   var o;
-   o=Seq.tryHead(Strings.SplitStrings(Strings.Trim(line),["#define "],1));
-   return o==null?"":o.$0;
-  };
-  comment=function(y)
-  {
-   return"//"+y;
-  };
-  preL=removePrepoLine?comment:window.id;
-  return Arrays.map(function(line)
-  {
-   var m,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12;
-   m=true;
-   return m&&(Strings.StartsWith(line,"#define")&&true)?[comment(line),{
-    $:1,
-    $0:define(line)
-   }]:m&&(Strings.StartsWith(line,"#r")&&true)?[comment(line),{
-    $:0,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"#load")&&true)?[comment(line),{
-    $:2,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"#nowarn")&&true)?[comment(line),{
-    $:4,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"# ")&&true)?[preL(line),{
-    $:3,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"#line")&&true)?[preL(line),{
-    $:3,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"#I")&&true)?[comment(line),{
-    $:5,
-    $0:quoted(line)
-   }]:m&&(Strings.StartsWith(line,"#if")&&true)?[line,{
-    $:6,
-    $0:line
-   }]:m&&(Strings.StartsWith(line,"#else")&&true)?[line,PreproDirective.PrepoElse]:m&&(Strings.StartsWith(line,"#endif")&&true)?[line,PreproDirective.PrepoEndIf]:m&&(Strings.StartsWith(line,"#light")&&true)?[line,{
-    $:9,
-    $0:false
-   }]:m&&(Strings.StartsWith(line,"#")&&true)?[comment(line),{
-    $:10,
-    $0:line
-   }]:[line,PreproDirective.NoPrepo];
-  },code);
  };
  Pos.New=function(Line,Col)
  {
@@ -4312,7 +4359,7 @@
   {
    return Concurrency.Bind(FSharpStation.respond(fromId,(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$5())(JSON.parse(txt))),function(a)
    {
-    return Concurrency.Return(JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2())(a)));
+    return Concurrency.Return(JSON.stringify((_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3())(a)));
    });
   });
  };
@@ -4322,33 +4369,39 @@
   b=null;
   return Concurrency.Delay(function()
   {
-   var o,o$1,o$2,o$3,m,o$4,o$5;
-   return msg.$==3?Concurrency.Return({
+   var o,o$1,o$2,o$3,o$4,m,o$5,x;
+   return msg.$==2?Concurrency.Return({
     $:1,
     $0:(o=CodeSnippet$1.FetchO(msg.$0),o==null?null:{
      $:1,
-     $0:FSharpStation["CodeSnippet.GetCodeFsx"](o.$0,true)
+     $0:o.$0.content
+    })
+   }):msg.$==3?Concurrency.Return({
+    $:1,
+    $0:(o$1=CodeSnippet$1.FetchO(msg.$0),o$1==null?null:{
+     $:1,
+     $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$1.$0,true)
     })
    }):msg.$==4?Concurrency.Return({
     $:3,
-    $0:Option.defaultValue([],(o$1=CodeSnippet$1.FetchO(msg.$0),o$1==null?null:{
+    $0:Option.defaultValue([],(o$2=CodeSnippet$1.FetchO(msg.$0),o$2==null?null:{
      $:1,
-     $0:FSharpStation["CodeSnippet.Predecessors"](o$1.$0)
+     $0:FSharpStation["CodeSnippet.Predecessors"](o$2.$0)
     }))
    }):msg.$==5?Concurrency.Return({
     $:2,
     $0:CodeSnippet$1.FetchO(msg.$0)
    }):msg.$==6?Concurrency.Return({
     $:1,
-    $0:(o$2=CodeSnippet$1.FetchByPathO(msg.$0),o$2==null?null:{
+    $0:(o$3=CodeSnippet$1.FetchByPathO(msg.$0),o$3==null?null:{
      $:1,
-     $0:o$2.$0.content
+     $0:o$3.$0.content
     })
    }):msg.$==7?Concurrency.Return({
     $:1,
-    $0:(o$3=CodeSnippet$1.FetchByPathO(msg.$0),o$3==null?null:{
+    $0:(o$4=CodeSnippet$1.FetchByPathO(msg.$0),o$4==null?null:{
      $:1,
-     $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$3.$0,true)
+     $0:FSharpStation["CodeSnippet.GetCodeFsx"](o$4.$0,true)
     })
    }):msg.$==10?(m=CodeSnippet$1.FetchByPathO(msg.$0),m==null?Concurrency.Return({
     $:4,
@@ -4367,9 +4420,9 @@
     });
    })):msg.$==8?Concurrency.Return({
     $:3,
-    $0:Option.defaultValue([],(o$4=CodeSnippet$1.FetchByPathO(msg.$0),o$4==null?null:{
+    $0:Option.defaultValue([],(o$5=CodeSnippet$1.FetchByPathO(msg.$0),o$5==null?null:{
      $:1,
-     $0:FSharpStation["CodeSnippet.Predecessors"](o$4.$0)
+     $0:FSharpStation["CodeSnippet.Predecessors"](o$5.$0)
     }))
    }):msg.$==9?Concurrency.Return({
     $:2,
@@ -4385,10 +4438,10 @@
     $0:fromId
    }):Concurrency.Return({
     $:1,
-    $0:(o$5=CodeSnippet$1.FetchO(msg.$0),o$5==null?null:{
+    $0:{
      $:1,
-     $0:o$5.$0.content
-    })
+     $0:(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5))())(x)))
+    }
    });
   });
  };
@@ -4664,7 +4717,7 @@
  FSharpStation.downloadFile=function()
  {
   var x,m;
-  window.saveAs(new window.Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4))())(x)))],{
+  window.saveAs(new window.Blob([(x=Arrays.ofSeq((FSharpStation.codeSnippets())["var"].RVal()),JSON.stringify(((Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5))())(x)))],{
    type:"text/plain;charset=utf-8"
   }),(m=FSharpStation.justFileName(FSharpStation.fileName().c),m===""?"snippets.fsjson":m));
   FSharpStation.setClean();
@@ -5776,6 +5829,10 @@
  {
   return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$3=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]]]))();
  };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[6,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[11,[]]]))();
+ };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p$1=function($1)
  {
   return $1.$==1?"Snippet Not Found "+PrintfHelpers.prettyPrint($1.$0):"FSMessage ("+PrintfHelpers.prettyPrint($1.$0)+", "+_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p($1.$1)+")";
@@ -5788,33 +5845,29 @@
  {
   return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v=(Provider.DecodeUnion(CodeSnippetId,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
  };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$2=function()
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$2=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4,1]]],[3,[["$0","Item",Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4),0]]],[4,[["$0","Item1",Provider.Id(),1],["$1","Item2",Provider.EncodeArray(Provider.EncodeTuple([Provider.Id(),_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3])),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3=(Provider.EncodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[["$0","Item",Provider.Id(),1]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5,1]]],[3,[["$0","Item",Provider.EncodeArray(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5),0]]],[4,[["$0","Item1",Provider.Id(),1],["$1","Item2",Provider.EncodeArray(Provider.EncodeTuple([Provider.Id(),_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4])),0]]]]))();
+ };
+ _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5=function()
+ {
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0],["expanded",Provider.Id(),0],["level",Provider.Id(),0],["properties",Provider.EncodeStringMap(Provider.Id()),0]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$4=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4=(Provider.EncodeRecord(CodeSnippet,[["name",Provider.Id(),0],["content",Provider.Id(),0],["parent",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,1],["predecessors",Provider.EncodeList(_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j),0],["id",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0],["expanded",Provider.Id(),0],["level",Provider.Id(),0],["properties",Provider.EncodeStringMap(Provider.Id()),0]]))();
- };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$3=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$3=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$4=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[]],[2,[]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$5=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[6,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$5=(Provider.DecodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j,0]]],[6,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]],[11,[]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder.j$6=function()
  {
   return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$6?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$6:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder._v$6=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[["$0","Item",Provider.DecodeArray(Provider.Id()),0]]]]))();
  };
- _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$5=function()
- {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$5=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[]],[3,[]],[4,[]]]))();
- };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j$6=function()
  {
-  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[3,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[4,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[5,[["$0","Item",_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder.j,0]]],[6,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[7,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[8,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[9,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]],[10,[["$0","Item",Provider.EncodeArray(Provider.Id()),0]]]]))();
+  return _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6?_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6:_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder._v$6=(Provider.EncodeUnion(void 0,"$",[[0,[]],[1,[["$0","Item",Provider.Id(),0]]],[2,[]],[3,[]],[4,[]]]))();
  };
  _DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf.p$2=function($1)
  {
@@ -5884,6 +5937,10 @@
  {
   return"{"+("Range = "+GeneratedPrintf.p$11($1.Range))+"; "+("Kind = "+PrintfHelpers.prettyPrint($1.Kind))+"}";
  };
+ GeneratedPrintf.p$11=function($1)
+ {
+  return"{"+("StartLine = "+PrintfHelpers.prettyPrint($1.StartLine))+"; "+("StartColumn = "+PrintfHelpers.prettyPrint($1.StartColumn))+"; "+("EndLine = "+PrintfHelpers.prettyPrint($1.EndLine))+"; "+("EndColumn = "+PrintfHelpers.prettyPrint($1.EndColumn))+"}";
+ };
  GeneratedPrintf.p$8=function($1)
  {
   return"{"+("File = "+PrintfHelpers.prettyPrint($1.File))+"; "+("Errors = "+PrintfHelpers.printArray(function($2)
@@ -5894,10 +5951,6 @@
  GeneratedPrintf.p$9=function($1)
  {
   return"{"+("FileName = "+PrintfHelpers.prettyPrint($1.FileName))+"; "+("StartLine = "+PrintfHelpers.prettyPrint($1.StartLine))+"; "+("EndLine = "+PrintfHelpers.prettyPrint($1.EndLine))+"; "+("StartColumn = "+PrintfHelpers.prettyPrint($1.StartColumn))+"; "+("EndColumn = "+PrintfHelpers.prettyPrint($1.EndColumn))+"; "+("Message = "+PrintfHelpers.prettyPrint($1.Message))+"; "+("Subcategory = "+PrintfHelpers.prettyPrint($1.Subcategory))+"}";
- };
- GeneratedPrintf.p$11=function($1)
- {
-  return"{"+("StartLine = "+PrintfHelpers.prettyPrint($1.StartLine))+"; "+("StartColumn = "+PrintfHelpers.prettyPrint($1.StartColumn))+"; "+("EndLine = "+PrintfHelpers.prettyPrint($1.EndLine))+"; "+("EndColumn = "+PrintfHelpers.prettyPrint($1.EndColumn))+"}";
  };
  GeneratedPrintf.p$5=function($1)
  {
