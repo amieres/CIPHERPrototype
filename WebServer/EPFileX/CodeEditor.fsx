@@ -1630,29 +1630,26 @@ namespace FSSGlobal
       [<NoComparison ; NoEquality>]
       type Hoverable = {
           hover      : IRef<bool>
-          content    : HtmlNode seq
       } with
         static member  New   = 
           let hover      = Var.Create false
           { 
               hover      = hover     
-              content    = []
           }
-        static member  Demo  = 
-          let hover      = Var.Create false
-          { 
-              hover      = hover     
-              content    = [ style "flex-flow: column;"
-                           ]
-          }
-        member        this.Render          =
+        member inline this.Content    (c: HtmlNode seq) = 
           [ classIf "hovering" this.hover
             SomeAttr <| on.mouseEnter (fun _ _ -> this.hover.Value <- true )
             SomeAttr <| on.mouseLeave (fun _ _ -> this.hover.Value <- false)
           ] 
-          |> Seq.append  this.content
+          |> Seq.append  c
           |> div
-        member inline this.Content    c = { this with content    =       c }
+        member inline this.Content    (c:HtmlNode) = 
+            c.AddChildren 
+                [ classIf "hovering" this.hover
+                  SomeAttr <| on.mouseEnter (fun _ _ -> this.hover.Value <- true )
+                  SomeAttr <| on.mouseLeave (fun _ _ -> this.hover.Value <- false)
+                ] 
+        static member  Demo  = Hoverable.New.Content(div [ style "flex-flow: column;" ])
       
       # 1 @"(6)3234a0bf-4541-4f2c-8bbf-b5ab3a0e415b TextArea.fsx"
       [<NoComparison ; NoEquality>]
@@ -2108,6 +2105,152 @@ namespace FSSGlobal
               ]
           member this.Render =
               div <| this.GridTemplate()
+      # 1 @"(6)cddabd38-7ecb-4692-99bd-13ca70e4232f TabStrip.fsx"
+      let reorderList (ts:'a list) drag drop =
+          if drop < drag then
+             ts.[0       ..drop - 1     ]
+           @    [      ts.[drag]        ]
+           @ ts.[drop    ..drag - 1     ]
+           @ ts.[drag + 1..ts.Length - 1]
+          else
+             ts.[0..drag - 1            ]
+           @ ts.[drag + 1..drop         ]
+           @    [      ts.[drag]        ]
+           @ ts.[drop + 1..ts.Length - 1]
+      
+      let reorderArray (ts:'a []) drag drop =
+         (if drop < drag then
+            [|
+             ts.[0       ..drop - 1     ]
+             [|        ts.[drag]       |]
+             ts.[drop    ..drag - 1     ]
+             ts.[drag + 1..ts.Length - 1]
+            |]
+          else
+            [|
+             ts.[0..drag - 1            ]
+             ts.[drag + 1..drop         ]
+             [|        ts.[drag]       |]
+             ts.[drop + 1..ts.Length - 1]
+            |]
+         )|> Array.collect id 
+      
+      [< NoComparison >]
+      type TabStrip =
+          { selected  : IRef<int>
+            tabs      : IRef<(string * HtmlNode) []>
+            top       : bool
+            horizontal: bool
+          } 
+      with
+          member this.reorder drag drop =
+              this.tabs.Value     <- reorderArray this.tabs.Value drag drop
+              let sel = this.selected.Value
+              this.selected.Value <- if    sel = drag                then drop
+                                     elif (sel < drag && sel < drop)
+                                       || (sel > drag && sel > drop) then sel 
+                                     elif  sel < drag                then sel + 1
+                                     else                                 sel - 1
+                                     
+          static member New(tabs)    =
+              { selected   = Var.Create 0
+                tabs       = tabs 
+                top        = false 
+                horizontal = true
+              } 
+          static member New(tabs) = TabStrip.New(Var.Create <| Seq.toArray tabs)
+          member this.Top         = { this with top        = true  }
+          member this.Bottom      = { this with top        = false }
+          member this.Horizontal  = { this with horizontal = true  }
+          member this.Vertical    = { this with horizontal = false }
+          member this.Selected    = Val.map2 (fun tabs sel -> tabs |> Seq.item sel |> fst) this.tabs this.selected
+          member this.Render      =
+              let draggedId = ref 0
+              let strip =
+                  this.tabs
+                  |> bindHElem (
+                      fun tabs ->
+                          div [ yield ``class`` <| sprintf "tab-strip %s %s"
+                                                      (if this.top        then "top"        else "bottom") 
+                                                      (if this.horizontal then "horizontal" else "vertical")
+                                
+                                for i, (txt, sub) in  tabs |> Seq.indexed  do
+                                    yield Hoverable.New.Content(
+                                          div [ htmlText txt
+                                                ``class`` <| Val.map (fun sel -> "tab" + (if sel = i then " selected" else "")) this.selected
+                                                draggable "true"
+                                                SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                               )
+                                                SomeAttr <| on.drag    (fun _ _  ->                                     draggedId := i)
+                                                SomeAttr <| on.drop    (fun _ ev -> ev.PreventDefault() ; this.reorder !draggedId    i)
+                                                SomeAttr <| on.click   (fun _ _  ->                       this.selected.Value     <- i) 
+                                              ])
+                              ]
+                  )
+              let content = 
+                  (this.tabs.Value 
+                  |> Seq.map (fun (txt, sub) -> 
+                      sub.AddChildren(
+                        [ style <| Val.map (fun sel -> if txt = sel then "" else "display : none") this.Selected
+                        ]))
+                  |> div).AddChildren([ ``class`` "tab-content" ])
+              div [ ``class`` "tab-panel"
+                    (if     this.top then strip else HtmlEmpty)
+                    content
+                    (if not this.top then strip else HtmlEmpty)
+                    css @"
+      
+      .tab-panel {
+       overflow : hidden ;
+       display  : flex   ;
+       flex-flow: column ;
+       background: pink    ;
+      }
+      .tab-content {
+       flex      : 1 1     ;
+       overflow  : auto    ;
+      }
+      .tab-strip {
+       padding   : 0pt     ;
+       flex      : 0 0     ;
+      }
+      .tab {
+       border     : 0.2pt solid transparent;
+       padding    : 0pt 4pt;
+       display    : inline-block;
+       font-family: sans-serif;
+       font-weight: 200;
+       font-size  : small;
+       color      : #666;
+       cursor     : pointer;
+      }
+      .top>.tab {
+       border-radius: 2pt 2pt 0pt 0pt;
+       border-bottom-width: 0pt;
+       vertical-align: bottom;
+      }
+      .bottom>.tab {
+       border-top-width: 0pt;
+       border-radius: 0pt 0pt 2pt 2pt;
+       vertical-align: top;
+      }
+      .horizontal>.tab:not(:first-child) {
+       border-left-width: 0pt;
+      }
+      .tab.hovering {
+       background: red;
+      }
+      .tab.selected {
+       background: white;
+       border-left-width: 0.2pt;
+       color: black;
+       font-weight: 500;
+       border-color: black;
+      }
+      .horizontal>.tab.selected {
+       border-left-width: 0.2pt;
+      }
+      "]
+      
     # 1 @"(4)e2ca8cb1-fb1e-4793-855f-55e3ca07b8f5 RunCode.fsx"
     [<JavaScript>]
     module RunCode       =
@@ -2617,8 +2760,7 @@ namespace FSSGlobal
       
       let listEntry isParent isExpanded code =
           Template.Hoverable.New
-              .Content( [ 
-                          ``class`` "code-editor-list-tile"
+              .Content( [ ``class`` "code-editor-list-tile"
                           classIf   "selected"              <| Val.map ((=)                    code.id) currentCodeSnippetId
                           classIf   "direct-predecessor"    <| Val.map (isDirectPredecessor    code.id) currentCodeSnippetO
                           classIf   "indirect-predecessor"  <| Val.map (isIndirectPredecessor  code.id) curPredecessors
@@ -2645,7 +2787,6 @@ namespace FSSGlobal
                                     htmlText    "X"
                                   ]
                           ])
-              .Render
       
       let listEntries snps =
           snps
@@ -3084,17 +3225,25 @@ namespace FSSGlobal
       storeVarCodeEditor "splitterV1" spl1.Var
       //storeVarCodeEditor "splitterV2" splitterV2.Var
       //storeVarCodeEditor "splitterH3" splitterH3.Var
+      
+      let Messages =
+          [
+           "Output"    , Template.TextArea.New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 ).Render
+           "JavaScript", Template.TextArea.New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated").Render
+           "F# code"   , Template.TextArea.New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        ).Render 
+          ]
+      
       let CodeEditor() =
         Template.Grid.New
-           .ColVariable(spl1).ColVariable(50.0).Max(Val.map ((-) 92.0) spl1.GetValue).Children([ style "grid-row: 3 / 5" ]).ColAuto(0.0)
-           .RowFixedPx(34.0) .RowAuto(0.0).RowVariable(17.0).Children([ style "grid-column: 2 / 4" ]).Before.RowFixedPx(80.0)
+           .ColVariable(spl1).ColAuto(0.0).ColVariable( 0.0).Min(0.0).Max(Val.map ((-) 92.0) spl1.GetValue).Before.Children([ style "grid-row: 1 / 5" ])
+           .RowFixedPx(34.0) .RowAuto(0.0).RowVariable(17.0).Children([ style "grid-column: 2 / 3" ]).Before.RowFixedPx(80.0)
            .Padding(1.0)
            .Content( style  """ 
                           grid-template-areas:
-                              'header0 header   header  '
-                              'sidebar content1 content1'
-                              'sidebar content2 content3'
-                              'footer  footer   footer2 ';
+                              'header0 header   sidebar2'
+                              'sidebar content1 sidebar2'
+                              'sidebar content2 sidebar2'
+                              'footer  footer   sidebar2';
                           color      : #333;
                           height     : 100%;
                           font-size  : small;
@@ -3110,9 +3259,7 @@ namespace FSSGlobal
                   ])
            .Content("header"  , Template.Input     .New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:")         .Render)
            .Content("content1", codeMirror                                                                                                   .Render)
-           .Content("content2", Template.TextArea  .New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 )              .Render)
-           .Content("content3", Template.TextArea  .New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated")              .Render)
-           .Content("footer2" , Template.TextArea  .New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        )              .Render) 
+           .Content("content2", Template.TabStrip  .New(Messages).Top                                                                        .Render)
            .Content("footer"  ,       
               div [ 
                     Template.Button.New("Add code"              ).Class("btn btn-xs"     ).OnClick(Do addCode      )                          .Render

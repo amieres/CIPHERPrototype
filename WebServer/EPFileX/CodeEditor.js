@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Json,Provider,Slice,FSharpMap,Map,JavaScript,JSModule,HashSet,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,HashSet,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -152,6 +152,7 @@
  LintResponse=Template.LintResponse=Template.LintResponse||{};
  SplitterBar=Template.SplitterBar=Template.SplitterBar||{};
  Grid=Template.Grid=Template.Grid||{};
+ TabStrip=Template.TabStrip=Template.TabStrip||{};
  RunCode=FSSGlobal.RunCode=FSSGlobal.RunCode||{};
  EditorRpc=RunCode.EditorRpc=RunCode.EditorRpc||{};
  RunNode=RunCode.RunNode=RunCode.RunNode||{};
@@ -194,9 +195,9 @@
  Mouse=Input$1&&Input$1.Mouse;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
+ Slice=WebSharper&&WebSharper.Slice;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
- Slice=WebSharper&&WebSharper.Slice;
  FSharpMap=Collections&&Collections.FSharpMap;
  Map=Collections&&Collections.Map;
  JavaScript=WebSharper&&WebSharper.JavaScript;
@@ -3250,13 +3251,33 @@
  Hoverable=Template.Hoverable=Runtime.Class({
   Content:function(c)
   {
-   return Hoverable.New(this.hover,c);
+   var $this;
+   $this=this;
+   return c.AddChildren([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
+    $:5,
+    $0:AttrModule.Handler("mouseenter",function()
+    {
+     return function()
+     {
+      return $this.hover.set_RVal(true);
+     };
+    })
+   }),new HtmlNode$1({
+    $:5,
+    $0:AttrModule.Handler("mouseleave",function()
+    {
+     return function()
+     {
+      return $this.hover.set_RVal(false);
+     };
+    })
+   })]);
   },
-  get_Render:function()
+  Content$1:function(c)
   {
    var $this;
    $this=this;
-   return HtmlNode.div(Seq.append(this.content,List.ofArray([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
+   return HtmlNode.div(Seq.append(c,List.ofArray([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
     $:5,
     $0:AttrModule.Handler("mouseenter",function()
     {
@@ -3279,17 +3300,16 @@
  },null,Hoverable);
  Hoverable.get_Demo=function()
  {
-  return Hoverable.New(Var.Create$1(false),List.ofArray([HtmlNode.style("flex-flow: column;")]));
+  return Hoverable.get_New().Content(HtmlNode.div([HtmlNode.style("flex-flow: column;")]));
  };
  Hoverable.get_New=function()
  {
-  return Hoverable.New(Var.Create$1(false),List.T.Empty);
+  return Hoverable.New(Var.Create$1(false));
  };
- Hoverable.New=function(hover,content)
+ Hoverable.New=function(hover)
  {
   return new Hoverable({
-   hover:hover,
-   content:content
+   hover:hover
   });
  };
  TextArea=Template.TextArea=Runtime.Class({
@@ -4069,6 +4089,213 @@
    lastSplitter:lastSplitter
   });
  };
+ TabStrip=Template.TabStrip=Runtime.Class({
+  get_Render:function()
+  {
+   var $this,draggedId,strip,content,m;
+   $this=this;
+   draggedId=[0];
+   strip=HtmlNode.bindHElem(function(tabs)
+   {
+    return HtmlNode.div(List.ofSeq(Seq.delay(function()
+    {
+     return Seq.append([HtmlNode["class"]((((Runtime.Curried3(function($1,$2,$3)
+     {
+      return $1("tab-strip "+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+     }))(window.id))($this.top?"top":"bottom"))($this.horizontal?"horizontal":"vertical"))],Seq.delay(function()
+     {
+      return Seq.collect(function(m$1)
+      {
+       var i;
+       i=m$1[0];
+       return[Hoverable.get_New().Content(HtmlNode.div([HtmlNode.htmlText(m$1[1][0]),HtmlNode["class"](Val.map(function(sel)
+       {
+        return"tab"+(sel===i?" selected":"");
+       },$this.selected)),HtmlNode.draggable("true"),new HtmlNode$1({
+        $:5,
+        $0:AttrModule.Handler("dragover",function()
+        {
+         return function(ev)
+         {
+          return ev.preventDefault();
+         };
+        })
+       }),new HtmlNode$1({
+        $:5,
+        $0:AttrModule.Handler("drag",function()
+        {
+         return function()
+         {
+          draggedId[0]=i;
+         };
+        })
+       }),new HtmlNode$1({
+        $:5,
+        $0:AttrModule.Handler("drop",function()
+        {
+         return function(ev)
+         {
+          ev.preventDefault();
+          return $this.reorder(draggedId[0],i);
+         };
+        })
+       }),new HtmlNode$1({
+        $:5,
+        $0:AttrModule.Handler("click",function()
+        {
+         return function()
+         {
+          return $this.selected.set_RVal(i);
+         };
+        })
+       })]))];
+      },Seq.indexed(tabs));
+     }));
+    })));
+   },this.tabs);
+   content=HtmlNode.div((m=function(txt,sub)
+   {
+    return sub.AddChildren([HtmlNode.style(Val.map(function(sel)
+    {
+     return txt===sel?"":"display : none";
+    },$this.get_Selected()))]);
+   },Seq.map(function($1)
+   {
+    return m($1[0],$1[1]);
+   },this.tabs.RVal()))).AddChildren([HtmlNode["class"]("tab-content")]);
+   return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,content,!this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.css("\r\n      \r\n      .tab-panel {\r\n       overflow : hidden ;\r\n       display  : flex   ;\r\n       flex-flow: column ;\r\n       background: pink    ;\r\n      }\r\n      .tab-content {\r\n       flex      : 1 1     ;\r\n       overflow  : auto    ;\r\n      }\r\n      .tab-strip {\r\n       padding   : 0pt     ;\r\n       flex      : 0 0     ;\r\n      }\r\n      .tab {\r\n       border     : 0.2pt solid transparent;\r\n       padding    : 0pt 4pt;\r\n       display    : inline-block;\r\n       font-family: sans-serif;\r\n       font-weight: 200;\r\n       font-size  : small;\r\n       color      : #666;\r\n       cursor     : pointer;\r\n      }\r\n      .top>.tab {\r\n       border-radius: 2pt 2pt 0pt 0pt;\r\n       border-bottom-width: 0pt;\r\n       vertical-align: bottom;\r\n      }\r\n      .bottom>.tab {\r\n       border-top-width: 0pt;\r\n       border-radius: 0pt 0pt 2pt 2pt;\r\n       vertical-align: top;\r\n      }\r\n      .horizontal>.tab:not(:first-child) {\r\n       border-left-width: 0pt;\r\n      }\r\n      .tab.hovering {\r\n       background: red;\r\n      }\r\n      .tab.selected {\r\n       background: white;\r\n       border-left-width: 0.2pt;\r\n       color: black;\r\n       font-weight: 500;\r\n       border-color: black;\r\n      }\r\n      .horizontal>.tab.selected {\r\n       border-left-width: 0.2pt;\r\n      }\r\n      ")]);
+  },
+  get_Selected:function()
+  {
+   return Val.map2(function(tabs)
+   {
+    return function(sel)
+    {
+     return(Seq.nth(sel,tabs))[0];
+    };
+   },this.tabs,this.selected);
+  },
+  get_Vertical:function()
+  {
+   return TabStrip.New(this.selected,this.tabs,this.top,false);
+  },
+  get_Horizontal:function()
+  {
+   return TabStrip.New(this.selected,this.tabs,this.top,true);
+  },
+  get_Bottom:function()
+  {
+   return TabStrip.New(this.selected,this.tabs,false,this.horizontal);
+  },
+  get_Top:function()
+  {
+   return TabStrip.New(this.selected,this.tabs,true,this.horizontal);
+  },
+  reorder:function(drag,drop)
+  {
+   var sel;
+   this.tabs.set_RVal(Template.reorderArray(this.tabs.RVal(),drag,drop));
+   sel=this.selected.RVal();
+   this.selected.set_RVal(sel===drag?drop:sel<drag&&sel<drop||sel>drag&&sel>drop?sel:sel<drag?sel+1:sel-1);
+  }
+ },null,TabStrip);
+ TabStrip.New$1=function(tabs)
+ {
+  return TabStrip.New$2(Var.Create$1(Arrays.ofSeq(tabs)));
+ };
+ TabStrip.New$2=function(tabs)
+ {
+  return TabStrip.New(Var.Create$1(0),tabs,false,true);
+ };
+ TabStrip.New=function(selected,tabs,top,horizontal)
+ {
+  return new TabStrip({
+   selected:selected,
+   tabs:tabs,
+   top:top,
+   horizontal:horizontal
+  });
+ };
+ Template.reorderArray=function(ts,drag,drop)
+ {
+  return Arrays.collect(window.id,drop<drag?[Slice.array(ts,{
+   $:1,
+   $0:0
+  },{
+   $:1,
+   $0:drop-1
+  }),[Arrays.get(ts,drag)],Slice.array(ts,{
+   $:1,
+   $0:drop
+  },{
+   $:1,
+   $0:drag-1
+  }),Slice.array(ts,{
+   $:1,
+   $0:drag+1
+  },{
+   $:1,
+   $0:Arrays.length(ts)-1
+  })]:[Slice.array(ts,{
+   $:1,
+   $0:0
+  },{
+   $:1,
+   $0:drag-1
+  }),Slice.array(ts,{
+   $:1,
+   $0:drag+1
+  },{
+   $:1,
+   $0:drop
+  }),[Arrays.get(ts,drag)],Slice.array(ts,{
+   $:1,
+   $0:drop+1
+  },{
+   $:1,
+   $0:Arrays.length(ts)-1
+  })]);
+ };
+ Template.reorderList=function(ts,drag,drop)
+ {
+  return drop<drag?List.append(ts.GetSlice({
+   $:1,
+   $0:0
+  },{
+   $:1,
+   $0:drop-1
+  }),List.append(List.ofArray([ts.get_Item(drag)]),List.append(ts.GetSlice({
+   $:1,
+   $0:drop
+  },{
+   $:1,
+   $0:drag-1
+  }),ts.GetSlice({
+   $:1,
+   $0:drag+1
+  },{
+   $:1,
+   $0:ts.get_Length()-1
+  })))):List.append(ts.GetSlice({
+   $:1,
+   $0:0
+  },{
+   $:1,
+   $0:drag-1
+  }),List.append(ts.GetSlice({
+   $:1,
+   $0:drag+1
+  },{
+   $:1,
+   $0:drop
+  }),List.append(List.ofArray([ts.get_Item(drag)]),ts.GetSlice({
+   $:1,
+   $0:drop+1
+  },{
+   $:1,
+   $0:ts.get_Length()-1
+  }))));
+ };
  Template.setLint=function(ed,getAnnotations)
  {
   ed.setOption("lint",{
@@ -4287,10 +4514,10 @@
  FSharpStation.CodeEditor=function()
  {
   var x,view,contentVar,changingIRefO,contentVarChanged,refVarChanged;
-  return Grid.get_New().ColVariable$1(FSharpStation.spl1()).ColVariable(50).Max(Val.map(function(y)
+  return Grid.get_New().ColVariable$1(FSharpStation.spl1()).ColAuto(0).ColVariable(0).Min(0).Max(Val.map(function(y)
   {
    return 92-y;
-  },FSharpStation.spl1().get_GetValue())).Children([HtmlNode.style("grid-row: 3 / 5")]).ColAuto(0).RowFixedPx(34).RowAuto(0).RowVariable(17).Children([HtmlNode.style("grid-column: 2 / 4")]).get_Before().RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   header  '\r\n                              'sidebar content1 content1'\r\n                              'sidebar content2 content3'\r\n                              'footer  footer   footer2 ';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.div([HtmlNode.style("overflow: auto"),new HtmlNode$1({
+  },FSharpStation.spl1().get_GetValue())).get_Before().Children([HtmlNode.style("grid-row   : 1 / 5")]).RowFixedPx(34).RowAuto(0).RowVariable(17).get_Before().Children([HtmlNode.style("grid-column: 2 / 3")]).RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   sidebar2'\r\n                              'sidebar content1 sidebar2'\r\n                              'sidebar content2 sidebar2'\r\n                              'footer  footer   sidebar2';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.div([HtmlNode.style("overflow: auto"),new HtmlNode$1({
    $:4,
    $0:Doc.BindView(window.id,View.Map(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x))))
   })])).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(contentVarChanged=[0],(refVarChanged=[0],(View.Sink(function()
@@ -4314,7 +4541,7 @@
    refVarChanged[0]=contentVarChanged[0]+100;
    Var.Set(contentVar,r.RVal());
    return r.RView();
-  },view)),contentVar))))))).Prefix(HtmlNode.htmlText("name:")).get_Render()).Content$1("content1",FSharpStation.codeMirror().get_Render()).Content$1("content2",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()).Content$1("content3",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()).Content$1("footer2",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()).Content$1("footer",HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },view)),contentVar))))))).Prefix(HtmlNode.htmlText("name:")).get_Render()).Content$1("content1",FSharpStation.codeMirror().get_Render()).Content$1("content2",TabStrip.New$1(FSharpStation.Messages()).get_Top().get_Render()).Content$1("footer",HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
   {
    FSharpStation.addCode();
   })).get_Render(),Button.New$1("<<").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
@@ -4345,6 +4572,11 @@
   {
    FSharpStation.compileRun();
   })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.Right,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                        overflow: hidden;\r\n                        display: grid;\r\n                        grid-template-columns: repeat(8, 12.1%);\r\n                        bxackground-color: #eee;\r\n                        padding : 5px;\r\n                        grid-gap: 5px;\r\n                    ")])).Content(HtmlNode.script([HtmlNode.src("/EPFileX/FileSaver/FileSaver.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://code.jquery.com/jquery-3.1.1.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.link([HtmlNode.href("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.link([HtmlNode.href("/EPFileX/css/main.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.css(FSharpStation.styleEditor())).get_Render();
+ };
+ FSharpStation.Messages=function()
+ {
+  SC$1.$cctor();
+  return SC$1.Messages;
  };
  FSharpStation.spl1=function()
  {
@@ -4882,7 +5114,7 @@
  FSharpStation.listEntry=function(isParent,isExpanded,code)
  {
   var x,p,p$1;
-  return Hoverable.get_New().Content([HtmlNode["class"]("code-editor-list-tile"),HtmlNode.classIf("selected",Val.map((x=code.id,function(y)
+  return Hoverable.get_New().Content$1([HtmlNode["class"]("code-editor-list-tile"),HtmlNode.classIf("selected",Val.map((x=code.id,function(y)
   {
    return Unchecked.Equals(x,y);
   }),FSharpStation.currentCodeSnippetId())),HtmlNode.classIf("direct-predecessor",Val.map((p=code.id,function(c)
@@ -4961,7 +5193,7 @@
      },FSharpStation.currentCodeSnippetO());
     };
    })
-  }),HtmlNode.htmlText("X")])]).get_Render();
+  }),HtmlNode.htmlText("X")])]);
  };
  FSharpStation.toggleExpanded=function(snp)
  {
@@ -5789,6 +6021,7 @@
   {
    window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$11)));
   },v$5);
+  SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white ; ")])]]);
   SC$1.splitterMain1=SplitterBar.New$1(0).Vertical$1(FSharpStation.directionVertical()).Min(0).Max(35);
   SC$1.splitterMain2=SplitterBar.New$1(24).Vertical$1(FSharpStation.directionVertical()).Min(0.5).Max(Val.map(function(pos)
   {
