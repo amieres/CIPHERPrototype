@@ -3343,10 +3343,11 @@
   },
   get_Render:function()
   {
-   return HtmlNode.span([HtmlNode.someElt(Doc.InputArea([HtmlNode._class(this._class),AttrProxy.Create("id",this.id),HtmlNode.atr("spellcheck",Val.map(function(spl)
+   var x;
+   return HtmlNode.div((x=[HtmlNode.someElt(Doc.InputArea([HtmlNode._class(this._class),AttrProxy.Create("id",this.id),HtmlNode.atr("spellcheck",Val.map(function(spl)
    {
     return spl?"true":"false";
-   },this.spellcheck)),HtmlNode.atr("title",this.title),HtmlNode.atr("style","height: 100%;  width: 100%"),HtmlNode._placeholder(this.placeholder)],this["var"]))]);
+   },this.spellcheck)),HtmlNode.atr("title",this.title),HtmlNode.atr("style","height: 100%;  width: 100%; box-sizing: border-box; "),HtmlNode._placeholder(this.placeholder)],this["var"]))],Seq.append(List.ofArray([HtmlNode.style("height: 100%;  width: 100%; box-sizing: border-box; ")]),x)));
   }
  },null,TextArea);
  TextArea.New$1=function(v)
@@ -4163,7 +4164,7 @@
    {
     return m($1[0],$1[1]);
    },this.tabs.RVal()))).AddChildren([HtmlNode["class"]("tab-content")]);
-   return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,content,!this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.css("\r\n      \r\n      .tab-panel {\r\n       overflow : hidden ;\r\n       display  : flex   ;\r\n       flex-flow: column ;\r\n       background: pink    ;\r\n      }\r\n      .tab-content {\r\n       flex      : 1 1     ;\r\n       overflow  : auto    ;\r\n      }\r\n      .tab-strip {\r\n       padding   : 0pt     ;\r\n       flex      : 0 0     ;\r\n      }\r\n      .tab {\r\n       border     : 0.2pt solid transparent;\r\n       padding    : 0pt 4pt;\r\n       display    : inline-block;\r\n       font-family: sans-serif;\r\n       font-weight: 200;\r\n       font-size  : small;\r\n       color      : #666;\r\n       cursor     : pointer;\r\n      }\r\n      .top>.tab {\r\n       border-radius: 2pt 2pt 0pt 0pt;\r\n       border-bottom-width: 0pt;\r\n       vertical-align: bottom;\r\n      }\r\n      .bottom>.tab {\r\n       border-top-width: 0pt;\r\n       border-radius: 0pt 0pt 2pt 2pt;\r\n       vertical-align: top;\r\n      }\r\n      .horizontal>.tab:not(:first-child) {\r\n       border-left-width: 0pt;\r\n      }\r\n      .tab.hovering {\r\n       background: red;\r\n      }\r\n      .tab.selected {\r\n       background: white;\r\n       border-left-width: 0.2pt;\r\n       color: black;\r\n       font-weight: 500;\r\n       border-color: black;\r\n      }\r\n      .horizontal>.tab.selected {\r\n       border-left-width: 0.2pt;\r\n      }\r\n      ")]);
+   return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,content,!this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.css("\r\n      \r\n      .tab-panel {\r\n       overflow : hidden ;\r\n       display  : flex   ;\r\n       flex-flow: column ;\r\n       background: pink    ;\r\n      }\r\n      .tab-content {\r\n       flex      : 1 1     ;\r\n       overflow  : auto    ;\r\n       position  : relative;\r\n      }\r\n      .tab-strip {\r\n       padding   : 0pt     ;\r\n       flex      : 0 0     ;\r\n      }\r\n      .tab {\r\n       border     : 0.2pt solid transparent;\r\n       padding    : 0pt 4pt;\r\n       display    : inline-block;\r\n       font-family: sans-serif;\r\n       font-weight: 200;\r\n       font-size  : small;\r\n       color      : #666;\r\n       cursor     : pointer;\r\n      }\r\n      .top>.tab {\r\n       border-radius: 2pt 2pt 0pt 0pt;\r\n       border-bottom-width: 0pt;\r\n       vertical-align: bottom;\r\n      }\r\n      .bottom>.tab {\r\n       border-top-width: 0pt;\r\n       border-radius: 0pt 0pt 2pt 2pt;\r\n       vertical-align: top;\r\n      }\r\n      .horizontal>.tab:not(:first-child) {\r\n       border-left-width: 0pt;\r\n      }\r\n      .tab.hovering {\r\n       background: red;\r\n      }\r\n      .tab.selected {\r\n       background: white;\r\n       border-left-width: 0.2pt;\r\n       color: black;\r\n       font-weight: 500;\r\n       border-color: black;\r\n      }\r\n      .horizontal>.tab.selected {\r\n       border-left-width: 0.2pt;\r\n      }\r\n      ")]);
   },
   get_Selected:function()
   {
@@ -6021,7 +6022,7 @@
   {
    window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$11)));
   },v$5);
-  SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white ; ")])]]);
+  SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white; height: 100%; width: 100%; ")])]]);
   SC$1.splitterMain1=SplitterBar.New$1(0).Vertical$1(FSharpStation.directionVertical()).Min(0).Max(35);
   SC$1.splitterMain2=SplitterBar.New$1(24).Vertical$1(FSharpStation.directionVertical()).Min(0.5).Max(Val.map(function(pos)
   {
