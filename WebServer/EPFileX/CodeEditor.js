@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,Option$1,JSON,Remoting,AjaxRemotingProvider,Date,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Slice,Json,Provider,FSharpMap,Map,JavaScript,JSModule,HashSet,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,JSON,Remoting,AjaxRemotingProvider,Date,Option$1,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Map,MatchFailureException,Slice,Json,Provider,FSharpMap,JavaScript,JSModule,HashSet,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -179,11 +179,11 @@
  Arrays=WebSharper&&WebSharper.Arrays;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Guid=WebSharper&&WebSharper.Guid;
- Option$1=WebSharper&&WebSharper.Option;
  JSON=window.JSON;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  Date=window.Date;
+ Option$1=WebSharper&&WebSharper.Option;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  View=Next&&Next.View;
@@ -195,11 +195,12 @@
  Mouse=Input$1&&Input$1.Mouse;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
+ Map=Collections&&Collections.Map;
+ MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
  Slice=WebSharper&&WebSharper.Slice;
  Json=WebSharper&&WebSharper.Json;
  Provider=Json&&Json.Provider;
  FSharpMap=Collections&&Collections.FSharpMap;
- Map=Collections&&Collections.Map;
  JavaScript=WebSharper&&WebSharper.JavaScript;
  JSModule=JavaScript&&JavaScript.JSModule;
  HashSet=Collections&&Collections.HashSet;
@@ -1297,19 +1298,7 @@
   },
   UniquePredecessors:function(fetcher)
   {
-   function preds(ins,outs)
-   {
-    var hd;
-    return ins.$==1?(hd=ins.$0,preds(List.collect(window.id,List.ofArray([ins.$1,List.collect(function(s)
-    {
-     return List.append(Option$1.toList(s.parent),s.predecessors);
-    },Option$1.toList(fetcher(hd)))])),Seq.contains(hd,outs)?outs:new List.T({
-     $:1,
-     $0:hd,
-     $1:outs
-    }))):outs;
-   }
-   return preds(List.ofArray([this.id]),List.T.Empty);
+   return FsStationShared.predsL(fetcher,List.ofArray([this.id]));
   },
   get_NameSanitized:function()
   {
@@ -1895,6 +1884,38 @@
    $0:this.fsIds
   };
  },FsStationClient);
+ FsStationShared.predsL=function(fetcher,ins)
+ {
+  var ins$1,outs;
+  ins$1=ins;
+  outs=List.T.Empty;
+  while(!(ins$1.$==0))
+   (function()
+   {
+    var rest,hd;
+    return ins$1.$==1?(rest=ins$1.$1,(hd=ins$1.$0,Seq.contains(hd,outs)?void(ins$1=rest):(ins$1=List.collect(window.id,List.ofArray([rest,List.collect(function(s)
+    {
+     return List.append(Option$1.toList(s.parent),s.predecessors);
+    },Option$1.toList(fetcher(hd)))])),void(outs=new List.T({
+     $:1,
+     $0:hd,
+     $1:outs
+    }))))):null;
+   }());
+  return outs;
+ };
+ FsStationShared.preds=function(fetcher,outs,ins)
+ {
+  var hd,x;
+  return ins.$==1?(hd=ins.$0,(x=List.collect(window.id,List.ofArray([ins.$1,List.collect(function(s)
+  {
+   return List.append(Option$1.toList(s.parent),s.predecessors);
+  },Option$1.toList(fetcher(hd)))])),FsStationShared.preds(fetcher,Seq.contains(hd,outs)?outs:new List.T({
+   $:1,
+   $0:hd,
+   $1:outs
+  }),x))):outs;
+ };
  FsStationShared.sanitize=function(n)
  {
   var illegal;
@@ -2566,24 +2587,22 @@
  HtmlNode$1=HtmlNode.HtmlNode=Runtime.Class({
   InsertChildren:function(add)
   {
-   return HtmlNode.mapHtmlElement(function($1,$2)
+   return HtmlNode.mapHtmlElement(function(n)
    {
-    return new HtmlNode$1({
-     $:0,
-     $0:$1,
-     $1:Seq.append(add,$2)
-    });
+    return function(ch)
+    {
+     return[n,Seq.append(add,ch)];
+    };
    },this);
   },
   AddChildren:function(add)
   {
-   return HtmlNode.mapHtmlElement(function($1,$2)
+   return HtmlNode.mapHtmlElement(function(n)
    {
-    return new HtmlNode$1({
-     $:0,
-     $0:$1,
-     $1:Seq.append($2,add)
-    });
+    return function(ch)
+    {
+     return[n,Seq.append(ch,add)];
+    };
    },this);
   },
   Class:function(clas)
@@ -2610,10 +2629,10 @@
   var cover;
   cover=Var.Create$1(true);
   return HtmlNode.div([HtmlNode.style("position: relative; overflow: hidden; height: 100%; width: 100%;"),HtmlNode.iframe([HtmlNode.style("position: absolute; width:100%; height:100%;"),HtmlNode.frameborder("0"),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.OnAfterRender(f)
   }),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("mouseleave",function()
    {
     return function()
@@ -2622,7 +2641,7 @@
     };
    })
   })]),HtmlNode.div([HtmlNode.style("position: absolute;"),HtmlNode.classIf("iframe-cover",Val.map(window.id,cover)),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("mouseenter",function()
    {
     return function()
@@ -2636,32 +2655,11 @@
    })
   })]),HtmlNode.styleH([HtmlNode.htmlText(".iframe-cover { top:0; left:0; right:0; bottom:0; background: blue; opacity: 0.04; z-index: 2; }")])]);
  };
- HtmlNode.bindHElem=function(hElem,v)
+ HtmlNode.bindHElem=function(hElemF,v)
  {
-  var g;
   return new HtmlNode$1({
    $:4,
-   $0:Doc.BindView((g=HtmlNode.renderDoc(),function(x)
-   {
-    return g(hElem(x));
-   }),Val.toView(Val.fixit(v)))
-  });
- };
- HtmlNode.composeDoc=function(elt,dtl,dtlVal)
- {
-  var x,f,f$1,g;
-  return new HtmlNode$1({
-   $:4,
-   $0:(x=Val.toView(dtlVal),Doc.BindView((f=(f$1=function(s)
-   {
-    return Seq.append(dtl,s);
-   },function(x$1)
-   {
-    return elt(f$1(x$1));
-   }),(g=HtmlNode.renderDoc(),function(x$1)
-   {
-    return g(f(x$1));
-   })),x))
+   $0:Val.map(hElemF,Val.fixit(v))
   });
  };
  HtmlNode.string2Styles=function()
@@ -2686,7 +2684,7 @@
  {
   var m,cv;
   return new HtmlNode$1({
-   $:5,
+   $:6,
    $0:(m=Val.fixit(v),m.$==2?AttrModule.DynamicClass("class_for_view_not_implemented",m.$0,function(y)
    {
     return""!==y;
@@ -2878,7 +2876,7 @@
  HtmlNode.someElt=function(elt)
  {
   return new HtmlNode$1({
-   $:4,
+   $:5,
    $0:elt
   });
  };
@@ -2940,13 +2938,12 @@
  };
  HtmlNode.replaceAtt=function(att,node,newVal)
  {
-  return HtmlNode.mapHtmlElement(function($1,$2)
+  return HtmlNode.mapHtmlElement(function(n)
   {
-   return new HtmlNode$1({
-    $:0,
-    $0:$1,
-    $1:HtmlNode.replaceAttribute(att,$2,newVal)
-   });
+   return function(ch)
+   {
+    return[n,HtmlNode.replaceAttribute(att,ch,newVal)];
+   };
   },node);
  };
  HtmlNode.replaceAttribute=function(att,children,newVal)
@@ -2964,23 +2961,20 @@
    },children))
   });
  };
- HtmlNode.getStyle=function()
- {
-  SC$1.$cctor();
-  return SC$1.getStyle;
- };
- HtmlNode.getClass=function()
- {
-  SC$1.$cctor();
-  return SC$1.getClass;
- };
- HtmlNode.getAttr=function(attr,element)
- {
-  return(HtmlNode.getAttrChildren(attr))(element.$==0?element.$1:[]);
- };
  HtmlNode.mapHtmlElement=function(f,element)
  {
-  return element.$==0?f(element.$0,element.$1):element;
+  var t;
+  return element.$==0?(t=(f(element.$0))(element.$1),new HtmlNode$1({
+   $:0,
+   $0:t[0],
+   $1:t[1]
+  })):element.$==4?new HtmlNode$1({
+   $:4,
+   $0:Val.map(function(e)
+   {
+    return HtmlNode.mapHtmlElement(f,e);
+   },element.$0)
+  }):element;
  };
  HtmlNode.getAttrChildren=function(attr)
  {
@@ -3010,16 +3004,25 @@
  };
  HtmlNode.chooseNode=function(node)
  {
-  var children;
+  var children,x,g,v;
   return node.$==0?(children=node.$1,{
    $:1,
    $0:Doc.Element(node.$0,HtmlNode.getAttrsFromSeq(children),Seq.choose(HtmlNode.chooseNode,children))
   }):node.$==2?{
    $:1,
    $0:Val.tagDoc(Doc.TextNode,node.$0)
-  }:node.$==4?{
+  }:node.$==5?{
    $:1,
    $0:node.$0
+  }:node.$==4?{
+   $:1,
+   $0:(x=Val.toView(node.$0),Doc.BindView((g=(v=Doc.Empty(),function(o)
+   {
+    return o==null?v:o.$0;
+   }),function(x$1)
+   {
+    return g(HtmlNode.chooseNode(x$1));
+   }),x))
   }:null;
  };
  HtmlNode.getAttrsFromSeq=function(children)
@@ -3070,7 +3073,7 @@
   return node.$==1&&((name=node.$0,name!=="class"&&name!=="style")&&($1=[node.$0,node.$1],true))?{
    $:1,
    $0:Val.attrV($1[0],$1[1])
-  }:node.$==5?{
+  }:node.$==6?{
    $:1,
    $0:node.$0
   }:null;
@@ -3122,10 +3125,10 @@
   {
    var view;
    return HtmlNode.button([HtmlNode.type(this._type),HtmlNode["class"](this._class),HtmlNode.Id(this.id),HtmlNode.style(this.style),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:(view=View.Const(""),AttrModule.DynamicPred("disabled",Val.toView(this.disabled),view))
    }),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrProxy.Handler("click",this.onClick)
    }),new HtmlNode$1({
     $:2,
@@ -3211,7 +3214,7 @@
      return Seq.append($this.prefixAdded?[HtmlNode.span([HtmlNode["class"](groupClass($this.prefix)),$this.prefix])]:[],Seq.delay(function()
      {
       return Seq.append([new HtmlNode$1({
-       $:4,
+       $:5,
        $0:Doc.Input(Seq.append($this.content,List.ofArray([HtmlNode._type($this._type),HtmlNode._class($this._class),HtmlNode._style($this.style),AttrProxy.Create("id",$this.id),HtmlNode._placeholder($this.placeholder)])),$this["var"])
       })],Seq.delay(function()
       {
@@ -3254,7 +3257,7 @@
    var $this;
    $this=this;
    return c.AddChildren([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Handler("mouseenter",function()
     {
      return function()
@@ -3263,7 +3266,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Handler("mouseleave",function()
     {
      return function()
@@ -3278,7 +3281,7 @@
    var $this;
    $this=this;
    return HtmlNode.div(Seq.append(c,List.ofArray([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Handler("mouseenter",function()
     {
      return function()
@@ -3287,7 +3290,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Handler("mouseleave",function()
     {
      return function()
@@ -3343,11 +3346,10 @@
   },
   get_Render:function()
   {
-   var x;
-   return HtmlNode.div((x=[HtmlNode.someElt(Doc.InputArea([HtmlNode._class(this._class),AttrProxy.Create("id",this.id),HtmlNode.atr("spellcheck",Val.map(function(spl)
+   return HtmlNode.div([HtmlNode.someElt(Doc.InputArea([HtmlNode._class(this._class),AttrProxy.Create("id",this.id),HtmlNode.atr("spellcheck",Val.map(function(spl)
    {
     return spl?"true":"false";
-   },this.spellcheck)),HtmlNode.atr("title",this.title),HtmlNode.atr("style","height: 100%;  width: 100%; box-sizing: border-box; "),HtmlNode._placeholder(this.placeholder)],this["var"]))],Seq.append(List.ofArray([HtmlNode.style("height: 100%;  width: 100%; box-sizing: border-box; ")]),x)));
+   },this.spellcheck)),HtmlNode.atr("title",this.title),HtmlNode.atr("style","height: 100%;  width: 100%; box-sizing: border-box; "),HtmlNode._placeholder(this.placeholder)],this["var"]))]);
   }
  },null,TextArea);
  TextArea.New$1=function(v)
@@ -3417,10 +3419,10 @@
    var $this;
    $this=this;
    return HtmlNode.div([HtmlNode["class"](this._class),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrProxy.Create("id",this.id)
    }),HtmlNode.style("position: relative; height: 300px"),HtmlNode.style(this.style),HtmlNode.div([HtmlNode.style("height: 100%; width: 100%; position: absolute;"),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.OnAfterRender(function(el)
     {
      window.CIPHERSpaceLoadFiles(Template.codeMirrorIncludes(),function()
@@ -3626,7 +3628,7 @@
    {
     return ver?"Vertical":"Horizontal";
    },this.vertical)),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Handler("mousedown",function($1)
     {
      return function($2)
@@ -3635,7 +3637,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.OnAfterRender(function(el)
     {
      $this.domElem={
@@ -3772,13 +3774,13 @@
         }))(window.id))($this.gap))($this.padding))],Seq.delay(function()
         {
          return[new HtmlNode$1({
-          $:5,
+          $:6,
           $0:AttrModule.OnAfterRender(function(el)
           {
            function setDimensions()
            {
-            Var.Set($this.width,el.getBoundingClientRect().width);
-            Var.Set($this.height,el.getBoundingClientRect().height);
+            $this.width.set_RVal(el.getBoundingClientRect().width);
+            $this.height.set_RVal(el.getBoundingClientRect().height);
            }
            window.setTimeout(setDimensions,60);
            (new window.ResizeObserver(setDimensions)).observe(el);
@@ -4093,9 +4095,8 @@
  TabStrip=Template.TabStrip=Runtime.Class({
   get_Render:function()
   {
-   var $this,draggedId,strip,content,m;
+   var $this,strip,g,content;
    $this=this;
-   draggedId=[0];
    strip=HtmlNode.bindHElem(function(tabs)
    {
     return HtmlNode.div(List.ofSeq(Seq.delay(function()
@@ -4105,15 +4106,15 @@
       return $1("tab-strip "+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
      }))(window.id))($this.top?"top":"bottom"))($this.horizontal?"horizontal":"vertical"))],Seq.delay(function()
      {
-      return Seq.collect(function(m$1)
+      return Seq.collect(function(m)
       {
        var i;
-       i=m$1[0];
-       return[Hoverable.get_New().Content(HtmlNode.div([HtmlNode.htmlText(m$1[1][0]),HtmlNode["class"](Val.map(function(sel)
+       i=m[0];
+       return[Hoverable.get_New().Content(HtmlNode.div([HtmlNode.htmlText(m[1][1][0]),HtmlNode["class"](Val.map(function(sel)
        {
         return"tab"+(sel===i?" selected":"");
        },$this.selected)),HtmlNode.draggable("true"),new HtmlNode$1({
-        $:5,
+        $:6,
         $0:AttrModule.Handler("dragover",function()
         {
          return function(ev)
@@ -4122,26 +4123,30 @@
          };
         })
        }),new HtmlNode$1({
-        $:5,
+        $:6,
         $0:AttrModule.Handler("drag",function()
         {
          return function()
          {
-          draggedId[0]=i;
+          (Template.draggedTab())[0]={
+           $:1,
+           $0:[$this,i]
+          };
          };
         })
        }),new HtmlNode$1({
-        $:5,
-        $0:AttrModule.Handler("drop",function()
+        $:6,
+        $0:AttrModule.Handler("drop",function(e)
         {
          return function(ev)
          {
           ev.preventDefault();
-          return $this.reorder(draggedId[0],i);
+          ev.stopPropagation();
+          return $this.reorder(e,i);
          };
         })
        }),new HtmlNode$1({
-        $:5,
+        $:6,
         $0:AttrModule.Handler("click",function()
         {
          return function()
@@ -4154,17 +4159,57 @@
      }));
     })));
    },this.tabs);
-   content=HtmlNode.div((m=function(txt,sub)
+   Val.sink((g=this.id,function(p)
    {
-    return sub.AddChildren([HtmlNode.style(Val.map(function(sel)
+    Template.setSelectedPanel(g,p);
+   }),this.get_Selected());
+   content=HtmlNode.bindHElem(function(tabs)
+   {
+    return HtmlNode.div(List.ofSeq(Seq.delay(function()
     {
-     return txt===sel?"":"display : none";
-    },$this.get_Selected()))]);
-   },Seq.map(function($1)
-   {
-    return m($1[0],$1[1]);
-   },this.tabs.RVal()))).AddChildren([HtmlNode["class"]("tab-content")]);
-   return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,content,!this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.css("\r\n      \r\n      .tab-panel {\r\n       overflow : hidden ;\r\n       display  : flex   ;\r\n       flex-flow: column ;\r\n       background: pink    ;\r\n      }\r\n      .tab-content {\r\n       flex      : 1 1     ;\r\n       overflow  : auto    ;\r\n       position  : relative;\r\n      }\r\n      .tab-strip {\r\n       padding   : 0pt     ;\r\n       flex      : 0 0     ;\r\n      }\r\n      .tab {\r\n       border     : 0.2pt solid transparent;\r\n       padding    : 0pt 4pt;\r\n       display    : inline-block;\r\n       font-family: sans-serif;\r\n       font-weight: 200;\r\n       font-size  : small;\r\n       color      : #666;\r\n       cursor     : pointer;\r\n      }\r\n      .top>.tab {\r\n       border-radius: 2pt 2pt 0pt 0pt;\r\n       border-bottom-width: 0pt;\r\n       vertical-align: bottom;\r\n      }\r\n      .bottom>.tab {\r\n       border-top-width: 0pt;\r\n       border-radius: 0pt 0pt 2pt 2pt;\r\n       vertical-align: top;\r\n      }\r\n      .horizontal>.tab:not(:first-child) {\r\n       border-left-width: 0pt;\r\n      }\r\n      .tab.hovering {\r\n       background: red;\r\n      }\r\n      .tab.selected {\r\n       background: white;\r\n       border-left-width: 0.2pt;\r\n       color: black;\r\n       font-weight: 500;\r\n       border-color: black;\r\n      }\r\n      .horizontal>.tab.selected {\r\n       border-left-width: 0.2pt;\r\n      }\r\n      ")]);
+     return Seq.append([HtmlNode["class"]("tab-children")],Seq.delay(function()
+     {
+      return Seq.append([HtmlNode.Id(Template.uid2s($this.id))],Seq.delay(function()
+      {
+       var m;
+       m=function(uid,a)
+       {
+        return a[1].AddChildren([HtmlNode.style(Val.map(function(sels)
+        {
+         return Seq.contains(uid,Seq.map(function(t)
+         {
+          return t[1];
+         },Map.ToSeq(sels)))?"":"display : none";
+        },Template.selectedPanels())),HtmlNode.Id(Template.uid2s(uid))]);
+       };
+       return Seq.map(function($1)
+       {
+        return m($1[0],$1[1]);
+       },tabs);
+      }));
+     }));
+    })));
+   },this.tabs);
+   return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.div([content,HtmlNode["class"]("tab-content")]),!this.top?strip:HtmlNode$1.HtmlEmpty,new HtmlNode$1({
+    $:6,
+    $0:AttrModule.Handler("dragover",function()
+    {
+     return function(ev)
+     {
+      return ev.preventDefault();
+     };
+    })
+   }),new HtmlNode$1({
+    $:6,
+    $0:AttrModule.Handler("drop",function(e)
+    {
+     return function(ev)
+     {
+      ev.preventDefault();
+      return $this.reorder(e,Arrays.length($this.tabs.RVal()));
+     };
+    })
+   }),HtmlNode.css("\r\n      \r\n      .tab-panel {\r\n       overflow : hidden ;\r\n       display  : flex   ;\r\n       flex-flow: column ;\r\n       background: pink    ;\r\n      }\r\n      .tab-content {\r\n       flex      : 1 1     ;\r\n       overflow  : auto    ;\r\n       position  : relative;\r\n      }\r\n      .tab-children {\r\n       height    : 100%    ;\r\n       width     : 100%    ;\r\n       position  : absolute;\r\n       display   : grid    ;\r\n      }\r\n      .tab-strip {\r\n       padding   : 0pt     ;\r\n       flex      : 0 0     ;\r\n      }\r\n      .tab {\r\n       border     : 0.2pt solid transparent;\r\n       padding    : 0pt 4pt;\r\n       display    : inline-block;\r\n       font-family: sans-serif;\r\n       font-weight: 200;\r\n       font-size  : small;\r\n       color      : #666;\r\n       cursor     : pointer;\r\n      }\r\n      .top>.tab {\r\n       border-radius: 2pt 2pt 0pt 0pt;\r\n       border-bottom-width: 0pt;\r\n       vertical-align: bottom;\r\n      }\r\n      .bottom>.tab {\r\n       border-top-width: 0pt;\r\n       border-radius: 0pt 0pt 2pt 2pt;\r\n       vertical-align: top;\r\n      }\r\n      .horizontal>.tab:not(:first-child) {\r\n       border-left-width: 0pt;\r\n      }\r\n      .tab.hovering {\r\n       background: red;\r\n      }\r\n      .tab.selected {\r\n       background: white;\r\n       border-left-width: 0.2pt;\r\n       color: black;\r\n       font-weight: 500;\r\n       border-color: black;\r\n      }\r\n      .horizontal>.tab.selected {\r\n       border-left-width: 0.2pt;\r\n      }\r\n      ")]);
   },
   get_Selected:function()
   {
@@ -4172,50 +4217,130 @@
    {
     return function(sel)
     {
-     return(Seq.nth(sel,tabs))[0];
+     var o;
+     o=Seq.tryItem(sel,tabs);
+     return o==null?null:{
+      $:1,
+      $0:o.$0[0]
+     };
     };
    },this.tabs,this.selected);
   },
   get_Vertical:function()
   {
-   return TabStrip.New(this.selected,this.tabs,this.top,false);
+   return TabStrip.New(this.selected,this.tabs,this.top,false,this.id);
   },
   get_Horizontal:function()
   {
-   return TabStrip.New(this.selected,this.tabs,this.top,true);
+   return TabStrip.New(this.selected,this.tabs,this.top,true,this.id);
   },
   get_Bottom:function()
   {
-   return TabStrip.New(this.selected,this.tabs,false,this.horizontal);
+   return TabStrip.New(this.selected,this.tabs,false,this.horizontal,this.id);
   },
   get_Top:function()
   {
-   return TabStrip.New(this.selected,this.tabs,true,this.horizontal);
+   return TabStrip.New(this.selected,this.tabs,true,this.horizontal,this.id);
   },
-  reorder:function(drag,drop)
+  reorder:function(elem,drop)
   {
-   var sel;
-   this.tabs.set_RVal(Template.reorderArray(this.tabs.RVal(),drag,drop));
-   sel=this.selected.RVal();
-   this.selected.set_RVal(sel===drag?drop:sel<drag&&sel<drop||sel>drag&&sel>drop?sel:sel<drag?sel+1:sel-1);
+   var drag,sel,m;
+   m=(Template.draggedTab())[0];
+   if(m!=null&&m.$==1)
+   {
+    if(!Unchecked.Equals(m.$0[0].id,this.id))
+     this.moveTab(elem,m.$0[0],m.$0[1],drop);
+    else
+     if(m!=null&&m.$==1)
+      {
+       drag=m.$0[1];
+       {
+        this.tabs.set_RVal(Template.reorderArray(this.tabs.RVal(),drag,drop));
+        sel=this.selected.RVal();
+        this.selected.set_RVal(sel===drag?drop:sel<drag&&sel<drop||sel>drag&&sel>drop?sel:sel<drag?sel+1:sel-1);
+       }
+      }
+     else
+      throw new MatchFailureException.New("(6)cddabd38-7ecb-4692-99bd-13ca70e4232f TabStrip.fsx",75,20);
+   }
+   else
+    void 0;
+  },
+  moveTab:function(elem,from,drag,drop)
+  {
+   var ts,ft,newTabsT,newTabsF;
+   ts=this.tabs.RVal();
+   ft=from.tabs.RVal();
+   newTabsT=Arrays.collect(window.id,[Slice.array(ts,{
+    $:1,
+    $0:0
+   },{
+    $:1,
+    $0:drop-1
+   }),[Arrays.get(ft,drag)],Slice.array(ts,{
+    $:1,
+    $0:drop
+   },{
+    $:1,
+    $0:Arrays.length(ts)-1
+   })]);
+   newTabsF=Arrays.collect(window.id,[Slice.array(ft,{
+    $:1,
+    $0:0
+   },{
+    $:1,
+    $0:drag-1
+   }),Slice.array(ft,{
+    $:1,
+    $0:drag+1
+   },{
+    $:1,
+    $0:Arrays.length(ft)-1
+   })]);
+   from.tabs.set_RVal(newTabsF);
+   this.tabs.set_RVal(newTabsT);
+   this.selected.set_RVal(drop);
+   from.selected.RVal()>=Arrays.length(newTabsF)?from.selected.set_RVal(0):void 0;
   }
  },null,TabStrip);
  TabStrip.New$1=function(tabs)
  {
-  return TabStrip.New$2(Var.Create$1(Arrays.ofSeq(tabs)));
+  return TabStrip.New$2(Var.Create$1(Arrays.ofSeq(Seq.map(function(def)
+  {
+   return[Guid.NewGuid(),def];
+  },tabs))));
  };
  TabStrip.New$2=function(tabs)
  {
-  return TabStrip.New(Var.Create$1(0),tabs,false,true);
+  return TabStrip.New(Var.Create$1(0),tabs,false,true,Guid.NewGuid());
  };
- TabStrip.New=function(selected,tabs,top,horizontal)
+ TabStrip.New=function(selected,tabs,top,horizontal,id)
  {
   return new TabStrip({
    selected:selected,
    tabs:tabs,
    top:top,
-   horizontal:horizontal
+   horizontal:horizontal,
+   id:id
   });
+ };
+ Template.setSelectedPanel=function(group,panelO)
+ {
+  Var.Set(Template.selectedPanels(),panelO==null?Template.selectedPanels().c.Remove(group):Template.selectedPanels().c.Add(group,panelO.$0));
+ };
+ Template.selectedPanels=function()
+ {
+  SC$1.$cctor();
+  return SC$1.selectedPanels;
+ };
+ Template.uid2s=function(uid)
+ {
+  return"X"+Strings.Replace(window.String(uid),"-","");
+ };
+ Template.draggedTab=function()
+ {
+  SC$1.$cctor();
+  return SC$1.draggedTab;
  };
  Template.reorderArray=function(ts,drag,drop)
  {
@@ -4399,7 +4524,7 @@
      return runJS();
     };
    }).get_Render(),HtmlNode.someElt(Doc.InputArea([AttrProxy.Create("placeholder","Output:"),AttrProxy.Create("title","Messages")],freeMsgs)),new HtmlNode$1({
-    $:4,
+    $:5,
     $0:HtmlNode.tag(Doc.Verbatim,Val.map2((Runtime.Curried3(function($1,$2,$3)
     {
      return $1(PrintfHelpers.toSafe($2)+"<style>"+PrintfHelpers.toSafe($3)+"</style>");
@@ -4518,10 +4643,7 @@
   return Grid.get_New().ColVariable$1(FSharpStation.spl1()).ColAuto(0).ColVariable(0).Min(0).Max(Val.map(function(y)
   {
    return 92-y;
-  },FSharpStation.spl1().get_GetValue())).get_Before().Children([HtmlNode.style("grid-row   : 1 / 5")]).RowFixedPx(34).RowAuto(0).RowVariable(17).get_Before().Children([HtmlNode.style("grid-column: 2 / 3")]).RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   sidebar2'\r\n                              'sidebar content1 sidebar2'\r\n                              'sidebar content2 sidebar2'\r\n                              'footer  footer   sidebar2';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.div([HtmlNode.style("overflow: auto"),new HtmlNode$1({
-   $:4,
-   $0:Doc.BindView(window.id,View.Map(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x))))
-  })])).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(contentVarChanged=[0],(refVarChanged=[0],(View.Sink(function()
+  },FSharpStation.spl1().get_GetValue())).get_Before().Children([HtmlNode.style("grid-row   : 1 / 5")]).RowFixedPx(34).RowAuto(0).RowVariable(17).get_Before().Children([HtmlNode.style("grid-column: 2 / 3")]).RowFixedPx(80).Padding(1).Content(HtmlNode.style(" \r\n                          grid-template-areas:\r\n                              'header0 header   sidebar2'\r\n                              'sidebar content1 sidebar2'\r\n                              'sidebar content2 sidebar2'\r\n                              'footer  footer   sidebar2';\r\n                          color      : #333;\r\n                          height     : 100%;\r\n                          font-size  : small;\r\n                          font-family: monospace;\r\n                          line-height: 1.2;\r\n                      ")).Content$1("sidebar",HtmlNode.bindHElem(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x)))).Content$1("header",Input.New$2((view=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar=Var.Create$1(null),(changingIRefO=[null],(contentVarChanged=[0],(refVarChanged=[0],(View.Sink(function()
   {
    var o,r;
    o=changingIRefO[0];
@@ -5085,32 +5207,30 @@
  };
  FSharpStation.listEntries=function(snps)
  {
-  return Doc.Concat(Seq.choose(function(o)
+  return HtmlNode.div(List.ofSeq(Seq.delay(function()
   {
-   var f;
-   f=HtmlNode.renderDoc();
-   return o==null?null:{
-    $:1,
-    $0:f(o.$0)
-   };
-  },(Seq.mapFold(function(expanded,t)
-  {
-   var snp,o,o$1,isParent,o$2,o$3,isExpanded;
-   snp=t[1];
-   return(o=(o$1=snp.parent,o$1==null?null:{
-    $:1,
-    $0:expanded.Contains(o$1.$0)
-   }),o==null||o.$0)?(isParent=(o$2=(o$3=Seq.tryItem(t[0]+1,FSharpStation.codeSnippets()),o$3==null?null:{
-    $:1,
-    $0:Unchecked.Equals(o$3.$0.parent,{
-     $:1,
-     $0:snp.id
-    })
-   }),o$2==null?false:o$2.$0),(isExpanded=isParent&&snp.expanded,[{
-    $:1,
-    $0:FSharpStation.listEntry(isParent,isExpanded,snp)
-   },isExpanded?expanded.Add(snp.id):expanded])):[null,expanded];
-  },new FSharpSet.New(List.T.Empty),Seq.indexed(snps)))[0]));
+   return Seq.append([HtmlNode.style("overflow: auto")],Seq.delay(function()
+   {
+    return Seq.choose(window.id,(Seq.mapFold(function(expanded,t)
+    {
+     var snp,o,o$1,isParent,o$2,o$3,isExpanded;
+     snp=t[1];
+     return(o=(o$1=snp.parent,o$1==null?null:{
+      $:1,
+      $0:expanded.Contains(o$1.$0)
+     }),o==null||o.$0)?(isParent=(o$2=(o$3=Seq.tryItem(t[0]+1,FSharpStation.codeSnippets()),o$3==null?null:{
+      $:1,
+      $0:Unchecked.Equals(o$3.$0.parent,{
+       $:1,
+       $0:snp.id
+      })
+     }),o$2==null?false:o$2.$0),(isExpanded=isParent&&snp.expanded,[{
+      $:1,
+      $0:FSharpStation.listEntry(isParent,isExpanded,snp)
+     },isExpanded?expanded.Add(snp.id):expanded])):[null,expanded];
+    },new FSharpSet.New(List.T.Empty),Seq.indexed(snps)))[0]);
+   }));
+  })));
  };
  FSharpStation.listEntry=function(isParent,isExpanded,code)
  {
@@ -5125,7 +5245,7 @@
   {
    return FSharpStation.isIndirectPredecessor(p$1,p$2);
   }),FSharpStation.curPredecessors())),HtmlNode.draggable("true"),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("dragover",function()
    {
     return function(ev)
@@ -5134,7 +5254,7 @@
     };
    })
   }),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("drag",function()
    {
     return function()
@@ -5143,7 +5263,7 @@
     };
    })
   }),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("drop",function()
    {
     return function(ev)
@@ -5153,7 +5273,7 @@
     };
    })
   }),HtmlNode.span([HtmlNode["class"]("node"),HtmlNode.classIf("parent",isParent),HtmlNode.classIf("expanded",isExpanded),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -5174,7 +5294,7 @@
     return FsStationShared.snippetName(n,c);
    };
   },FSharpStation.curSnippetNameOf(code.id),FSharpStation.curSnippetCodeOf(code.id))),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -5183,7 +5303,7 @@
     };
    })
   })]),HtmlNode.span([HtmlNode["class"]("predecessor"),HtmlNode.title("toggle predecessor"),new HtmlNode$1({
-   $:5,
+   $:6,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -5819,14 +5939,6 @@
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
   SC$1.callAddClass=HtmlNode.addClass("a","b");
-  SC$1.getClass=function(e)
-  {
-   return HtmlNode.getAttr("class",e);
-  };
-  SC$1.getStyle=function(e)
-  {
-   return HtmlNode.getAttr("style",e);
-  };
   SC$1.renderDoc=(g=(v=Doc.Empty(),function(o)
   {
    return o==null?v:o.$0;
@@ -5837,7 +5949,7 @@
   SC$1.string2Styles=(g$1=(m=function(n,v$11)
   {
    return new HtmlNode$1({
-    $:5,
+    $:6,
     $0:AttrModule.Style(n,v$11)
    });
   },function(a)
@@ -5851,6 +5963,8 @@
    return g$1(HtmlNode.style2pairs(x$1));
   });
   SC$1.codeMirrorIncludes=["/EPFileX/codemirror/scripts/codemirror/codemirror.js","/EPFileX/codemirror/scripts/intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-intellisense.js","/EPFileX/codemirror/scripts/codemirror/codemirror-compiler.js","/EPFileX/codemirror/scripts/codemirror/mode/fsharp.js","/EPFileX/codemirror/scripts/addon/search/searchcursor.js","/EPFileX/codemirror/scripts/addon/search/search.js","/EPFileX/codemirror/scripts/addon/search/jump-to-line.js","/EPFileX/codemirror/scripts/addon/dialog/dialog.js","/EPFileX/codemirror/scripts/addon/edit/matchbrackets.js","/EPFileX/codemirror/scripts/addon/selection/active-line.js","/EPFileX/codemirror/scripts/addon/display/fullscreen.js","/EPFileX/codemirror/scripts/addon/hint/show-hint.js","/EPFileX/codemirror/scripts/addon/lint/lint.js"];
+  SC$1.draggedTab=[null];
+  SC$1.selectedPanels=Var.Create$1(new FSharpMap.New([]));
   SC$1.codeSnippets=ListModel.Create(function(s$5)
   {
    return s$5.id;
@@ -6022,7 +6136,7 @@
   {
    window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$11)));
   },v$5);
-  SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white; height: 100%; width: 100%; ")])]]);
+  SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white; height: 100%; width: 100%; ")])])]]);
   SC$1.splitterMain1=SplitterBar.New$1(0).Vertical$1(FSharpStation.directionVertical()).Min(0).Max(35);
   SC$1.splitterMain2=SplitterBar.New$1(24).Vertical$1(FSharpStation.directionVertical()).Min(0.5).Max(Val.map(function(pos)
   {

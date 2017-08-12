@@ -647,13 +647,29 @@ namespace FSSGlobal
       //        |> separatePrepros (not addLinePrepos)
       //        |> indentF
       //      , indent
-          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) =
-              let rec preds (ins : CodeSnippetId list) outs : CodeSnippetId list =
-                  match ins with
-                  | []         -> outs
-                  | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
-                                  |> preds <| if outs |> Seq.contains hd then outs else hd::outs
-              preds [ this.id ] []        
+      
+      // tail recursion does not optimize
+      let rec preds fetcher outs (ins : CodeSnippetId list) : CodeSnippetId list =
+          match ins with
+          | []         -> outs
+          | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                          |> preds fetcher (if outs |> Seq.contains hd then outs else hd::outs)
+      
+      let predsL fetcher (ins : CodeSnippetId list) : CodeSnippetId list =
+          let mutable ins  = ins 
+          let mutable outs = []
+          while not ins.IsEmpty do
+              match ins with
+              | []         -> ()
+              | hd :: rest -> if outs |> Seq.contains hd then
+                                  ins  <- rest
+                              else
+                                  ins  <- List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                                  outs <- hd::outs
+          outs
+      
+      type CodeSnippet with
+          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) = predsL fetcher [ this.id ]        
           static member TryFindByKey  snps key = snps |> Seq.tryFind (fun snp        -> snp.id = key)
           member this.SeparateCode addLinePrepos =
               let indent        = this.level * 2
@@ -1327,6 +1343,7 @@ namespace FSSGlobal
           | HtmlAttribute of name: string * value:    Val<string>
           | HtmlText      of Val<string>
           | HtmlEmpty
+          | HtmlElementV  of Val<HtmlNode>
           | SomeDoc       of Doc
           | SomeAttr      of Attr
           
@@ -1362,10 +1379,11 @@ namespace FSSGlobal
       
       let rec chooseNode node =
           match node with
-          | HtmlElement(name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
-          | HtmlText    vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
-          | SomeDoc     doc             -> Some <| doc
-          | _                           -> None
+          | HtmlElement (name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
+          | HtmlText     vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
+          | SomeDoc      doc             -> Some <| doc
+          | HtmlElementV vnode           -> Some <| (vnode |> Val.toView |> Doc.BindView (chooseNode >> Option.defaultValue Doc.Empty))
+          | _                            -> None
       
       let getAttrChildren attr =
           Seq.tryPick (function 
@@ -1373,19 +1391,20 @@ namespace FSSGlobal
                       | _                                 -> None)
           >> Option.defaultValue (Constant "")
       
-      let mapHtmlElement f element =
+      let rec mapHtmlElement (f:string -> seq<HtmlNode> -> string * HtmlNode seq) (element:HtmlNode) :HtmlNode =
           match element with
-          | HtmlElement(name, children) -> f name  children
-          | _                           -> element
+          | HtmlElement (name, children) -> f name  children                    |> HtmlElement
+          | HtmlElementV vnode           -> vnode |> Val.map (mapHtmlElement f) |> HtmlElementV
+          | _                            -> element
       
-      let getAttr attr element =
-          match element with
-          | HtmlElement(_, children) -> children
-          | _                        -> seq []
-          |> getAttrChildren attr
-      
-      let getClass = getAttr "class"
-      let getStyle = getAttr "style"
+      //let getAttr attr element =
+      //    match element with
+      //    | HtmlElement(_, children) -> children
+      //    | _                        -> seq []
+      //    |> getAttrChildren attr
+      //
+      //let getClass = getAttr "class"
+      //let getStyle = getAttr "style"
       
       let replaceAttribute att (children: HtmlNode seq) newVal =
           HtmlAttribute(att, newVal)
@@ -1394,7 +1413,7 @@ namespace FSSGlobal
               |> Seq.toList
              )
       
-      let replaceAtt att node newVal = mapHtmlElement (fun n ch -> HtmlElement(n, replaceAttribute att ch newVal)) node
+      let replaceAtt att node newVal = mapHtmlElement (fun n ch -> n, replaceAttribute att ch newVal |> Seq.ofList) node
       
       type HtmlNode with
           member inline this.toDoc = 
@@ -1403,8 +1422,8 @@ namespace FSSGlobal
               | HtmlEmpty       -> Doc.Empty
               | _               -> chooseNode this |> Option.defaultValue Doc.Empty
           member inline   this.Class          clas = Val.fixit clas |> replaceAtt "class" this
-          member          this.AddChildren    add  = mapHtmlElement (fun n ch -> HtmlElement(n, Seq.append ch  add )) this
-          member          this.InsertChildren add  = mapHtmlElement (fun n ch -> HtmlElement(n, Seq.append add ch  )) this
+          member          this.AddChildren    add  = mapHtmlElement (fun n ch -> n, Seq.append ch  add ) this
+          member          this.InsertChildren add  = mapHtmlElement (fun n ch -> n, Seq.append add ch  ) this
       
       let renderDoc = chooseNode >> Option.defaultValue Doc.Empty
           
@@ -1487,9 +1506,9 @@ namespace FSSGlobal
       
       let string2Styles = style2pairs >> Array.map (fun (n, v) -> Attr.Style n v |> SomeAttr)
       
-      let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
+      //let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
       
-      let inline bindHElem hElem v  = Doc.BindView (hElem >> renderDoc)  (Val.toView <| Val.fixit v)            |> SomeDoc
+      let inline bindHElem hElemF v  = Val.map hElemF  (Val.fixit v) |> HtmlElementV
       
       let createIFrame f =
           let cover = Var.Create true
@@ -1670,18 +1689,20 @@ namespace FSSGlobal
                                   }
         static member  New(v)   = TextArea.New(Var.Create v)
         member        this.Render    =    
-          someElt 
-          <| Doc.InputArea
+          Doc.InputArea
               [ 
                 _class              this._class
                 attr.id             this.id  
                 atr "spellcheck" <| Val.map (fun spl -> if spl then "true" else "false") this.spellcheck
                 atr "title"         this.title
-                atr "style"        "height: 100%;  width: 100%"
+                atr "style"        "height: 100%;  width: 100%; box-sizing: border-box; "
                 _placeholder        this.placeholder 
               ]
               this.var
-          |> Seq.singleton |> span
+          |> someElt 
+          |> Seq.singleton 
+          //|> Seq.append [ style "height: 100%;  width: 100%; box-sizing: border-box; " ] 
+          |> div
         member inline this.Class       clas = { this with _class      = Val.fixit clas }
         member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc  }
         member inline this.Title       ttl  = { this with title       = Val.fixit ttl  }
@@ -1983,8 +2004,8 @@ namespace FSSGlobal
           content       : (string option * HtmlNode) []
           cols          : Area []
           rows          : Area []
-          width         : Var<float>
-          height        : Var<float>
+          width         : IRef<float>
+          height        : IRef<float>
           lastSplitter  : (int * bool) option
       }
       with
@@ -2001,9 +2022,9 @@ namespace FSSGlobal
           member this.NewSplitter  (f: float)  col =
               let spl = SplitterBar.New(f)
               if col then
-                  { this with lastSplitter = Some (this.cols.Length, col) ; cols = Array.append this.cols [| spl              |> Splitter |] }
+                  { this with lastSplitter = Some (this.cols.Length, col) ; cols = Array.append this.cols  [| spl              |> Splitter |] }
               else 
-                  { this with lastSplitter = Some (this.rows.Length, col) ; rows = Array.append this.rows [| spl.Horizontal() |> Splitter |] }
+                  { this with lastSplitter = Some (this.rows.Length, col) ; rows = Array.append this.rows  [| spl.Horizontal() |> Splitter |] }
           member inline this.ColFixedPx   f              = { this with cols    = Array.append this.cols    [| Pixel     (Val.fixit f)              |> Fixed    |] }
           member inline this.ColFixed     f              = { this with cols    = Array.append this.cols    [| Percentage(Val.fixit f)              |> Fixed    |] }
           member inline this.ColVariable (s:SplitterBar) = { this with cols    = Array.append this.cols    [| s                                    |> Splitter |] }
@@ -2135,15 +2156,55 @@ namespace FSSGlobal
             |]
          )|> Array.collect id 
       
+      
       [< NoComparison >]
       type TabStrip =
           { selected  : IRef<int>
-            tabs      : IRef<(string * HtmlNode) []>
+            tabs      : IRef<(System.Guid * (string * HtmlNode)) []>
             top       : bool
             horizontal: bool
+            id        : System.Guid
           } 
-      with
-          member this.reorder drag drop =
+      
+      let draggedTab: (TabStrip * int) option ref = ref None
+      
+      let uid2s (uid: System.Guid) = "X" + uid.ToString().Replace("-", "")
+      
+      let selectedPanels: Var<Map<System.Guid, System.Guid>> = Var.Create Map.empty 
+      
+      let setSelectedPanel group panelO = 
+          selectedPanels.Value <- 
+              match panelO with
+              | Some panel -> selectedPanels.Value.Add    (group, panel)
+              | None       -> selectedPanels.Value.Remove  group
+              
+      type TabStrip with
+          member this.moveTab (elem:Dom.Element) from drag drop =
+              let ts = this.tabs.Value
+              let ft = from.tabs.Value
+              let newTabsT =
+                  [|
+                   ts.[0       ..drop - 1     ]
+                   [|        ft.[drag]       |]
+                   ts.[drop    ..ts.Length - 1]
+                  |]
+                  |> Array.collect id
+              let newTabsF =
+                  [|
+                   ft.[0       ..drag - 1     ]
+                   ft.[drag + 1..ft.Length - 1]
+                  |]
+                  |> Array.collect id
+              from.tabs.Value     <- newTabsF
+              this.tabs.Value     <- newTabsT
+              this.selected.Value <- drop
+              if from.selected.Value >= newTabsF.Length then from.selected.Value <- 0
+      
+          member this.reorder elem drop =
+              match !draggedTab with
+              | None                                     -> ()
+              | Some(from, drag) when from.id <> this.id -> this.moveTab elem from drag drop
+              | Some(from, drag)                         ->
               this.tabs.Value     <- reorderArray this.tabs.Value drag drop
               let sel = this.selected.Value
               this.selected.Value <- if    sel = drag                then drop
@@ -2157,46 +2218,57 @@ namespace FSSGlobal
                 tabs       = tabs 
                 top        = false 
                 horizontal = true
+                id         = System.Guid.NewGuid() 
               } 
-          static member New(tabs) = TabStrip.New(Var.Create <| Seq.toArray tabs)
+          static member New(tabs) = TabStrip.New(tabs |> Seq.map (fun def -> System.Guid.NewGuid(), def) |> Seq.toArray |> Var.Create)
           member this.Top         = { this with top        = true  }
           member this.Bottom      = { this with top        = false }
           member this.Horizontal  = { this with horizontal = true  }
           member this.Vertical    = { this with horizontal = false }
-          member this.Selected    = Val.map2 (fun tabs sel -> tabs |> Seq.item sel |> fst) this.tabs this.selected
+          member this.Selected    = Val.map2 (fun tabs sel -> tabs |> Seq.tryItem sel |> Option.map fst) this.tabs this.selected
           member this.Render      =
-              let draggedId = ref 0
               let strip =
                   this.tabs
                   |> bindHElem (
                       fun tabs ->
                           div [ yield ``class`` <| sprintf "tab-strip %s %s"
-                                                      (if this.top        then "top"        else "bottom") 
+                                                      (if this.top        then "top"        else "bottom"  ) 
                                                       (if this.horizontal then "horizontal" else "vertical")
                                 
-                                for i, (txt, sub) in  tabs |> Seq.indexed  do
+                                for i, (uid, (txt, _)) in  tabs |> Seq.indexed  do
                                     yield Hoverable.New.Content(
                                           div [ htmlText txt
                                                 ``class`` <| Val.map (fun sel -> "tab" + (if sel = i then " selected" else "")) this.selected
                                                 draggable "true"
-                                                SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                               )
-                                                SomeAttr <| on.drag    (fun _ _  ->                                     draggedId := i)
-                                                SomeAttr <| on.drop    (fun _ ev -> ev.PreventDefault() ; this.reorder !draggedId    i)
-                                                SomeAttr <| on.click   (fun _ _  ->                       this.selected.Value     <- i) 
+                                                SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                            )
+                                                SomeAttr <| on.drag    (fun _ _  ->                     draggedTab := Some(this, i))
+                                                SomeAttr <| on.drop    (fun e ev -> ev.PreventDefault(); ev.StopPropagation() ; this.reorder        e  i )
+                                                SomeAttr <| on.click   (fun _ _  ->                       this.selected.Value <- i ) 
                                               ])
                               ]
                   )
+              Val.sink (setSelectedPanel this.id) this.Selected  
               let content = 
-                  (this.tabs.Value 
-                  |> Seq.map (fun (txt, sub) -> 
-                      sub.AddChildren(
-                        [ style <| Val.map (fun sel -> if txt = sel then "" else "display : none") this.Selected
-                        ]))
-                  |> div).AddChildren([ ``class`` "tab-content" ])
+                  this.tabs
+                  |> bindHElem (fun tabs ->
+                      div [
+                        yield  ``class`` "tab-children"
+                        yield  Id <| uid2s this.id
+                        yield!
+                            tabs
+                            |> Seq.map (fun (uid, (txt, sub)) -> 
+                                sub.AddChildren(
+                                  [ style <| Val.map (fun sels -> if sels |> Map.toSeq |> Seq.map snd |> Seq.contains uid then "" else "display : none") selectedPanels
+                                    Id    <| uid2s uid
+                                  ]))
+                      ] 
+                   )
               div [ ``class`` "tab-panel"
                     (if     this.top then strip else HtmlEmpty)
-                    content
+                    div [ content ; ``class`` "tab-content" ]
                     (if not this.top then strip else HtmlEmpty)
+                    SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                                        )
+                    SomeAttr <| on.drop    (fun e ev -> ev.PreventDefault() ; this.reorder e this.tabs.Value.Length)
                     css @"
       
       .tab-panel {
@@ -2208,6 +2280,13 @@ namespace FSSGlobal
       .tab-content {
        flex      : 1 1     ;
        overflow  : auto    ;
+       position  : relative;
+      }
+      .tab-children {
+       height    : 100%    ;
+       width     : 100%    ;
+       position  : absolute;
+       display   : grid    ;
       }
       .tab-strip {
        padding   : 0pt     ;
@@ -2250,7 +2329,6 @@ namespace FSSGlobal
        border-left-width: 0.2pt;
       }
       "]
-      
     # 1 @"(4)e2ca8cb1-fb1e-4793-855f-55e3ca07b8f5 RunCode.fsx"
     [<JavaScript>]
     module RunCode       =
@@ -2789,18 +2867,21 @@ namespace FSSGlobal
                           ])
       
       let listEntries snps =
-          snps
-          |> Seq.indexed
-          |> Seq.mapFold (fun expanded (i, snp) ->
-              if snp.parent |> Option.map (fun p -> Set.contains p expanded) |> Option.defaultValue true then 
-                  let isParent    = codeSnippets |> Seq.tryItem (i + 1) |> Option.map (fun nxt -> nxt.parent = Some snp.id) |> Option.defaultValue false
-                  let isExpanded  = isParent && snp.expanded
-                  (listEntry isParent isExpanded snp |> Some, if isExpanded then Set.add snp.id expanded else expanded)
-              else  (None, expanded)
-          )  (Set [])
-          |> fst
-          |> Seq.choose (Option.map renderDoc)
-          |> Doc.Concat
+          div [ 
+              yield style "overflow: auto"
+              yield! 
+                  snps
+                  |> Seq.indexed
+                  |> Seq.mapFold (fun expanded (i, snp) ->
+                      if snp.parent |> Option.map (fun p -> Set.contains p expanded) |> Option.defaultValue true then 
+                          let isParent    = codeSnippets |> Seq.tryItem (i + 1) |> Option.map (fun nxt -> nxt.parent = Some snp.id) |> Option.defaultValue false
+                          let isExpanded  = isParent && snp.expanded
+                          (listEntry isParent isExpanded snp |> Some, if isExpanded then Set.add snp.id expanded else expanded)
+                      else  (None, expanded)
+                  )  (Set [])
+                  |> fst
+                  |> Seq.choose id
+          ]
       # 1 @"(6)54304360-819a-498c-a091-e6ece880a35a Deserialize.fsx"
       let inline ifUndef def v = if isUndefined v then def else v
       let obj2CodeSnippetId o = 
@@ -3230,13 +3311,19 @@ namespace FSSGlobal
           [
            "Output"    , Template.TextArea.New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 ).Render
            "JavaScript", Template.TextArea.New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated").Render
-           "F# code"   , Template.TextArea.New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        ).Render 
+           "F# code"   , Template.TextArea.New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        ).Render
+           "WS Result" , div [ div [ Id "TestNode" ; style "background: white; height: 100%; width: 100%; "] ]
           ]
       
       let CodeEditor() =
         Template.Grid.New
-           .ColVariable(spl1).ColAuto(0.0).ColVariable( 0.0).Min(0.0).Max(Val.map ((-) 92.0) spl1.GetValue).Before.Children([ style "grid-row: 1 / 5" ])
-           .RowFixedPx(34.0) .RowAuto(0.0).RowVariable(17.0).Children([ style "grid-column: 2 / 3" ]).Before.RowFixedPx(80.0)
+           .ColVariable(spl1)
+           .ColAuto(     0.0)
+           .ColVariable( 0.0).Min(0.0).Max(Val.map ((-) 92.0) spl1.GetValue).Before.Children([ style "grid-row   : 1 / 5" ])
+           .RowFixedPx( 34.0) 
+           .RowAuto(     0.0)
+           .RowVariable(17.0)                                               .Before.Children([ style "grid-column: 2 / 3" ])
+           .RowFixedPx( 80.0)
            .Padding(1.0)
            .Content( style  """ 
                           grid-template-areas:
@@ -3251,12 +3338,10 @@ namespace FSSGlobal
                           line-height: 1.2;
                       """)
            .Content("sidebar", 
-              div [ style "overflow: auto"
-                    codeSnippets.View
-                    |> View.SnapshotOn codeSnippets.Value refresh.View
-                    |> View.Map listEntries
-                    |> Doc.BindView id |> SomeDoc
-                  ])
+               codeSnippets.View
+               |> View.SnapshotOn codeSnippets.Value refresh.View
+               |> bindHElem listEntries
+            )
            .Content("header"  , Template.Input     .New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:")         .Render)
            .Content("content1", codeMirror                                                                                                   .Render)
            .Content("content2", Template.TabStrip  .New(Messages).Top                                                                        .Render)
