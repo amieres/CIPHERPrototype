@@ -16,7 +16,6 @@
 #nowarn "1182"
 #nowarn "40"
 #nowarn "1178"
-#nowarn "25"
 #nowarn "52"
 # 1 @"bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
 //#nowarn "1182"
@@ -254,7 +253,7 @@ namespace FSSGlobal
               s 
               |> (fun elems -> match      elems |> Seq.exists(function | Failure _    -> true    | _ -> false) with
                                | true  -> elems |> Seq.pick  (function | Failure ms   -> Some ms | _ -> None ) |> failWithMsgs
-                               | false -> elems |> Seq.map   (function | Success(v,_) -> v                   ) |> succeed
+                               | false -> elems |> Seq.map   (function | Result (vO,_)-> vO.Value            ) |> succeed
               )
       
           let getMessages (ms: ErrMsg list) =
@@ -306,6 +305,8 @@ namespace FSSGlobal
               | WResult(Success(a, ms)) -> tryCall f a
                                            |> function
                                            | WSimple         b              
+                                           | WOption(Some    b     ) -> succeedWithMsgs b  ms             |> WResult 
+                                           | WOption None            -> failWithMsgs (errOptionIsNone::ms)|> WResult
                                            | WResult(Success(b, [])) -> succeedWithMsgs b  ms             |> WResult 
                                            | WResult(Success(b, m2)) -> succeedWithMsgs b (ms @ m2)       |> WResult 
                                            | WResult(Failure    m2)  -> failWithMsgs      (ms @ m2)       |> WResult 
@@ -437,6 +438,32 @@ namespace FSSGlobal
                                           | Failure ms     -> raise (exn(getMessages ms))
                                    }
       //    let call wb = wb |> getR Rop.notifyMessages
+          let start (printMsg: string->unit) (w: Wrap<unit>) =
+              w
+              |> getAsyncR
+              |> fun asy -> Async.StartWithContinuations
+                              (asy 
+                             , Result.mapMsgs Result.getMessages
+                               >> function
+                                  | Some _, msgs -> msgs
+                                  | None  , msgs -> printfn "Failed!" ; msgs
+                               >> sprintf "%s" >> printMsg
+                             ,    sprintf "%A" >> printMsg
+                             ,    sprintf "%A" >> printMsg)
+          #if WEBSHARPER
+          #else
+          let runSynchronously (printMsg: string->unit) (w: Wrap<unit>) =
+              w
+              |> getAsyncR
+              |> Async.RunSynchronously
+              |> (Result.mapMsgs Result.getMessages
+                  >> function
+                     | Some _, msgs -> msgs
+                     | None  , msgs -> printfn "Failed!" ; msgs
+                  >> sprintf "%s" 
+                  >> printMsg
+                 )
+          #endif
       
       type Wrap<'T> with
           #if WEBSHARPER
@@ -451,7 +478,6 @@ namespace FSSGlobal
           #else
           static member RunSynchronously(w:Wrap<'T  >, ?timeout, ?cancToken) = Async.RunSynchronously(Wrap.getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
           #endif
-      
       
       # 1 @"(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
       let extract n (s:string) = s.Substring(0, min n s.Length)
@@ -521,12 +547,6 @@ namespace FSSGlobal
                    cache.[x] <- res
                    res
           
-    # 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
-    #if WEBSHARPER
-    [<WebSharper.JavaScript>]
-    #endif
-    module FsStationShared =
-    
       # 1 @"(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 prepareFsCode.fsx"
       type PreproDirective =
       | PrepoR      of string
@@ -572,7 +592,15 @@ namespace FSSGlobal
           code, assembs, defines, prepoIs, nowarns
       
       
+    # 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
+    #if WEBSHARPER
+    [<WebSharper.JavaScript>]
+    #endif
+    module FsStationShared =
+    
       # 1 @"(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
+      open Useful
+      
       let inline swap f a b = f b a
             
       let snippetName name (content: string) =
@@ -619,13 +647,29 @@ namespace FSSGlobal
       //        |> separatePrepros (not addLinePrepos)
       //        |> indentF
       //      , indent
-          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) =
-              let rec preds (ins : CodeSnippetId list) outs : CodeSnippetId list =
-                  match ins with
-                  | []         -> outs
-                  | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
-                                  |> preds <| if outs |> Seq.contains hd then outs else hd::outs
-              preds [ this.id ] []        
+      
+      // tail recursion does not optimize
+      let rec preds fetcher outs (ins : CodeSnippetId list) : CodeSnippetId list =
+          match ins with
+          | []         -> outs
+          | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                          |> preds fetcher (if outs |> Seq.contains hd then outs else hd::outs)
+      
+      let predsL fetcher (ins : CodeSnippetId list) : CodeSnippetId list =
+          let mutable ins  = ins 
+          let mutable outs = []
+          while not ins.IsEmpty do
+              match ins with
+              | []         -> ()
+              | hd :: rest -> if outs |> Seq.contains hd then
+                                  ins  <- rest
+                              else
+                                  ins  <- List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                                  outs <- hd::outs
+          outs
+      
+      type CodeSnippet with
+          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) = predsL fetcher [ this.id ]        
           static member TryFindByKey  snps key = snps |> Seq.tryFind (fun snp        -> snp.id = key)
           member this.SeparateCode addLinePrepos =
               let indent        = this.level * 2
@@ -724,7 +768,7 @@ namespace FSSGlobal
       #endif          
                       try
                           let! msg   = msgA
-                          let  resp  = respond clientId msg.content
+                          let! resp  = respond clientId msg.content
       #if WEBSHARPER
                           do!          replyTo    msg.messageId.Value resp
       #else
@@ -733,7 +777,12 @@ namespace FSSGlobal
                       with 
                       | :? System.TimeoutException -> ()
                       | e                          -> printfn "%A" e
-              } |> Async.Start
+              } 
+      #if WEBSHARPER
+              |> fun asy -> Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))
+      #else
+              |> Async.Start
+      #endif                
       #if WEBSHARPER
           let sendMessage  toId msg = sendRequest    toId fromId msg
       #else
@@ -753,93 +802,16 @@ namespace FSSGlobal
                       | POString  v  -> [| sprintf "unexpected response: %s" v |]
                       | POStrings vs -> vs
         with 
-          member this.AwaitMessage respond = awaitMessage respond
-          member this.SendMessage toId msg = sendMessage toId msg
-          member this.POMessage        msg = poMsg id        msg
-          member this.POListeners      ()  = poMsg poStrings POListeners
-          member this.EndPoint             = wsEndPoint
-          member this.ClientId             = clientId
-          static member EndPoint_          = "http://localhost:9000/FSharpStation.html"
+          member this.AwaitMessage respond  = awaitMessage (fun clientId request -> async { return respond clientId request })
+          member this.AwaitMessage respondA = awaitMessage respondA
+          member this.SendMessage toId msg  = sendMessage toId msg
+          member this.POMessage        msg  = poMsg id        msg
+          member this.POListeners      ()   = poMsg poStrings POListeners
+          member this.EndPoint              = wsEndPoint
+          member this.ClientId              = clientId
+          static member EndPoint_           = "http://localhost:9000/FSharpStation.html"
           
           
-      
-      
-      # 1 @"(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
-      type FSMessage =
-          | GetIdentification
-          | GenericMessage        of string
-          | GetSnippetContentById of CodeSnippetId
-          | GetSnippetCodeById    of CodeSnippetId
-          | GetSnippetPredsById   of CodeSnippetId
-          | GetSnippetById        of CodeSnippetId
-          | GetSnippetContent     of string []
-          | GetSnippetCode        of string []
-          | GetSnippetPreds       of string []
-          | GetSnippet            of string []
-          | GetSnippetJSCode      of string []
-      
-      type FSResponse =
-          | IdResponse        of string
-          | StringResponse    of string option
-          | SnippetResponse   of CodeSnippet option
-          | SnippetsResponse  of CodeSnippet []
-      
-      
-      # 1 @"(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
-      //#r @"WebSharper.Core.dll"
-      //#r @"WebSharper.Main.dll"
-      //#r @"WebSharper.Web.dll"
-      //#r @"Common.dll"
-      
-      open WebSharper
-      //open WebSharper.JavaScript
-      open WebSharper.Remoting
-      open CIPHERPrototype.Messaging
-      //open Rop
-      
-      type FsStationClientErr =
-          | ``Snippet Not Found`` of string
-      with interface ErrMsg with
-              member this.ErrMsg    = 
-                  match this with 
-                  | msg                        -> sprintf "%A" msg
-              member this.IsWarning = false     
-      
-      type FsStationClient(clientId, ?fsStationId:string, ?timeout, ?endPoint) =
-          let fsIds      = fsStationId |> Option.defaultValue "FSharpStation"
-          let msgClient  = MessagingClient(clientId, ?timeout= timeout, ?endPoint= endPoint)
-          let toId       = AddressId fsIds
-          let stringResponse response =
-              match response with
-              | StringResponse (Some code)    -> Result.succeed code
-              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
-          let snippetsResponse response =
-              match response with
-              | SnippetsResponse snps         -> Result.succeed snps
-              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
-          let snippetResponse response =
-              match response with
-              | SnippetResponse  snp          -> Result.succeed snp
-              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
-          [< Inline >]
-          let sendMsg toId wrapMsg (checkResponse: FSResponse -> Result<'a>) v =
-              Wrap.wrapper {
-                  let! response = msgClient.SendMessage toId (wrapMsg v |> Json.Serialize)
-                  let! resp     = checkResponse (Json.Deserialize<FSResponse> response)
-                  return resp
-              } 
-        with 
-          member this.SendMessage     (toId2, msg:FSMessage) = sendMsg toId2 id                  Result.succeed    msg
-          member this.SendMessage     (       msg:FSMessage) = sendMsg toId  id                  Result.succeed    msg
-          member this.RequestSnippet  (   snpPath:string   ) = sendMsg toId  GetSnippet          snippetResponse  (snpPath.Split '/')
-          member this.RequestCode     (   snpPath:string   ) = sendMsg toId  GetSnippet          stringResponse   (snpPath.Split '/')
-          member this.RequestJSCode   (   snpPath:string   ) = sendMsg toId  GetSnippetJSCode    stringResponse   (snpPath.Split '/')
-          member this.RequestPreds    (   snpPath:string   ) = sendMsg toId  GetSnippetPreds     snippetsResponse (snpPath.Split '/')
-          member this.RequestPredsById(     snpId          ) = sendMsg toId  GetSnippetPredsById snippetsResponse snpId
-          member this.GenericMessage  (       txt:string   ) = sendMsg toId  GenericMessage      stringResponse    txt
-          member this.FSStationId                            = fsIds
-          member this.MessagingClient                        = msgClient    
-          static member FSStationId_                         = "FSharpStation"
       
       
     # 1 @"(4)40789dbb-34ba-4490-96d0-d0c1848dfad6 FSAutoComplete.fsx"
@@ -1122,7 +1094,7 @@ namespace FSSGlobal
     [<JavaScript>]
     module HtmlNode      =
     
-      # 1 @"(6)0f5719f0-e95e-498d-ab88-f89ff1440e32 type Val'a =.fsx"
+      # 1 @"(6)0f5719f0-e95e-498d-ab88-f89ff1440e32 Val.fsx"
       [<NoComparison>]
       type Val<'a> =
           | Constant  of 'a
@@ -1269,13 +1241,14 @@ namespace FSSGlobal
           let inline iter3    f  v1 v2 v3    = map3      f v1 v2 v3    |> iterV id
           let inline iter4    f  v1 v2 v3 v4 = map4      f v1 v2 v3 v4 |> iterV id
       
-      # 1 @"(6)d9124644-0af6-4a7f-a711-ef76ca77f0de type HtmlNode =.fsx"
+      # 1 @"(6)d9124644-0af6-4a7f-a711-ef76ca77f0de HtmlNode.fsx"
       [<NoComparison ; NoEquality>]
       type HtmlNode =
           | HtmlElement   of name: string * children: HtmlNode seq
           | HtmlAttribute of name: string * value:    Val<string>
           | HtmlText      of Val<string>
           | HtmlEmpty
+          | HtmlElementV  of Val<HtmlNode>
           | SomeDoc       of Doc
           | SomeAttr      of Attr
           
@@ -1311,10 +1284,11 @@ namespace FSSGlobal
       
       let rec chooseNode node =
           match node with
-          | HtmlElement(name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
-          | HtmlText    vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
-          | SomeDoc     doc             -> Some <| doc
-          | _                           -> None
+          | HtmlElement (name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
+          | HtmlText     vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
+          | SomeDoc      doc             -> Some <| doc
+          | HtmlElementV vnode           -> Some <| (vnode |> Val.toView |> Doc.BindView (chooseNode >> Option.defaultValue Doc.Empty))
+          | _                            -> None
       
       let getAttrChildren attr =
           Seq.tryPick (function 
@@ -1322,19 +1296,20 @@ namespace FSSGlobal
                       | _                                 -> None)
           >> Option.defaultValue (Constant "")
       
-      let mapHtmlElement f element =
+      let rec mapHtmlElement (f:string -> seq<HtmlNode> -> string * HtmlNode seq) (element:HtmlNode) :HtmlNode =
           match element with
-          | HtmlElement(name, children) -> f name  children
-          | _                           -> element
+          | HtmlElement (name, children) -> f name  children                    |> HtmlElement
+          | HtmlElementV vnode           -> vnode |> Val.map (mapHtmlElement f) |> HtmlElementV
+          | _                            -> element
       
-      let getAttr attr element =
-          match element with
-          | HtmlElement(_, children) -> children
-          | _                        -> seq []
-          |> getAttrChildren attr
-      
-      let getClass = getAttr "class"
-      let getStyle = getAttr "style"
+      //let getAttr attr element =
+      //    match element with
+      //    | HtmlElement(_, children) -> children
+      //    | _                        -> seq []
+      //    |> getAttrChildren attr
+      //
+      //let getClass = getAttr "class"
+      //let getStyle = getAttr "style"
       
       let replaceAttribute att (children: HtmlNode seq) newVal =
           HtmlAttribute(att, newVal)
@@ -1343,7 +1318,7 @@ namespace FSSGlobal
               |> Seq.toList
              )
       
-      let replaceAtt att node newVal = mapHtmlElement (fun n ch -> HtmlElement(n, replaceAttribute att ch newVal)) node
+      let replaceAtt att node newVal = mapHtmlElement (fun n ch -> n, replaceAttribute att ch newVal |> Seq.ofList) node
       
       type HtmlNode with
           member inline this.toDoc = 
@@ -1351,13 +1326,13 @@ namespace FSSGlobal
               | HtmlAttribute _
               | HtmlEmpty       -> Doc.Empty
               | _               -> chooseNode this |> Option.defaultValue Doc.Empty
-          member inline   this.Class          clas = Val.fixit clas |> replaceAtt "class" this
-          member          this.AddChildren    add  = mapHtmlElement (fun n ch -> HtmlElement(n, Seq.append ch  add )) this
-          member          this.InsertChildren add  = mapHtmlElement (fun n ch -> HtmlElement(n, Seq.append add ch  )) this
+          // member inline   this.Class          clas = Val.fixit clas |> replaceAtt "class" this
+          member          this.AddChildren    add  = mapHtmlElement (fun n ch -> n, Seq.append ch  add ) this
+          member          this.InsertChildren add  = mapHtmlElement (fun n ch -> n, Seq.append add ch  ) this
       
       let renderDoc = chooseNode >> Option.defaultValue Doc.Empty
           
-      # 1 @"(6)c3755c07-1385-495d-bad7-a5b0fa54ac9b let inline atr att v = Val.attrV  att (Val.fixit v).fsx"
+      # 1 @"(6)c3755c07-1385-495d-bad7-a5b0fa54ac9b HTML Elements & Attributes.fsx"
       let inline atr att v = Val.attrV  att (Val.fixit v)
       let inline tag tag v = Val.tagDoc tag (Val.fixit v)
       
@@ -1417,6 +1392,9 @@ namespace FSSGlobal
       
       let inline style1    n v  = style <| Val.map ((+) (n + ":")) v
       
+      type HtmlNode with
+          member inline   this.Style          sty  = this.AddChildren([ style sty ])
+      
       let inline css         v  = styleH [ htmlText v ] 
       
       let inline classIf cls v = ``class`` <| Val.map (fun b -> if b then cls else "") (Val.fixit v)
@@ -1436,9 +1414,9 @@ namespace FSSGlobal
       
       let string2Styles = style2pairs >> Array.map (fun (n, v) -> Attr.Style n v |> SomeAttr)
       
-      let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
+      //let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
       
-      let inline bindHElem hElem v  = Doc.BindView (hElem >> renderDoc)  (Val.toView <| Val.fixit v)            |> SomeDoc
+      let inline bindHElem hElemF v  = Val.map hElemF  (Val.fixit v) |> HtmlElementV
       
       let createIFrame f =
           let cover = Var.Create true
@@ -1579,29 +1557,66 @@ namespace FSSGlobal
       [<NoComparison ; NoEquality>]
       type Hoverable = {
           hover      : IRef<bool>
-          content    : HtmlNode seq
       } with
         static member  New   = 
           let hover      = Var.Create false
           { 
               hover      = hover     
-              content    = []
           }
-        static member  Demo  = 
-          let hover      = Var.Create false
-          { 
-              hover      = hover     
-              content    = [ style "flex-flow: column;"
-                           ]
-          }
-        member        this.Render          =
+        member inline this.Content    (c: HtmlNode seq) = 
           [ classIf "hovering" this.hover
             SomeAttr <| on.mouseEnter (fun _ _ -> this.hover.Value <- true )
             SomeAttr <| on.mouseLeave (fun _ _ -> this.hover.Value <- false)
           ] 
-          |> Seq.append  this.content
+          |> Seq.append  c
           |> div
-        member inline this.Content    c = { this with content    =       c }
+        member inline this.Content    (c:HtmlNode) = 
+            c.AddChildren 
+                [ classIf "hovering" this.hover
+                  SomeAttr <| on.mouseEnter (fun _ _ -> this.hover.Value <- true )
+                  SomeAttr <| on.mouseLeave (fun _ _ -> this.hover.Value <- false)
+                ] 
+        static member  Demo  = Hoverable.New.Content(div [ style "flex-flow: column;" ])
+      
+      # 1 @"(6)0a11766b-f227-4b38-88a3-919d964387bf Panel.fsx"
+      [<NoComparison ; NoEquality>]
+      type Panel = {
+          _class   : Val<string>
+          _style   : Val<string>
+          title    : Val<string>
+          header   : HtmlNode seq
+          content  : HtmlNode seq
+          disabled : Val<bool>
+      } with
+        static member  New   = { _class   = Val.fixit <| "panel panel-default shadow"
+                                 _style   = Val.fixit <| "text-align:center" 
+                                 title    = Val.fixit <| "Panel"        
+                                 header   =          [ htmlText "Some text"    ] 
+                                 content  =          [ htmlText "Some Content" ] 
+                                 disabled = Val.fixit <| Var.Create false
+                               }
+        member        this.Render          =  
+          fieldset [ SomeAttr <| attr.disabledDynPred (View.Const "")  (this.disabled |> Val.toView)
+                     div [ ``class`` this._class
+                           div (Seq.append
+                                    [ ``class`` "panel-heading"
+                                      label [ ``class``  "panel-title text-center" ; htmlText this.title ]
+                                    ]
+                                    this.header)
+      
+                           div (Seq.append
+                                    [ ``class`` "panel-body"
+                                      style     this._style 
+                                    ]
+                                    this.content)
+                         ] 
+                   ]
+        member inline this.Class       clas = { this with _class   = Val.fixit clas                                        }
+        member inline this.Style       sty  = { this with _style   = Val.fixit sty                                         }
+        member inline this.Title       txt  = { this with title    = Val.fixit txt                                         }
+        member inline this.Header      h    = { this with header   =       h                                           }
+        member inline this.Content     c    = { this with content  =       c                                           }
+        member inline this.Disabled    dis  = { this with disabled =       dis                                         }
       
       # 1 @"(6)3234a0bf-4541-4f2c-8bbf-b5ab3a0e415b TextArea.fsx"
       [<NoComparison ; NoEquality>]
@@ -1622,18 +1637,20 @@ namespace FSSGlobal
                                   }
         static member  New(v)   = TextArea.New(Var.Create v)
         member        this.Render    =    
-          someElt 
-          <| Doc.InputArea
+          Doc.InputArea
               [ 
                 _class              this._class
                 attr.id             this.id  
                 atr "spellcheck" <| Val.map (fun spl -> if spl then "true" else "false") this.spellcheck
                 atr "title"         this.title
-                atr "style"        "height: 100%;  width: 100%"
+                atr "style"        "height: 100%;  width: 100%; box-sizing: border-box; "
                 _placeholder        this.placeholder 
               ]
               this.var
-          |> Seq.singleton |> span
+          |> someElt 
+          |> Seq.singleton 
+          //|> Seq.append [ style "height: 100%;  width: 100%; box-sizing: border-box; " ] 
+          |> div
         member inline this.Class       clas = { this with _class      = Val.fixit clas }
         member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc  }
         member inline this.Title       ttl  = { this with title       = Val.fixit ttl  }
@@ -1935,8 +1952,8 @@ namespace FSSGlobal
           content       : (string option * HtmlNode) []
           cols          : Area []
           rows          : Area []
-          width         : Var<float>
-          height        : Var<float>
+          width         : IRef<float>
+          height        : IRef<float>
           lastSplitter  : (int * bool) option
       }
       with
@@ -1953,9 +1970,9 @@ namespace FSSGlobal
           member this.NewSplitter  (f: float)  col =
               let spl = SplitterBar.New(f)
               if col then
-                  { this with lastSplitter = Some (this.cols.Length, col) ; cols = Array.append this.cols [| spl              |> Splitter |] }
+                  { this with lastSplitter = Some (this.cols.Length, col) ; cols = Array.append this.cols  [| spl              |> Splitter |] }
               else 
-                  { this with lastSplitter = Some (this.rows.Length, col) ; rows = Array.append this.rows [| spl.Horizontal() |> Splitter |] }
+                  { this with lastSplitter = Some (this.rows.Length, col) ; rows = Array.append this.rows  [| spl.Horizontal() |> Splitter |] }
           member inline this.ColFixedPx   f              = { this with cols    = Array.append this.cols    [| Pixel     (Val.fixit f)              |> Fixed    |] }
           member inline this.ColFixed     f              = { this with cols    = Array.append this.cols    [| Percentage(Val.fixit f)              |> Fixed    |] }
           member inline this.ColVariable (s:SplitterBar) = { this with cols    = Array.append this.cols    [| s                                    |> Splitter |] }
@@ -2057,6 +2074,265 @@ namespace FSSGlobal
               ]
           member this.Render =
               div <| this.GridTemplate()
+      # 1 @"(6)cddabd38-7ecb-4692-99bd-13ca70e4232f TabStrip.fsx"
+      let reorderList (ts:'a list) drag drop =
+          if drop < drag then
+             ts.[0       ..drop - 1     ]
+           @    [      ts.[drag]        ]
+           @ ts.[drop    ..drag - 1     ]
+           @ ts.[drag + 1..ts.Length - 1]
+          else
+             ts.[0..drag - 1            ]
+           @ ts.[drag + 1..drop         ]
+           @    [      ts.[drag]        ]
+           @ ts.[drop + 1..ts.Length - 1]
+      
+      let reorderArray (ts:'a []) drag drop =
+         (if drop < drag then
+            [|
+             ts.[0       ..drop - 1     ]
+             [|        ts.[drag]       |]
+             ts.[drop    ..drag - 1     ]
+             ts.[drag + 1..ts.Length - 1]
+            |]
+          else
+            [|
+             ts.[0..drag - 1            ]
+             ts.[drag + 1..drop         ]
+             [|        ts.[drag]       |]
+             ts.[drop + 1..ts.Length - 1]
+            |]
+         )|> Array.collect id 
+      
+      
+      [< NoComparison >]
+      type TabStrip =
+          { selected  : IRef<int>
+            tabs      : IRef<(System.Guid * (string * HtmlNode)) []>
+            top       : bool
+            horizontal: bool
+            id        : System.Guid
+          } 
+      
+      let draggedTab: (TabStrip * int) option ref = ref None
+      
+      let uid2s (uid: System.Guid) = "X" + uid.ToString().Replace("-", "")
+      
+      let selectedPanels: Var<Map<System.Guid, System.Guid>> = Var.Create Map.empty 
+      
+      let setSelectedPanel group panelO = 
+          selectedPanels.Value <- 
+              match panelO with
+              | Some panel -> selectedPanels.Value.Add    (group, panel)
+              | None       -> selectedPanels.Value.Remove  group
+      
+      let mutable TabMoved : ((TabStrip * TabStrip) -> unit) option = None
+      let RaiseTabMoved fromS toS = TabMoved |> Option.iter (fun f -> f (fromS, toS))
+      
+      type TabStrip with
+          member this.moveTab from drag drop =
+              let ts = this.tabs.Value
+              let ft = from.tabs.Value
+              let newTabsT =
+                  [|
+                   ts.[0       ..drop - 1     ]
+                   [|        ft.[drag]       |]
+                   ts.[drop    ..ts.Length - 1]
+                  |]
+                  |> Array.collect id
+              let newTabsF =
+                  [|
+                   ft.[0       ..drag - 1     ]
+                   ft.[drag + 1..ft.Length - 1]
+                  |]
+                  |> Array.collect id
+              from.tabs.Value     <- newTabsF
+              this.tabs.Value     <- newTabsT
+              this.selected.Value <- drop
+              if from.selected.Value >= newTabsF.Length then from.selected.Value <- 0
+              RaiseTabMoved from this
+      
+          member this.reorder drop =
+              match !draggedTab with
+              | None                                     -> ()
+              | Some(from, drag) when from.id <> this.id -> this.moveTab from drag drop
+              | Some(from, drag)                         ->
+              this.tabs.Value     <- reorderArray this.tabs.Value drag drop
+              let sel = this.selected.Value
+              this.selected.Value <- if    sel = drag                then drop
+                                     elif (sel < drag && sel < drop)
+                                       || (sel > drag && sel > drop) then sel 
+                                     elif  sel < drag                then sel + 1
+                                     else                                 sel - 1
+                                     
+          static member New(tabs)    =
+              { selected   = Var.Create 0
+                tabs       = tabs 
+                top        = false 
+                horizontal = true
+                id         = System.Guid.NewGuid() 
+              } 
+          static member New(tabs) = TabStrip.New(tabs |> Seq.map (fun def -> System.Guid.NewGuid(), def) |> Seq.toArray |> Var.Create)
+          member this.Top         = { this with top        = true  }
+          member this.Bottom      = { this with top        = false }
+          member this.Horizontal  = { this with horizontal = true  }
+          member this.Vertical    = { this with horizontal = false }
+          member this.Selected    = Val.map2 (fun tabs sel -> tabs |> Seq.tryItem sel |> Option.map fst) this.tabs this.selected
+          member this.Render      =
+              let strip =
+                  this.tabs
+                  |> bindHElem (
+                      fun tabs ->
+                          div [ yield ``class`` <| sprintf "tab-strip %s %s"
+                                                      (if this.top        then "top"        else "bottom"  ) 
+                                                      (if this.horizontal then "horizontal" else "vertical")
+                                
+                                for i, (uid, (txt, _)) in  tabs |> Seq.indexed  do
+                                    yield Hoverable.New.Content(
+                                          div [ htmlText txt
+                                                ``class`` <| Val.map (fun sel -> "tab" + (if sel = i then " selected" else "")) this.selected
+                                                draggable "true"
+                                                SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                            )
+                                                SomeAttr <| on.drag    (fun _ _  ->                     draggedTab := Some(this, i))
+                                                SomeAttr <| on.drop    (fun e ev -> ev.PreventDefault(); ev.StopPropagation() ; this.reorder i )
+                                                SomeAttr <| on.click   (fun _ _  ->                       this.selected.Value <- i ) 
+                                              ])
+                              ]
+                  )
+              Val.sink (setSelectedPanel this.id) this.Selected  
+              let content = 
+                  this.tabs
+                  |> bindHElem (fun tabs ->
+                      div [
+                        yield  ``class`` "tab-children"
+                        yield  Id <| uid2s this.id
+                        yield!
+                            tabs
+                            |> Seq.map (fun (uid, (txt, sub)) -> 
+                                sub.AddChildren(
+                                  [ style <| Val.map (fun sels -> if sels |> Map.toSeq |> Seq.map snd |> Seq.contains uid then "" else "display : none") selectedPanels
+                                    Id    <| uid2s uid
+                                  ]))
+                      ] 
+                   )
+              div [ ``class`` "tab-panel"
+                    (if     this.top then strip else HtmlEmpty)
+                    div [ content ; ``class`` "tab-content" ]
+                    (if not this.top then strip else HtmlEmpty)
+                    SomeAttr <| on.dragOver(fun _ ev -> ev.PreventDefault()                                      )
+                    SomeAttr <| on.drop    (fun e ev -> ev.PreventDefault() ; this.reorder this.tabs.Value.Length)
+                    css @"
+      
+      .tab-panel {
+       overflow : hidden ;
+       display  : flex   ;
+       flex-flow: column ;
+       background: pink    ;
+      }
+      .tab-content {
+       flex      : 1 1     ;
+       overflow  : auto    ;
+       position  : relative;
+      }
+      .tab-children {
+       height    : 100%    ;
+       width     : 100%    ;
+       position  : absolute;
+       display   : grid    ;
+      }
+      .tab-strip {
+       padding   : 0pt     ;
+       flex      : 0 0     ;
+      }
+      .tab {
+       border     : 0.2pt solid transparent;
+       padding    : 0pt 4pt;
+       display    : inline-block;
+       font-family: sans-serif;
+       font-weight: 200;
+       font-size  : small;
+       color      : #666;
+       cursor     : pointer;
+      }
+      .top>.tab {
+       border-radius: 2pt 2pt 0pt 0pt;
+       border-bottom-width: 0pt;
+       vertical-align: bottom;
+      }
+      .bottom>.tab {
+       border-top-width: 0pt;
+       border-radius: 0pt 0pt 2pt 2pt;
+       vertical-align: top;
+      }
+      .horizontal>.tab:not(:first-child) {
+       border-left-width: 0pt;
+      }
+      .tab.hovering {
+       background: red;
+      }
+      .tab.selected {
+       background: white;
+       border-left-width: 0.2pt;
+       color: black;
+       font-weight: 500;
+       border-color: black;
+      }
+      .horizontal>.tab.selected {
+       border-left-width: 0.2pt;
+      }
+      "]
+      # 1 @"(6)a48d72fc-5220-4dac-b3b3-98bad48b0561 SplitterNode.fsx"
+      type SplitterNode = | SplitterNode of Var<SplitterStructure>
+      and  SplitterStructure =
+          | HtmlNode of HtmlNode
+          | TabStrip of TabStrip
+          | Split    of bool * Var<float> * SplitterNode * SplitterNode
+      with    
+          static member New(vertical : bool, child1, child2) = Split(vertical, Var.Create 50.0, SplitterNode (Var.Create             child1), SplitterNode (Var.Create             child2))
+          static member New(vertical : bool, child1, child2) = Split(vertical, Var.Create 50.0, SplitterNode (Var.Create <| HtmlNode child1), SplitterNode (Var.Create <| HtmlNode child2))
+          static member New(vertical : bool, child1, child2) = Split(vertical, Var.Create 50.0, SplitterNode (Var.Create <| TabStrip child1), SplitterNode (Var.Create <| TabStrip child2))
+          static member New(strip                          ) = TabStrip strip
+          static member New(node                           ) = HtmlNode node
+      
+      let rec renderSplitterNode      sn = match sn with SplitterNode chV -> bindHElem (fun ch -> renderSplitterStructure ch) chV 
+      and     renderSplitterStructure ss =
+              match ss with
+              | HtmlNode node                -> node
+              | TabStrip strip               -> strip.Render  
+              | Split   (ver, var, ch1, ch2) ->
+              let grid = Grid.New.Content("one", renderSplitterNode ch1)
+                                 .Content("two", renderSplitterNode ch2).Padding(0.0)
+              if ver then grid.ColVariable(50.0).ColAuto(50.0).Content( style "grid-template-areas: 'one   two' " ).Render
+                     else grid.RowVariable(50.0).RowAuto(50.0).Content( style "grid-template-areas: 'one' 'two' " ).Render
+      
+      type SplitterNode with
+          static member New        ss           = SplitterNode <| Var.Create ss
+          static member New       (ss:HtmlNode) = SplitterNode <| Var.Create (SplitterStructure.New(ss))
+          static member New       (ss:TabStrip) = SplitterNode <| Var.Create (SplitterStructure.New(ss))
+          member this.Render                    = renderSplitterNode this
+          member this.Var                       = match this with SplitterNode chV -> chV
+          member this.Value                     = this.Var.Value
+          member this.SplitMe(first, ver, node) =
+              this.Var.Value <- if first then SplitterStructure.New(ver, node      , this.Value) 
+                                         else SplitterStructure.New(ver, this.Value, node      )
+          member this.SplitMe(first, ver, node:TabStrip) = this.SplitMe(first, ver, TabStrip  node      )
+          member this.SplitMe(first, ver, node:HtmlNode) = this.SplitMe(first, ver, HtmlNode  node      )
+          member this.SplitMe(first, ver               ) = this.SplitMe(first, ver, TabStrip.New([||])  )
+          member this.IsEmpty                            =
+              match this.Value with
+              | HtmlNode HtmlEmpty           -> true
+              | HtmlNode _                   -> false
+              | TabStrip strip               -> strip.tabs.Value.Length = 0
+              | Split   (ver, var, ch1, ch2) -> ch1.IsEmpty && ch2.IsEmpty
+          member this.UnSplitEmpties()                   =
+              if                                    this.IsEmpty then this.Var.Value <- SplitterStructure.New(TabStrip.New([||])) else
+              match this.Value with
+              | Split   (ver, var, ch1, ch2) -> if   ch1.IsEmpty then ch2.UnSplitEmpties() ; this.Var.Value <- ch2.Value 
+                                                elif ch2.IsEmpty then ch1.UnSplitEmpties() ; this.Var.Value <- ch1.Value 
+                                                                 else ch1.UnSplitEmpties()
+                                                                      ch2.UnSplitEmpties()
+              | _                            -> ()  
+      
     # 1 @"(4)e2ca8cb1-fb1e-4793-855f-55e3ca07b8f5 RunCode.fsx"
     [<JavaScript>]
     module RunCode       =
@@ -2168,6 +2444,8 @@ namespace FSSGlobal
                   )
               <| false <| code
       
+      let startRPC  asy = Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))
+      
       # 1 @"(6)f2571ac9-37ec-4d7c-9ead-9e5f79ae1be1 type RunNode(nodeName, clearNode bool) =.fsx"
       type RunNode(nodeName, ?clearNode: bool) =
         let bClearNode    = defaultArg clearNode true
@@ -2207,42 +2485,21 @@ namespace FSSGlobal
         member inline this.RunDoc  doc  = doc  :> Doc       |> Doc.Run this.RunNode
       # 1 @"(6)3038cd62-093c-4385-aa9b-799297bd379c RunHtml.fsx"
         member inline this.RunHtml node = node |> renderDoc |> this.RunDoc
-      # 1 @"(6)456562f7-0757-4431-9aeb-d58b050cecf7 RunHtmlPlusFree.fsx"
-        member        this.RunHtmlPlusFree node =
-          let freeHtml    = Var.Create ""
-          let freeCSS     = Var.Create ""
-          let freeFS      = Var.Create ""
-          let freeJS      = Var.Create ""
-          let freeMsgs    = Var.Create ""
-          let sendMsg msg = 
-              freeMsgs.Value  <- 
-                  match freeMsgs.Value, msg with
-                  | null, m 
-                  | ""  , m
-                  | m   , null
-                  | m   , ""   -> m
-                  | m1  , m2   -> m1 + "\n" + m2
-          let runJS () =
-              sendMsg "Running JavaScript..."
-              try JS.Eval(freeJS.Value) |> (fun v -> sendMsg "Done!"; v.ToString())
-              with e -> sendMsg "Failed!"; e.ToString()
-              |> sendMsg
-          let runFS () =
-              freeMsgs.Value <- "Compiling to JavaScript..."
-              freeJS.Value   <- ""
-              compile (fun msgs js -> freeJS.Value <- js ; runJS() ) sendMsg freeFS.Value
-          div [ style "height: 100%"
-                node
-                Template.Button.New("Eval F#").Style("vertical-align:top").OnClick(fun _ _ -> runFS()                        ).Render  
-                someElt <| Doc.InputArea [ attr.placeholder "F#:"         ; attr.title "Add F# code and invoke with Eval F#" ] freeFS
-                someElt <| Doc.InputArea [ attr.placeholder "HTML:"       ; attr.title "Enter HTML tags and text"            ] freeHtml 
-                someElt <| Doc.InputArea [ attr.placeholder "CSS:"        ; attr.title "Test your CSS styles dynamically"    ] freeCSS 
-                someElt <| Doc.InputArea [ attr.placeholder "JavaScript:" ; attr.title "Add JS code and invoke with Eval JS" ] freeJS
-                Template.Button.New("Eval JS").Style("vertical-align:top").OnClick(fun _ _ -> freeMsgs.Value <- "" ; runJS() ).Render  
-                someElt <| Doc.InputArea [ attr.placeholder "Output:"     ; attr.title "Messages"                            ] freeMsgs
-                SomeDoc <| tag Doc.Verbatim (Val.map2 (sprintf "%s<style>%s</style>") freeHtml freeCSS)
-          ]
-          |> this.RunHtml
+      # 1 @"(6)bf400a85-8264-4540-9381-f3be0c968c94 ShowHtmlResult.fsx"
+        member inline this.ShowHtmlResult res =
+          this.AddBootstrap |> ignore
+          div [ ``class`` "container"
+                Template.Panel.New
+                  .Title("Result:")
+                  .Header([])
+                  .Content([ h3 res ; style "font-family:monospace;" ])
+                  .Render
+           ] |> this.RunHtml
+        member inline this.ShowHtmlResult res = this.ShowHtmlResult [res]
+      
+      # 1 @"(6)c47adc01-4550-4830-8df5-e1ebedaee7d0 ShowResult.fsx"
+        member inline this.ShowResult res = htmlText (sprintf "%A" res) |> this.ShowHtmlResult
+      
     # 1 @"(4)c2188026-a06a-4963-a95a-93075e5f5b6e FSharpStation.fsx"
     [<JavaScript>]
     module FSharpStation =
@@ -2564,8 +2821,7 @@ namespace FSSGlobal
       
       let listEntry isParent isExpanded code =
           Template.Hoverable.New
-              .Content( [ 
-                          ``class`` "code-editor-list-tile"
+              .Content( [ ``class`` "code-editor-list-tile"
                           classIf   "selected"              <| Val.map ((=)                    code.id) currentCodeSnippetId
                           classIf   "direct-predecessor"    <| Val.map (isDirectPredecessor    code.id) currentCodeSnippetO
                           classIf   "indirect-predecessor"  <| Val.map (isIndirectPredecessor  code.id) curPredecessors
@@ -2592,21 +2848,23 @@ namespace FSSGlobal
                                     htmlText    "X"
                                   ]
                           ])
-              .Render
       
       let listEntries snps =
-          snps
-          |> Seq.indexed
-          |> Seq.mapFold (fun expanded (i, snp) ->
-              if snp.parent |> Option.map (fun p -> Set.contains p expanded) |> Option.defaultValue true then 
-                  let isParent    = codeSnippets |> Seq.tryItem (i + 1) |> Option.map (fun nxt -> nxt.parent = Some snp.id) |> Option.defaultValue false
-                  let isExpanded  = isParent && snp.expanded
-                  (listEntry isParent isExpanded snp |> Some, if isExpanded then Set.add snp.id expanded else expanded)
-              else  (None, expanded)
-          )  (Set [])
-          |> fst
-          |> Seq.choose (Option.map renderDoc)
-          |> Doc.Concat
+          div [ 
+              yield style "overflow: auto"
+              yield! 
+                  snps
+                  |> Seq.indexed
+                  |> Seq.mapFold (fun expanded (i, snp) ->
+                      if snp.parent |> Option.map (fun p -> Set.contains p expanded) |> Option.defaultValue true then 
+                          let isParent    = codeSnippets |> Seq.tryItem (i + 1) |> Option.map (fun nxt -> nxt.parent = Some snp.id) |> Option.defaultValue false
+                          let isExpanded  = isParent && snp.expanded
+                          (listEntry isParent isExpanded snp |> Some, if isExpanded then Set.add snp.id expanded else expanded)
+                      else  (None, expanded)
+                  )  (Set [])
+                  |> fst
+                  |> Seq.choose id
+          ]
       # 1 @"(6)54304360-819a-498c-a091-e6ece880a35a Deserialize.fsx"
       let inline ifUndef def v = if isUndefined v then def else v
       let obj2CodeSnippetId o = 
@@ -2727,8 +2985,9 @@ namespace FSSGlobal
       let parseFile = @"..\F#.fsx"
       
       type KeyMapAutoComplete = { 
-          F2             : Template.CodeMirrorEditor -> unit 
-          ``Ctrl-Space`` : Template.CodeMirrorEditor -> unit
+          F2              : Template.CodeMirrorEditor -> unit 
+          LeftDoubleClick : Template.CodeMirrorEditor -> unit
+          ``Ctrl-Space``  : Template.CodeMirrorEditor -> unit
       }
       
       let setDirtyCond() =
@@ -2863,8 +3122,9 @@ namespace FSSGlobal
           Template.CodeMirror.New(Val.bindIRef curSnippetCodeOf currentCodeSnippetId)
               .OnChange(setDirtyCond)
               .OnRender(fun ed ->
-                ed.AddKeyMap({  F2             = showToolTip            
-                                ``Ctrl-Space`` = Template.showHints ed getHints false
+                ed.AddKeyMap({  F2              = showToolTip            
+                                LeftDoubleClick = showToolTip
+                                ``Ctrl-Space``  = Template.showHints ed getHints false
                              })
                 Template.setLint ed getAnnotations 
               )
@@ -2923,7 +3183,7 @@ namespace FSSGlobal
       //    } |> Async.Start
       //)
       
-      # 1 @"(6)fa5b4506-b26d-4387-8e04-ac7a5a90861a css.fsx"
+      # 1 @"(6)fa5b4506-b26d-4387-8e04-ac7a5a90861a styleEditor.fsx"
       let styleEditor    =
            """
       div textarea {
@@ -2985,69 +3245,38 @@ namespace FSSGlobal
       .Warning { text-decoration: underline lightblue } 
       .Error   { text-decoration: underline red  } 
           """
-      # 1 @"(6)95ca1e9f-4029-4fc1-8b1c-ab12db71c90b Messaging.fsx"
-      //#r "remote.dll"
-      open CIPHERPrototype.Messaging
-      open FsStationShared
-      
-      let fsStationClient = FsStationClient(fsIds, fsIds)
-      
-      let respond fromId (msg:FSMessage) : FSResponse =
-          match msg with
-          | GetSnippetContentById sId  -> CodeSnippet.FetchO       sId  |> Option.map (fun snp -> snp.content        )                             |> StringResponse       
-          | GetSnippetCodeById    sId  -> CodeSnippet.FetchO       sId  |> Option.map (fun snp -> snp.GetCodeFsx true)                             |> StringResponse 
-          | GetSnippetPredsById   sId  -> CodeSnippet.FetchO       sId  |> Option.map (fun snp -> snp.Predecessors ()) |> Option.defaultValue [||] |> SnippetsResponse
-          | GetSnippetById        sId  -> CodeSnippet.FetchO       sId                                                                             |> SnippetResponse 
-          | GetSnippetContent     path -> CodeSnippet.FetchByPathO path |> Option.map (fun snp -> snp.content        )                             |> StringResponse
-          | GetSnippetCode        path -> CodeSnippet.FetchByPathO path |> Option.map (fun snp -> snp.GetCodeFsx true)                             |> StringResponse
-          | GetSnippetPreds       path -> CodeSnippet.FetchByPathO path |> Option.map (fun snp -> snp.Predecessors ()) |> Option.defaultValue [||] |> SnippetsResponse
-          | GetSnippet            path -> CodeSnippet.FetchByPathO path                                                                            |> SnippetResponse 
-          | GenericMessage        txt  -> (Some <| "Message received: " + txt)                                                                     |> StringResponse
-          | GetIdentification          -> fromId                                                                                                   |> IdResponse  
-      
-      let respondMessage fromId txt =
-          txt 
-          |> Json.Deserialize
-          |> respond fromId
-          |> Json.Serialize
-      
-      1000 |> JS.SetTimeout (fun () -> fsStationClient.MessagingClient.AwaitMessage respondMessage) |> ignore
-      
-      
-      # 1 @"(6)75c3d033-99b5-409f-8ecb-cd9bd8b101ab CodeEditor.fsx"
+      # 1 @"(6)75c3d033-99b5-409f-8ecb-cd9bd8b101ab CodeEditorGrid.fsx"
       let spl1         = Template.SplitterBar.New(20.0).Children([ style "grid-row: 2 / 4" ])
       storeVarCodeEditor "splitterV1" spl1.Var
       //storeVarCodeEditor "splitterV2" splitterV2.Var
       //storeVarCodeEditor "splitterH3" splitterH3.Var
+      
+      let Messages =
+          [
+           "Output"    , Template.TextArea.New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 ).Render
+           "JavaScript", Template.TextArea.New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated").Render
+           "F# code"   , Template.TextArea.New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        ).Render
+           "WS Result" , div [ div [ Id "TestNode" ; style "background: white; height: 100%; width: 100%; "] ]
+          ]
+      
       let CodeEditor() =
         Template.Grid.New
-           .ColVariable(spl1).ColVariable(50.0).Max(Val.map ((-) 92.0) spl1.GetValue).Children([ style "grid-row: 3 / 5" ]).ColAuto(0.0)
-           .RowFixedPx(34.0) .RowAuto(0.0).RowVariable(17.0).Children([ style "grid-column: 2 / 4" ]).Before.RowFixedPx(80.0)
+           .ColVariable(spl1)
+           .ColAuto(     0.0)
+           .ColVariable( 0.0).Min(0.0).Max(Val.map ((-) 92.0) spl1.GetValue).Before.Children([ style "grid-row   : 1 / 5" ])
+           .RowFixedPx( 34.0) 
+           .RowAuto(     0.0)
+           .RowVariable(17.0)                                               .Before.Children([ style "grid-column: 2 / 3" ])
+           .RowFixedPx( 80.0)
            .Padding(1.0)
-           .Content( style  """ 
-                          grid-template-areas:
-                              'header0 header   header  '
-                              'sidebar content1 content1'
-                              'sidebar content2 content3'
-                              'footer  footer   footer2 ';
-                          color      : #333;
-                          height     : 100%;
-                          font-size  : small;
-                          font-family: monospace;
-                          line-height: 1.2;
-                      """)
            .Content("sidebar", 
-              div [ style "overflow: auto"
-                    codeSnippets.View
-                    |> View.SnapshotOn codeSnippets.Value refresh.View
-                    |> View.Map listEntries
-                    |> Doc.BindView id |> SomeDoc
-                  ])
+               codeSnippets.View
+               |> View.SnapshotOn codeSnippets.Value refresh.View
+               |> bindHElem listEntries
+            )
            .Content("header"  , Template.Input     .New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:")         .Render)
            .Content("content1", codeMirror                                                                                                   .Render)
-           .Content("content2", Template.TextArea  .New(codeMsgs).Placeholder("Output:"    ).Title("Messages"                 )              .Render)
-           .Content("content3", Template.TextArea  .New(codeJS  ).Placeholder("Javascript:").Title("JavaScript code generated")              .Render)
-           .Content("footer2" , Template.TextArea  .New(codeFS  ).Placeholder("F# code:"   ).Title("F# code assembled"        )              .Render) 
+           .Content("content2", Template.TabStrip  .New(Messages).Top                                                                        .Render)
            .Content("footer"  ,       
               div [ 
                     Template.Button.New("Add code"              ).Class("btn btn-xs"     ).OnClick(Do addCode      )                          .Render
@@ -3083,40 +3312,77 @@ namespace FSSGlobal
            .Content( link   [ href "/EPFileX/css/main.css"                                               ; ``type`` "text/css" ; rel "stylesheet" ] )
            .Content( css styleEditor                                                                                                                )
            .Render
+           .Style(""" 
+                  grid-template-areas:
+                      'header0 header   sidebar2'
+                      'sidebar content1 sidebar2'
+                      'sidebar content2 sidebar2'
+                      'footer  footer   sidebar2';
+                  color      : #333;
+                  height     : 100%;
+                  font-size  : small;
+                  font-family: monospace;
+                  line-height: 1.2;
+                      """)
       
-      # 1 @"(6)07f11803-2084-4a0a-9066-a43fd11be1c7 CodeEditor page.fsx"
-      let splitterMain1 =
-          Template.SplitterBar.New( 0.0).Vertical(directionVertical).Min( 0.0).Max(35.0)
       
-      let splitterMain2 =
-          Template.SplitterBar.New(24.0).Vertical(directionVertical).Min( 0.5).Max(Val.map (fun pos -> if pos = NewBrowser then 0.1 else 50.0) position).Before
+    # 1 @"(4)57a30378-4a52-4122-b297-fe5cec1bd067 WebSharper Snippets2.fsx"
+    [< JavaScript >]
+    module Snippets2 = 
+      # 1 @"(6)8ee8705a-f115-437e-8d7d-418773f3c6d4 Editor2.fsx"
+      open FSharpStation
+      open Template
       
-      storeVarCodeEditor "splitterMain1" splitterMain1.Var
-      storeVarCodeEditor "splitterMain2" splitterMain2.Var
+      let snippetList = 
+          codeSnippets.View
+             |> View.SnapshotOn codeSnippets.Value refresh.View
+             |> bindHElem listEntries
+             
+      let buttons =
+          div [ 
+                Template.Button.New("Add code"              ).Class("btn btn-xs"     ).OnClick(Do addCode      )                          .Render
+                Template.Button.New("<<"                    ).Class("btn btn-xs"     ).OnClick(Do indentCodeOut).Disabled(noSelectionVal) .Render
+                Template.Button.New(">>"                    ).Class("btn btn-xs"     ).OnClick(Do indentCodeIn ).Disabled(noSelectionVal) .Render
+                loadFileElement.Render.AddChildren([ style "grid-column: 4/6" ])
+                Template.Button.New("Parse F#"              ).Class("btn btn-xs"     ).OnClick(Do parseFS      ).Disabled(noSelectionVal) .Render
+                Template.Button.New("Evaluate F# (FSI)"     ).Class("btn btn-xs"     ).OnClick(Do evaluateFS   ).Disabled(noSelectionVal) .Render
+                Template.Button.New("Get F# code ==>"       ).Class("btn btn-xs"     ).OnClick(Do getFSCode    ).Disabled(noSelectionVal) .Render
+          
+                Template.Button.New("Delete code"           ).Class("btn btn-xs"     ).OnClick(Do deleteCode   ).Disabled(noSelectionVal) .Render
+                span []       
+                span []       
+                Template.Button.New("Save as..."            ).Class("btn            ").OnClick(Do downloadFile )                          .Render.AddChildren([classIf "btn-primary" dirty])
+                span []
+                Template.Button.New("Compile WebSharper"    ).Class("btn btn-xs"     ).OnClick(Do justCompile  ).Disabled(noSelectionVal) .Render
+                Template.Button.New("Run WebSharper in ..." ).Class("btn btn-xs"     ).OnClick(Do compileRun   ).Disabled(noSelectionVal) .Render
+                Doc.Select [ attr.id "Position" ] positionTxt [ Below ; Right ; NewBrowser ] position |> someElt
+                style """
+                    overflow: hidden;
+                    display: grid;
+                    grid-template-columns: repeat(8, 12.1%);
+                    bxackground-color: #eee;
+                    padding : 5px;
+                    grid-gap: 5px;
+                """
+              ]
       
-      //RunCode.RunNode("CodeEditor").AddBootstrap.RunHtml <| CodeEditor()
-      //addNodeById "pageStyle"                            <| styleH [ htmlText pageStyle ]
-      //addNodeById "splitterMain1"                        <| splitterMain1.Render
-      //addNodeById "splitterMain2"                        <| splitterMain2.Render
+      let rootSplitter = 
+          SplitterNode.New(SplitterStructure.New(false
+              , SplitterStructure.New(true, HtmlNode snippetList
+                  , SplitterStructure.New(false
+                      , SplitterStructure.New(false
+                          , Template.Input.New(Val.bindIRef curSnippetNameOf currentCodeSnippetId).Prefix(htmlText "name:").Render
+                          , codeMirror.Render)
+                      , TabStrip <| TabStrip.New Messages))
+              , HtmlNode buttons))
       
-      let grid = 
-          Template.Grid.New
-             .Padding(0.0)
-             .Content("editor", CodeEditor())
-             .Content(style    "height: 100vh; margin: 0px; ")
-             .Content(css """
-                 #CodeEditor              { grid-area: editor  ; overflow: hidden; }
-                 #TestNode                { grid-area: testNode; overflow: auto  ; }
-                 body > div:first-of-type { grid-area: header  ; overflow: hidden; }
-             """)
-      
-      directionVertical
-      |> Val.map (fun dir ->
-          (if dir
-           then grid.ColVariable(splitterMain1).ColAuto(16.0).ColVariable(splitterMain2).Content(style """ grid-template-areas: 'header   editor   testNode'; """)
-           else grid.RowVariable(splitterMain1).RowAuto(16.0).RowVariable(splitterMain2).Content(style """ grid-template-areas: 'header' 'editor' 'testNode'; """)
-          ).GridTemplate())
-      |> bindHElem body
-      |> renderDoc
-      |> Doc.RunReplace JS.Document.Body
-      
+      div [ style "height: 100%; width: 100% "
+            rootSplitter.Render.Style("height: 100%; width: 100% ")
+            script [ src  "/EPFileX/FileSaver/FileSaver.js"                                     ; ``type`` "text/javascript"             ]
+            script [ src  "http://code.jquery.com/jquery-3.1.1.min.js"                          ; ``type`` "text/javascript"             ]
+            script [ src  "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"  ; ``type`` "text/javascript"             ]
+            link   [ href "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"; ``type`` "text/css" ; rel "stylesheet" ]
+            link   [ href "/EPFileX/css/main.css"                                               ; ``type`` "text/css" ; rel "stylesheet" ]
+            css styleEditor                                                                                                               
+          ]
+      |> RunCode.RunNode().AddBootstrap.RunHtml
