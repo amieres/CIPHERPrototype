@@ -5051,15 +5051,27 @@
   b=null;
   return Concurrency.Delay(function()
   {
-   return!FSharpStation.parsed()?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
-   {
-    return Concurrency.Return(null);
-   }):Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   return Concurrency.Bind(FSharpStation.mustParse(cur),function(a)
    {
     return a?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
     {
-     return Concurrency.Return(null);
+     return Concurrency.Bind(FSharpStation.parseIfMustThen(cur,silent),function()
+     {
+      return Concurrency.Return(null);
+     });
     }):Concurrency.Zero();
+   });
+  });
+ };
+ FSharpStation.mustParse=function(cur)
+ {
+  var b;
+  b=null;
+  return Concurrency.Delay(function()
+  {
+   return!FSharpStation.parsed()?Concurrency.Return(true):Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   {
+    return Concurrency.Return(a);
    });
   });
  };
@@ -6370,7 +6382,7 @@
   })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Run WebSharper in ...").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
   {
    FSharpStation.compileRun();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.Right,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                    overflow: hidden;\r\n                    display: grid;\r\n                    grid-template-columns: repeat(8, 12.1%);\r\n                    bxackground-color: #eee;\r\n                    padding : 5px;\r\n                    grid-gap: 5px;\r\n                ")]);
+  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                    overflow: hidden;\r\n                    display: grid;\r\n                    grid-template-columns: repeat(8, 12.1%);\r\n                    bxackground-color: #eee;\r\n                    padding : 5px;\r\n                    grid-gap: 5px;\r\n                ")]);
   SC$1.title={
    $:0,
    $0:Input.New$2((view$1=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar$1=Var.Create$1(null),(changingIRefO$1=[null],(contentVarChanged$1=[0],(refVarChanged$1=[0],(View.Sink(function()
