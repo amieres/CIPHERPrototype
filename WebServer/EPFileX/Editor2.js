@@ -2332,73 +2332,84 @@
  HelperType.HelperType={
   $:0
  };
- HelperType.op_AmpGreater=function(_arg13,vw)
+ HelperType.op_AmpGreater=function(_arg15,vw)
  {
   return{
    $:2,
    $0:vw
   };
  };
- HelperType.op_AmpGreater$1=function(_arg12,vr)
+ HelperType.op_AmpGreater$1=function(_arg14,vr)
  {
   return{
    $:1,
    $0:vr
   };
  };
- HelperType.op_AmpGreater$2=function(_arg11,va)
+ HelperType.op_AmpGreater$2=function(_arg13,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$3=function(_arg10,va)
+ HelperType.op_AmpGreater$3=function(_arg12,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$4=function(_arg9,va)
+ HelperType.op_AmpGreater$4=function(_arg11,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$5=function(_arg8,va)
+ HelperType.op_AmpGreater$5=function(_arg10,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$6=function(_arg7,va)
+ HelperType.op_AmpGreater$6=function(_arg9,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$7=function(_arg6,va)
+ HelperType.op_AmpGreater$7=function(_arg8,va)
  {
   return va;
  };
- HelperType.op_AmpGreater$8=function(_arg5,a)
+ HelperType.op_AmpGreater$8=function(_arg7,va)
+ {
+  return va;
+ };
+ HelperType.op_AmpGreater$9=function(_arg6,a)
  {
   return{
    $:0,
    $0:a
   };
  };
- HelperType.op_AmpGreater$9=function(_arg4,a)
+ HelperType.op_AmpGreater$10=function(_arg5,a)
  {
   return{
    $:0,
    $0:a
   };
  };
- HelperType.op_AmpGreater$10=function(_arg3,a)
+ HelperType.op_AmpGreater$11=function(_arg4,a)
  {
   return{
    $:0,
    $0:a
   };
  };
- HelperType.op_AmpGreater$11=function(_arg2,a)
+ HelperType.op_AmpGreater$12=function(_arg3,a)
  {
   return{
    $:0,
    $0:a
   };
  };
- HelperType.op_AmpGreater$12=function(_arg1,a)
+ HelperType.op_AmpGreater$13=function(_arg2,a)
+ {
+  return{
+   $:0,
+   $0:a
+  };
+ };
+ HelperType.op_AmpGreater$14=function(_arg1,a)
  {
   return{
    $:0,
@@ -2481,6 +2492,23 @@
  Val.attrV=function(att,va)
  {
   return va.$==2?AttrModule.Dynamic(att,va.$0):va.$==1?AttrModule.Dynamic(att,va.$0.RView()):AttrProxy.Create(att,va.$0);
+ };
+ Val.attrVO=function(att,vao)
+ {
+  var wa,va;
+  return vao.$==2?(wa=vao.$0,AttrModule.DynamicPred(att,View.Map(function(o)
+  {
+   return o!=null;
+  },wa),View.Map(function(o)
+  {
+   return o==null?"":o.$0;
+  },wa))):vao.$==1?(va=vao.$0,AttrModule.DynamicPred(att,View.Map(function(o)
+  {
+   return o!=null;
+  },va.RView()),View.Map(function(o)
+  {
+   return o==null?"":o.$0;
+  },va.RView()))):vao.$0==null?AttrModule.DynamicPred(att,View.Const(false),View.Const("")):AttrProxy.Create(att,vao.$0.$0);
  };
  Val.tagElt=function(tag,va)
  {
@@ -2591,34 +2619,26 @@
   {
    return this.AddChildren([HtmlNode.style(sty)]);
   },
+  AddClass:function(c)
+  {
+   return HtmlNode.addClass(c,this);
+  },
   InsertChildren:function(add)
   {
-   return HtmlNode.mapHtmlElement(function(n)
-   {
-    return function(ch)
-    {
-     return[n,Seq.append(add,ch)];
-    };
-   },this);
+   return HtmlNode.insertChildren(add,this);
   },
   AddChildren:function(add)
   {
-   return HtmlNode.mapHtmlElement(function(n)
-   {
-    return function(ch)
-    {
-     return[n,Seq.append(ch,add)];
-    };
-   },this);
+   return HtmlNode.addChildren(add,this);
   },
   get_toDoc:function()
   {
    var $1,x,v;
-   return this.$==1||this.$==3&&true?Doc.Empty():(x=HtmlNode.chooseNode(this),(v=Doc.Empty(),x==null?v:x.$0));
+   return this.$==1||this.$==4&&true?Doc.Empty():(x=HtmlNode.chooseNode(this),(v=Doc.Empty(),x==null?v:x.$0));
   }
  },null,HtmlNode$1);
  HtmlNode$1.HtmlEmpty=new HtmlNode$1({
-  $:3
+  $:4
  });
  HtmlNode.findRootElement=function(e)
  {
@@ -2631,10 +2651,10 @@
   var cover;
   cover=Var.Create$1(true);
   return HtmlNode.div([HtmlNode.style("position: relative; overflow: hidden; height: 100%; width: 100%;"),HtmlNode.iframe([HtmlNode.style("position: absolute; width:100%; height:100%;"),HtmlNode.frameborder("0"),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.OnAfterRender(f)
   }),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("mouseleave",function()
    {
     return function()
@@ -2643,7 +2663,7 @@
     };
    })
   })]),HtmlNode.div([HtmlNode.style("position: absolute;"),HtmlNode.classIf("iframe-cover",Val.map(window.id,cover)),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("mouseenter",function()
    {
     return function()
@@ -2660,7 +2680,7 @@
  HtmlNode.bindHElem=function(hElemF,v)
  {
   return new HtmlNode$1({
-   $:4,
+   $:5,
    $0:Val.map(hElemF,Val.fixit(v))
   });
  };
@@ -2686,7 +2706,7 @@
  {
   var m,cv;
   return new HtmlNode$1({
-   $:6,
+   $:7,
    $0:(m=Val.fixit(v),m.$==2?AttrModule.DynamicClass("class_for_view_not_implemented",m.$0,function(y)
    {
     return""!==y;
@@ -2758,6 +2778,10 @@
  HtmlNode.rel=function(v)
  {
   return HtmlNode.htmlAttribute("rel",v);
+ };
+ HtmlNode.hrefO=function(vO)
+ {
+  return HtmlNode.htmlAttributeO("href",vO);
  };
  HtmlNode.href=function(v)
  {
@@ -2875,35 +2899,9 @@
  {
   return HtmlNode.htmlElement("ul",ch);
  };
- HtmlNode.someElt=function(elt)
+ HtmlNode.a=function(ch)
  {
-  return new HtmlNode$1({
-   $:5,
-   $0:elt
-  });
- };
- HtmlNode.htmlText=function(txt)
- {
-  return new HtmlNode$1({
-   $:2,
-   $0:Val.fixit(txt)
-  });
- };
- HtmlNode.htmlAttribute=function(name,v)
- {
-  return new HtmlNode$1({
-   $:1,
-   $0:name,
-   $1:Val.fixit(v)
-  });
- };
- HtmlNode.htmlElement=function(name,ch)
- {
-  return new HtmlNode$1({
-   $:0,
-   $0:name,
-   $1:ch
-  });
+  return HtmlNode.htmlElement("a",ch);
  };
  HtmlNode.textV=function(v)
  {
@@ -2938,29 +2936,88 @@
   SC$1.$cctor();
   return SC$1.renderDoc;
  };
- HtmlNode.replaceAtt=function(att,node,newVal)
+ HtmlNode.addClassIf=function(c,v)
  {
-  return HtmlNode.mapHtmlElement(function(n)
+  var c$1;
+  c$1=Val.map(function(b)
   {
-   return function(ch)
-   {
-    return[n,HtmlNode.replaceAttribute(att,ch,newVal)];
-   };
-  },node);
+   return b?c:"";
+  },Val.fixit(v));
+  return function(h)
+  {
+   return HtmlNode.addClass(c$1,h);
+  };
  };
- HtmlNode.replaceAttribute=function(att,children,newVal)
+ HtmlNode.addClass=function(c,h)
  {
-  return new List.T({
-   $:1,
-   $0:new HtmlNode$1({
-    $:1,
-    $0:att,
-    $1:newVal
-   }),
-   $1:List.ofSeq(Seq.filter(function(a)
+  return HtmlNode.addChildren(List.ofArray([HtmlNode.htmlAttribute("class",c)]),h);
+ };
+ HtmlNode.insertChildren=function(add,h)
+ {
+  var f;
+  f=function(n,ch)
+  {
+   return[n,Seq.append(add,ch)];
+  };
+  return HtmlNode.mapHtmlElement(function($1)
+  {
+   return function($2)
    {
-    return a.$==1?a.$0===att?false:true:true;
-   },children))
+    return f($1,$2);
+   };
+  },h);
+ };
+ HtmlNode.addChildren=function(add,h)
+ {
+  var f;
+  f=function(n,ch)
+  {
+   return[n,Seq.append(ch,add)];
+  };
+  return HtmlNode.mapHtmlElement(function($1)
+  {
+   return function($2)
+   {
+    return f($1,$2);
+   };
+  },h);
+ };
+ HtmlNode.someElt=function(elt)
+ {
+  return new HtmlNode$1({
+   $:6,
+   $0:elt
+  });
+ };
+ HtmlNode.htmlText=function(txt)
+ {
+  return new HtmlNode$1({
+   $:3,
+   $0:Val.fixit(txt)
+  });
+ };
+ HtmlNode.htmlAttributeO=function(name,v)
+ {
+  return new HtmlNode$1({
+   $:2,
+   $0:name,
+   $1:Val.fixit(v)
+  });
+ };
+ HtmlNode.htmlAttribute=function(name,v)
+ {
+  return new HtmlNode$1({
+   $:1,
+   $0:name,
+   $1:Val.fixit(v)
+  });
+ };
+ HtmlNode.htmlElement=function(name,ch)
+ {
+  return new HtmlNode$1({
+   $:0,
+   $0:name,
+   $1:ch
   });
  };
  HtmlNode.mapHtmlElement=function(f,element)
@@ -2970,8 +3027,8 @@
    $:0,
    $0:t[0],
    $1:t[1]
-  })):element.$==4?new HtmlNode$1({
-   $:4,
+  })):element.$==5?new HtmlNode$1({
+   $:5,
    $0:Val.map(function(e)
    {
     return HtmlNode.mapHtmlElement(f,e);
@@ -3010,13 +3067,13 @@
   return node.$==0?(children=node.$1,{
    $:1,
    $0:Doc.Element(node.$0,HtmlNode.getAttrsFromSeq(children),Seq.choose(HtmlNode.chooseNode,children))
-  }):node.$==2?{
+  }):node.$==3?{
    $:1,
    $0:Val.tagDoc(Doc.TextNode,node.$0)
-  }:node.$==5?{
+  }:node.$==6?{
    $:1,
    $0:node.$0
-  }:node.$==4?{
+  }:node.$==5?{
    $:1,
    $0:(x=Val.toView(node.$0),Doc.BindView((g=(v=Doc.Empty(),function(o)
    {
@@ -3071,25 +3128,24 @@
  };
  HtmlNode.chooseAttr=function(node)
  {
-  var $1,name;
+  var $1,name,$2,name$1;
   return node.$==1&&((name=node.$0,name!=="class"&&name!=="style")&&($1=[node.$0,node.$1],true))?{
    $:1,
    $0:Val.attrV($1[0],$1[1])
-  }:node.$==6?{
+  }:node.$==2&&((name$1=node.$0,name$1!=="class"&&name$1!=="style")&&($2=[node.$0,node.$1],true))?{
+   $:1,
+   $0:Val.attrVO($2[0],$2[1])
+  }:node.$==7?{
    $:1,
    $0:node.$0
   }:null;
  };
- HtmlNode.callAddClass=function()
+ HtmlNode.callAddClassX=function()
  {
   SC$1.$cctor();
-  return SC$1.callAddClass;
+  return SC$1.callAddClassX;
  };
- HtmlNode.removeClass=function(classes,rem)
- {
-  return Strings.concat(" ",(new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(classes,[32],0)))).Remove(rem));
- };
- HtmlNode.addClass=function(classes,add)
+ HtmlNode.addClassX=function(classes,add)
  {
   var x;
   return Strings.concat(" ",(x=new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(classes,[32],0))),new FSharpSet.New$1(BalancedTree.OfSeq(Seq.append(new FSharpSet.New$1(BalancedTree.OfSeq(Strings.SplitChars(add,[32],0))),x)))));
@@ -3127,13 +3183,13 @@
   {
    var view;
    return HtmlNode.button([HtmlNode.type(this._type),HtmlNode["class"](this._class),HtmlNode.Id(this.id),HtmlNode.style(this.style),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:(view=View.Const(""),AttrModule.DynamicPred("disabled",Val.toView(this.disabled),view))
    }),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrProxy.Handler("click",this.onClick)
    }),new HtmlNode$1({
-    $:2,
+    $:3,
     $0:this.text
    })]);
   }
@@ -3207,7 +3263,7 @@
    $this=this;
    groupClass=function(det)
    {
-    return det.$==2?"input-group-addon":"input-group-btn";
+    return det.$==3?"input-group-addon":"input-group-btn";
    };
    return HtmlNode.div(List.ofSeq(Seq.delay(function()
    {
@@ -3216,7 +3272,7 @@
      return Seq.append($this.prefixAdded?[HtmlNode.span([HtmlNode["class"](groupClass($this.prefix)),$this.prefix])]:[],Seq.delay(function()
      {
       return Seq.append([new HtmlNode$1({
-       $:5,
+       $:6,
        $0:Doc.Input(Seq.append($this.content,List.ofArray([HtmlNode._type($this._type),HtmlNode._class($this._class),HtmlNode._style($this.style),AttrProxy.Create("id",$this.id),HtmlNode._placeholder($this.placeholder)])),$this["var"])
       })],Seq.delay(function()
       {
@@ -3259,7 +3315,7 @@
    var $this;
    $this=this;
    return c.AddChildren([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("mouseenter",function()
     {
      return function()
@@ -3268,7 +3324,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("mouseleave",function()
     {
      return function()
@@ -3283,7 +3339,7 @@
    var $this;
    $this=this;
    return HtmlNode.div(Seq.append(c,List.ofArray([HtmlNode.classIf("hovering",this.hover),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("mouseenter",function()
     {
      return function()
@@ -3292,7 +3348,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("mouseleave",function()
     {
      return function()
@@ -3421,10 +3477,10 @@
    var $this;
    $this=this;
    return HtmlNode.div([HtmlNode["class"](this._class),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrProxy.Create("id",this.id)
    }),HtmlNode.style("position: relative; height: 300px"),HtmlNode.style(this.style),HtmlNode.div([HtmlNode.style("height: 100%; width: 100%; position: absolute;"),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.OnAfterRender(function(el)
     {
      window.CIPHERSpaceLoadFiles(Template.codeMirrorIncludes(),function()
@@ -3630,7 +3686,7 @@
    {
     return ver?"Vertical":"Horizontal";
    },this.vertical)),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("mousedown",function($1)
     {
      return function($2)
@@ -3639,7 +3695,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.OnAfterRender(function(el)
     {
      $this.domElem={
@@ -3776,7 +3832,7 @@
         }))(window.id))($this.gap))($this.padding))],Seq.delay(function()
         {
          return[new HtmlNode$1({
-          $:6,
+          $:7,
           $0:AttrModule.OnAfterRender(function(el)
           {
            function setDimensions()
@@ -4116,7 +4172,7 @@
        {
         return"tab"+(sel===i?" selected":"");
        },$this.selected)),HtmlNode.draggable("true"),new HtmlNode$1({
-        $:6,
+        $:7,
         $0:AttrModule.Handler("dragover",function()
         {
          return function(ev)
@@ -4125,7 +4181,7 @@
          };
         })
        }),new HtmlNode$1({
-        $:6,
+        $:7,
         $0:AttrModule.Handler("drag",function()
         {
          return function()
@@ -4137,7 +4193,7 @@
          };
         })
        }),new HtmlNode$1({
-        $:6,
+        $:7,
         $0:AttrModule.Handler("drop",function()
         {
          return function(ev)
@@ -4148,7 +4204,7 @@
          };
         })
        }),new HtmlNode$1({
-        $:6,
+        $:7,
         $0:AttrModule.Handler("click",function()
         {
          return function()
@@ -4193,7 +4249,7 @@
     })));
    },this.tabs);
    return HtmlNode.div([HtmlNode["class"]("tab-panel"),this.top?strip:HtmlNode$1.HtmlEmpty,HtmlNode.div([content,HtmlNode["class"]("tab-content")]),!this.top?strip:HtmlNode$1.HtmlEmpty,new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("dragover",function()
     {
      return function(ev)
@@ -4202,7 +4258,7 @@
      };
     })
    }),new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Handler("drop",function()
     {
      return function(ev)
@@ -4343,7 +4399,7 @@
   {
    var m;
    m=this.get_Value();
-   return m.$==1?Arrays.length(m.$0.tabs.RVal())===0:m.$==2?m.$0.get_IsEmpty()&&m.$1.get_IsEmpty():m.$0.$==3&&true;
+   return m.$==1?Arrays.length(m.$0.tabs.RVal())===0:m.$==2?m.$0.get_IsEmpty()&&m.$1.get_IsEmpty():m.$0.$==4&&true;
   },
   SplitMe:function(first,ver)
   {
@@ -5055,6 +5111,7 @@
    {
     return a?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
     {
+     FSharpStation.set_parsed(true);
      return Concurrency.Bind(FSharpStation.parseIfMustThen(cur,silent),function()
      {
       return Concurrency.Return(null);
@@ -5347,7 +5404,7 @@
   {
    return FSharpStation.isIndirectPredecessor(p$1,p$2);
   }),FSharpStation.curPredecessors())),HtmlNode.draggable("true"),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("dragover",function()
    {
     return function(ev)
@@ -5356,7 +5413,7 @@
     };
    })
   }),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("drag",function()
    {
     return function()
@@ -5365,7 +5422,7 @@
     };
    })
   }),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("drop",function()
    {
     return function(ev)
@@ -5375,7 +5432,7 @@
     };
    })
   }),HtmlNode.span([HtmlNode["class"]("node"),HtmlNode.classIf("parent",isParent),HtmlNode.classIf("expanded",isExpanded),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -5396,7 +5453,7 @@
     return FsStationShared.snippetName(n,c);
    };
   },FSharpStation.curSnippetNameOf(code.id),FSharpStation.curSnippetCodeOf(code.id))),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -5405,7 +5462,7 @@
     };
    })
   })]),HtmlNode.span([HtmlNode["class"]("predecessor"),HtmlNode.title("toggle predecessor"),new HtmlNode$1({
-   $:6,
+   $:7,
    $0:AttrModule.Handler("click",function()
    {
     return function()
@@ -6151,7 +6208,7 @@
   SC$1.result=new ropBuilder.New();
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
-  SC$1.callAddClass=HtmlNode.addClass("a","b");
+  SC$1.callAddClassX=HtmlNode.addClassX("a","b");
   SC$1.renderDoc=(g=(v=Doc.Empty(),function(o)
   {
    return o==null?v:o.$0;
@@ -6162,7 +6219,7 @@
   SC$1.string2Styles=(g$1=(m=function(n,v$7)
   {
    return new HtmlNode$1({
-    $:6,
+    $:7,
     $0:AttrModule.Style(n,v$7)
    });
   },function(a)
