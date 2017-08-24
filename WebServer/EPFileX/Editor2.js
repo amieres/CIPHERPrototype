@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,SplitterNode,SplitterStructure,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,JSON,Remoting,AjaxRemotingProvider,Date,Option$1,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Map,MatchFailureException,Slice,Json,Provider,FSharpMap,JavaScript,JSModule,HashSet,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,SplitterNode,SplitterStructure,MenuEntry,MenuNode,Menu,RunCode,EditorRpc,RunNode,FSharpStation,Position,KeyMapAutoComplete,CodeSnippet$1,SC$1,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonDecoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_JsonEncoder,_DAbeCIPHERWorkspaceCIPHERPrototypeWebServerbinproject$xxx_GeneratedPrintf,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,JSON,Remoting,AjaxRemotingProvider,Date,Option$1,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Map,MatchFailureException,Slice,Json,Provider,FSharpMap,JavaScript,JSModule,HashSet,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -155,6 +155,9 @@
  TabStrip=Template.TabStrip=Template.TabStrip||{};
  SplitterNode=Template.SplitterNode=Template.SplitterNode||{};
  SplitterStructure=Template.SplitterStructure=Template.SplitterStructure||{};
+ MenuEntry=Template.MenuEntry=Template.MenuEntry||{};
+ MenuNode=Template.MenuNode=Template.MenuNode||{};
+ Menu=Template.Menu=Template.Menu||{};
  RunCode=FSSGlobal.RunCode=FSSGlobal.RunCode||{};
  EditorRpc=RunCode.EditorRpc=RunCode.EditorRpc||{};
  RunNode=RunCode.RunNode=RunCode.RunNode||{};
@@ -4558,6 +4561,168 @@
    $2:Runtime.Curried(Template.renderSplitter,2,[per,vertical])
   };
  };
+ MenuEntry=Template.MenuEntry=Runtime.Class({
+  get_MenuNode:function()
+  {
+   return new MenuNode({
+    $:1,
+    $0:this
+   });
+  },
+  SubMenu:function(es)
+  {
+   return MenuEntry.New(this.text,this.ref,this.active,{
+    $:1,
+    $0:Menu.New2(es).get_DropDown()
+   },this.toolTip,this.divider,this.onClick);
+  },
+  SubMenu$1:function(es)
+  {
+   return MenuEntry.New(this.text,this.ref,this.active,{
+    $:1,
+    $0:Menu.New$1(es).get_DropDown()
+   },this.toolTip,this.divider,this.onClick);
+  },
+  OnClick:function(f)
+  {
+   return MenuEntry.New(this.text,this.ref,this.active,this.subMenu,this.toolTip,this.divider,{
+    $:1,
+    $0:f
+   });
+  },
+  get_Divider:function()
+  {
+   return MenuEntry.New(this.text,this.ref,this.active,this.subMenu,this.toolTip,true,this.onClick);
+  },
+  get_Render:function()
+  {
+   var x,x$1,x$2,m,a,m$1,a$1;
+   return(this.divider?function(h)
+   {
+    return HtmlNode.addClass("divider",h);
+   }:window.id)((x=(x$1=(x$2=Template.entryTxt(this.text,this.ref),(HtmlNode.addClassIf("active",this.active))(x$2)),(m=this.subMenu,(m!=null&&m.$==1?(a=List.ofArray([HtmlNode["class"]("dropdown"),m.$0.get_Render()]),function(h)
+   {
+    return HtmlNode.addChildren(a,h);
+   }):window.id)(x$1))),(m$1=this.onClick,(m$1!=null&&m$1.$==1?(a$1=List.ofArray([new HtmlNode$1({
+    $:7,
+    $0:AttrProxy.Handler("click",m$1.$0)
+   }),HtmlNode.style("cursor : pointer")]),function(h)
+   {
+    return HtmlNode.addChildren(a$1,h);
+   }):window.id)(x))));
+  }
+ },null,MenuEntry);
+ MenuEntry.New$1=function(txt,ref)
+ {
+  var i;
+  i=MenuEntry.New$2(txt);
+  return MenuEntry.New(i.text,Val.map(function(a)
+  {
+   return{
+    $:1,
+    $0:a
+   };
+  },ref),i.active,i.subMenu,i.toolTip,i.divider,i.onClick);
+ };
+ MenuEntry.New$2=function(txt)
+ {
+  return MenuEntry.New(Val.fixit(txt),{
+   $:0,
+   $0:null
+  },Val.fixit(false),null,null,false,null);
+ };
+ MenuEntry.New=function(text,ref,active,subMenu,toolTip,divider,onClick)
+ {
+  return new MenuEntry({
+   text:text,
+   ref:ref,
+   active:active,
+   subMenu:subMenu,
+   toolTip:toolTip,
+   divider:divider,
+   onClick:onClick
+  });
+ };
+ MenuNode=Template.MenuNode=Runtime.Class({
+  get_Render:function()
+  {
+   return this.$==1?this.$0.get_Render():this.$0;
+  }
+ },null,MenuNode);
+ Menu=Template.Menu=Runtime.Class({
+  get_Render:function()
+  {
+   var $this;
+   $this=this;
+   return(this.dropdown?Template.dropdown:Template.nav)(List.ofSeq(Seq.delay(function()
+   {
+    return Seq.map(function(entry)
+    {
+     return entry.get_Render();
+    },$this.entries);
+   })));
+  },
+  get_DropDown:function()
+  {
+   return Menu.New(this.entries,true);
+  }
+ },null,Menu);
+ Menu.New2=function(es)
+ {
+  return Menu.New$1(Seq.map(function(a)
+  {
+   return new MenuNode({
+    $:1,
+    $0:a
+   });
+  },es));
+ };
+ Menu.New$1=function(es)
+ {
+  return Menu.New(es,false);
+ };
+ Menu.New=function(entries,dropdown)
+ {
+  return new Menu({
+   entries:entries,
+   dropdown:dropdown
+  });
+ };
+ Template.navbar=function(brand,center,right)
+ {
+  return HtmlNode.div([HtmlNode["class"]("navbar navbar-default"),HtmlNode.div([HtmlNode["class"]("container-fluid"),HtmlNode.div([HtmlNode["class"]("navbar-header"),HtmlNode.div([HtmlNode["class"]("navbar-brand"),brand])]),HtmlNode.div([HtmlNode["class"]("navbar-collapse collapse"),center,HtmlNode.addClass("navbar-right",right)])])]);
+ };
+ Template.dropdown=function(ch)
+ {
+  return Template.entries(ch,"dropdown-menu");
+ };
+ Template.nav=function(ch)
+ {
+  return Template.entries(ch,"nav navbar-nav");
+ };
+ Template.entries=function(ch,cl)
+ {
+  return HtmlNode.addClass(cl,HtmlNode.ul(ch));
+ };
+ Template.entryTxt=function(txt,r)
+ {
+  return Template.menuEntry(Template.refText(txt,r));
+ };
+ Template.refText=function(txt,r)
+ {
+  return HtmlNode.bindHElem(function(t)
+  {
+   return t===""?HtmlNode$1.HtmlEmpty:Template.ref(HtmlNode.htmlText(t),r);
+  },txt);
+ };
+ Template.ref=function(content,r)
+ {
+  return HtmlNode.a([content,HtmlNode.hrefO(r)]);
+ };
+ Template.menuEntry=function(content)
+ {
+  return HtmlNode.li([content]);
+ };
  Template.renderSplitter=function(per,ver,ch1,ch2)
  {
   return ver?Grid.get_New().Content$1("one",Template.renderSplitterNode(ch1)).Content$1("two",Template.renderSplitterNode(ch2)).Padding(0).ColVariable(per).ColAuto(50).Content(HtmlNode.style("grid-template-areas: 'one   two' ")).get_Render():Grid.get_New().Content$1("one",Template.renderSplitterNode(ch1)).Content$1("two",Template.renderSplitterNode(ch2)).Padding(0).RowVariable(per).RowAuto(50).Content(HtmlNode.style("grid-template-areas: 'one' 'two' ")).get_Render();
@@ -4831,6 +4996,11 @@
   SC$1.$cctor();
   return SC$1.rootSplitter;
  };
+ FSharpStation.main_window=function()
+ {
+  SC$1.$cctor();
+  return SC$1.main_window;
+ };
  FSharpStation.main_messages=function()
  {
   SC$1.$cctor();
@@ -4850,6 +5020,11 @@
  {
   SC$1.$cctor();
   return SC$1.title_code;
+ };
+ FSharpStation.menu=function()
+ {
+  SC$1.$cctor();
+  return SC$1.menu;
  };
  FSharpStation.buttons=function()
  {
@@ -4894,6 +5069,21 @@
   SC$1.$cctor();
   return SC$1.snippetList;
  };
+ FSharpStation.menuBar=function()
+ {
+  SC$1.$cctor();
+  return SC$1.menuBar;
+ };
+ FSharpStation.menuRight=function()
+ {
+  SC$1.$cctor();
+  return SC$1.menuRight;
+ };
+ FSharpStation.menuLeft=function()
+ {
+  SC$1.$cctor();
+  return SC$1.menuLeft;
+ };
  FSharpStation.CodeEditor=function()
  {
   var x,view,contentVar,changingIRefO,contentVarChanged,refVarChanged;
@@ -4921,37 +5111,37 @@
    refVarChanged[0]=contentVarChanged[0]+100;
    Var.Set(contentVar,r.RVal());
    return r.RView();
-  },view)),contentVar))))))).Prefix(HtmlNode.htmlText("name:")).get_Render()).Content$1("content1",FSharpStation.codeMirror().get_Render()).Content$1("content2",TabStrip.New$1(FSharpStation.Messages()).get_Top().get_Render()).Content$1("footer",HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },view)),contentVar))))))).Prefix(HtmlNode.htmlText("name:")).get_Render()).Content$1("content1",FSharpStation.codeMirror().get_Render()).Content$1("content2",TabStrip.New$1(FSharpStation.Messages()).get_Top().get_Render()).Content$1("footer",HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.addCode();
-  })).get_Render(),Button.New$1("<<").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).get_Render(),Button.New$1("<<").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.indentCodeOut();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1(">>").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1(">>").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.indentCodeIn();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),FSharpStation.loadFileElement().get_Render().AddChildren([HtmlNode.style("grid-column: 4/6")]),Button.New$1("Parse F#").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),FSharpStation.loadFileElement().get_Render().AddChildren([HtmlNode.style("grid-column: 4/6")]),Button.New$1("Parse F#").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.parseFS();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Evaluate F# (FSI)").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Evaluate F# (FSI)").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.evaluateFS();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Get F# code ==>").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Get F# code ==>").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.getFSCode();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Delete code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Delete code").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.deleteCode();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.span([]),HtmlNode.span([]),Button.New$1("Save as...").Class("btn            ").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.span([]),HtmlNode.span([]),Button.New$1("Save as...").Class("btn            ").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.downloadFile();
-  })).get_Render().AddChildren([HtmlNode.classIf("btn-primary",FSharpStation.dirty())]),HtmlNode.span([]),Button.New$1("Compile WebSharper").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).get_Render().AddChildren([HtmlNode.classIf("btn-primary",FSharpStation.dirty())]),HtmlNode.span([]),Button.New$1("Compile WebSharper").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.justCompile();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Run WebSharper in ...").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Run WebSharper in ...").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.compileRun();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.Right,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                        overflow: hidden;\r\n                        display: grid;\r\n                        grid-template-columns: repeat(8, 12.1%);\r\n                        bxackground-color: #eee;\r\n                        padding : 5px;\r\n                        grid-gap: 5px;\r\n                    ")])).Content(HtmlNode.script([HtmlNode.src("/EPFileX/FileSaver/FileSaver.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://code.jquery.com/jquery-3.1.1.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.link([HtmlNode.href("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.link([HtmlNode.href("/EPFileX/css/main.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.css(FSharpStation.styleEditor())).get_Render().Style(" \r\n                  grid-template-areas:\r\n                      'header0 header   sidebar2'\r\n                      'sidebar content1 sidebar2'\r\n                      'sidebar content2 sidebar2'\r\n                      'footer  footer   sidebar2';\r\n                  color      : #333;\r\n                  height     : 100%;\r\n                  font-size  : small;\r\n                  font-family: monospace;\r\n                  line-height: 1.2;\r\n                      ");
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.Right,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                        overflow: hidden;\r\n                        display: grid;\r\n                        grid-template-columns: repeat(8, 12.1%);\r\n                        bxackground-color: #eee;\r\n                        padding : 5px;\r\n                        grid-gap: 5px;\r\n                    ")])).Content(HtmlNode.script([HtmlNode.src("/EPFileX/FileSaver/FileSaver.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://code.jquery.com/jquery-3.1.1.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.script([HtmlNode.src("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"),HtmlNode.type("text/javascript")])).Content(HtmlNode.link([HtmlNode.href("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.link([HtmlNode.href("/EPFileX/css/main.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")])).Content(HtmlNode.css(FSharpStation.styleEditor())).get_Render().Style(" \r\n                  grid-template-areas:\r\n                      'header0 header   sidebar2'\r\n                      'sidebar content1 sidebar2'\r\n                      'sidebar content2 sidebar2'\r\n                      'footer  footer   sidebar2';\r\n                  color      : #333;\r\n                  height     : 100%;\r\n                  font-size  : small;\r\n                  font-family: monospace;\r\n                  line-height: 1.2;\r\n                      ");
  };
  FSharpStation.Messages=function()
  {
@@ -5219,9 +5409,13 @@
   SC$1.$cctor();
   return SC$1.autoCompleteClient;
  };
- FSharpStation.Do=function(f,a,a$1)
+ FSharpStation.Do=function(f,p,a,a$1)
  {
-  return f();
+  return f(p);
+ };
+ FSharpStation.doLoadFile=function(e,a)
+ {
+  return HtmlNode.findRootElement(e).querySelector("#"+FSharpStation.fileInputElementId()).click();
  };
  FSharpStation.loadFileElement=function()
  {
@@ -5689,7 +5883,14 @@
  };
  FSharpStation.compileRun=function()
  {
-  FSharpStation.compileSnippet(FSharpStation.runJS,function(m)
+  FSharpStation.compileRunP(FSharpStation.position().c);
+ };
+ FSharpStation.compileRunP=function(pos)
+ {
+  FSharpStation.compileSnippet(function($1,$2)
+  {
+   return FSharpStation.runJS(pos,$1,$2);
+  },function(m)
   {
    FSharpStation.sendMsg(m);
   });
@@ -5715,10 +5916,10 @@
   o=CodeSnippet$1.FetchO(FSharpStation.currentCodeSnippetId().c);
   o==null?void 0:(Var.Set(FSharpStation.codeMsgs(),msg),Var.Set(FSharpStation.codeJS(),""),code=getCode(o.$0),Var.Set(FSharpStation.codeFS(),code),processCode(code));
  };
- FSharpStation.runJS=function(msgs,js)
+ FSharpStation.runJS=function(pos,msgs,js)
  {
   FSharpStation.sendMsg("Running JavaScript...");
-  (((FSharpStation.position().c.$==3?Runtime.Curried3(FSharpStation.evalWindowJS):Runtime.Curried3(FSharpStation.evalIFrameJS))(function(res)
+  (((pos.$==3?Runtime.Curried3(FSharpStation.evalWindowJS):Runtime.Curried3(FSharpStation.evalIFrameJS))(function(res)
   {
    FSharpStation.sendMsg("Done!");
    FSharpStation.sendMsg(res);
@@ -6204,7 +6405,7 @@
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
-  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,view,contentVar,changingIRefO,contentVarChanged,refVarChanged,s$2,v$5,v$6,x,view$1,contentVar$1,changingIRefO$1,contentVarChanged$1,refVarChanged$1,x$1,x$2;
+  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,view,contentVar,changingIRefO,contentVarChanged,refVarChanged,s$2,v$5,v$6,p,p$1,x,view$1,contentVar$1,changingIRefO$1,contentVarChanged$1,refVarChanged$1,x$1,x$2;
   SC$1.result=new ropBuilder.New();
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
@@ -6408,38 +6609,80 @@
    window.localStorage.setItem(s$2,JSON.stringify(((Provider.Id())())(v$7)));
   },v$5);
   SC$1.Messages=List.ofArray([["Output",TextArea.New$2(FSharpStation.codeMsgs()).Placeholder("Output:").Title("Messages").get_Render()],["JavaScript",TextArea.New$2(FSharpStation.codeJS()).Placeholder("Javascript:").Title("JavaScript code generated").get_Render()],["F# code",TextArea.New$2(FSharpStation.codeFS()).Placeholder("F# code:").Title("F# code assembled").get_Render()],["WS Result",HtmlNode.div([HtmlNode.div([HtmlNode.Id("TestNode"),HtmlNode.style("background: white; height: 100%; width: 100%; ")])])]]);
-  SC$1.snippetList=HtmlNode.bindHElem(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x)));
-  SC$1.buttonsH=HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  SC$1.menuLeft=Menu.New2([MenuEntry.New$2("File").SubMenu([MenuEntry.New$2("Load...").OnClick(function(e)
   {
-   FSharpStation.addCode();
-  })).get_Render(),Button.New$1("<<").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.indentCodeOut();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1(">>").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.indentCodeIn();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),FSharpStation.loadFileElement().get_Render().Style("grid-column: 4/6"),Button.New$1("Parse F#").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.parseFS();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Evaluate F# (FSI)").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.evaluateFS();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Get F# code ==>").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.getFSCode();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Delete code").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
-  {
-   FSharpStation.deleteCode();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.span([]),HtmlNode.span([]),Button.New$1("Save as...").Class("btn            ").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+   return function(a)
+   {
+    return FSharpStation.doLoadFile(e,a);
+   };
+  }),MenuEntry.New$2("Save as...").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.downloadFile();
-  })).get_Render().AddChildren([HtmlNode.classIf("btn-primary",FSharpStation.dirty())]),HtmlNode.span([]),Button.New$1("Compile WebSharper").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null]))]),MenuEntry.New$2("Code").SubMenu([MenuEntry.New$2("Add Snippet").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.addCode();
+  },null])),MenuEntry.New$2("Delete Snippet").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.deleteCode();
+  },null])),MenuEntry.New$2("").get_Divider(),MenuEntry.New$2("Indent Snippet").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.indentCodeIn();
+  },null])),MenuEntry.New$2("Outdent Snippet").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.indentCodeOut();
+  },null])),MenuEntry.New$2("").get_Divider(),MenuEntry.New$2("Get F# Code").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.getFSCode();
+  },null]))]),MenuEntry.New$2("Run").SubMenu([MenuEntry.New$2("Evaluate F#").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.evaluateFS();
+  },null])),MenuEntry.New$2("").get_Divider(),MenuEntry.New$2("Run WebSharper in new tab").OnClick((p=Position.NewBrowser,Runtime.Curried(FSharpStation.Do,2,[function(p$2)
+  {
+   FSharpStation.compileRunP(p$2);
+  },p]))),MenuEntry.New$2("Run WebSharper in WS Result").OnClick((p$1=Position.Below,Runtime.Curried(FSharpStation.Do,2,[function(p$2)
+  {
+   FSharpStation.compileRunP(p$2);
+  },p$1]))),MenuEntry.New$2("").get_Divider(),MenuEntry.New$2("Parse F#").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.parseFS();
+  },null])),MenuEntry.New$2("Compile WebSharper").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.justCompile();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Run WebSharper in ...").Class("btn btn-xs").OnClick((Runtime.Curried3(FSharpStation.Do))(function()
+  },null]))])]);
+  SC$1.menuRight=Menu.New2([MenuEntry.New$2("About")]);
+  SC$1.menuBar=Template.navbar(HtmlNode.h1([HtmlNode.htmlText("F#"),HtmlNode.style("font-size: 48px; margin-top: -17px")]),FSharpStation.menuLeft().get_Render(),FSharpStation.menuRight().get_Render());
+  SC$1.snippetList=HtmlNode.bindHElem(FSharpStation.listEntries,(x=FSharpStation.codeSnippets().v,View.SnapshotOn((FSharpStation.codeSnippets())["var"].RVal(),FSharpStation.refresh().v,x)));
+  SC$1.buttonsH=HtmlNode.div([Button.New$1("Add code").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.addCode();
+  },null])).get_Render(),Button.New$1("<<").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.indentCodeOut();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1(">>").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.indentCodeIn();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),FSharpStation.loadFileElement().get_Render().Style("grid-column: 4/6"),Button.New$1("Parse F#").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.parseFS();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Evaluate F# (FSI)").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.evaluateFS();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Get F# code ==>").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.getFSCode();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Delete code").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.deleteCode();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.span([]),HtmlNode.span([]),Button.New$1("Save as...").Class("btn            ").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.downloadFile();
+  },null])).get_Render().AddChildren([HtmlNode.classIf("btn-primary",FSharpStation.dirty())]),HtmlNode.span([]),Button.New$1("Compile WebSharper").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
+  {
+   FSharpStation.justCompile();
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),Button.New$1("Run WebSharper in ...").Class("btn btn-xs").OnClick(Runtime.Curried(FSharpStation.Do,2,[function()
   {
    FSharpStation.compileRun();
-  })).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                    overflow: hidden;\r\n                    display: grid;\r\n                    grid-template-columns: repeat(8, 12.1%);\r\n                    bxackground-color: #eee;\r\n                    padding : 5px;\r\n                    grid-gap: 5px;\r\n                ")]);
+  },null])).Disabled(FSharpStation.noSelectionVal()).get_Render(),HtmlNode.someElt(Doc.Select([AttrProxy.Create("id","Position")],FSharpStation.positionTxt,List.ofArray([Position.Below,Position.NewBrowser]),FSharpStation.position())),HtmlNode.style("\r\n                    overflow: hidden;\r\n                    display: grid;\r\n                    grid-template-columns: repeat(8, 12.1%);\r\n                    bxackground-color: #eee;\r\n                    padding : 5px;\r\n                    grid-gap: 5px;\r\n                ")]);
   SC$1.title={
    $:0,
    $0:Input.New$2((view$1=Val.toView(Val.fixit(FSharpStation.currentCodeSnippetId())),(contentVar$1=Var.Create$1(null),(changingIRefO$1=[null],(contentVarChanged$1=[0],(refVarChanged$1=[0],(View.Sink(function()
@@ -6481,11 +6724,16 @@
    $:0,
    $0:FSharpStation.buttonsH()
   };
+  SC$1.menu={
+   $:0,
+   $0:FSharpStation.menuBar()
+  };
   SC$1.title_code=SplitterStructure.New$2(FSharpStation.title(),FSharpStation.code(),(Runtime.Curried3(FSharpStation.fixedHorSplitter1))(34));
   SC$1.code_buttons=SplitterStructure.New$2(FSharpStation.title_code(),FSharpStation.buttons(),(Runtime.Curried3(FSharpStation.fixedHorSplitter2))(80));
   SC$1.snippets_code=SplitterStructure.New$6(true,FSharpStation.snippets(),FSharpStation.code_buttons(),15);
   SC$1.main_messages=SplitterStructure.New$6(false,FSharpStation.snippets_code(),FSharpStation.messages(),82);
-  SC$1.rootSplitter=SplitterNode.New$2(FSharpStation.main_messages());
+  SC$1.main_window=SplitterStructure.New$2(FSharpStation.menu(),FSharpStation.main_messages(),(Runtime.Curried3(FSharpStation.fixedHorSplitter1))(50));
+  SC$1.rootSplitter=SplitterNode.New$2(FSharpStation.main_window());
   x$1=(x$2=HtmlNode.div([HtmlNode.style("height: 100vh; width: 100% "),FSharpStation.rootSplitter().get_Render().Style("height: 100%; width: 100% "),HtmlNode.script([HtmlNode.src("/EPFileX/FileSaver/FileSaver.js"),HtmlNode.type("text/javascript")]),HtmlNode.script([HtmlNode.src("http://code.jquery.com/jquery-3.1.1.min.js"),HtmlNode.type("text/javascript")]),HtmlNode.script([HtmlNode.src("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"),HtmlNode.type("text/javascript")]),HtmlNode.link([HtmlNode.href("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.link([HtmlNode.href("/EPFileX/css/main.css"),HtmlNode.type("text/css"),HtmlNode.rel("stylesheet")]),HtmlNode.css(FSharpStation.styleEditor()),HtmlNode.style(" \r\n                  color      : #333;\r\n                  font-size  : small;\r\n                  font-family: monospace;\r\n                  line-height: 1.2;\r\n                      ")]),(HtmlNode.renderDoc())(x$2));
   Doc.Run(window.document.body,x$1);
   SC$1.$cctor=window.ignore;
