@@ -5379,16 +5379,54 @@
   b=null;
   return Concurrency.Delay(function()
   {
+   ((function($1)
+   {
+    return function($2)
+    {
+     return $1("checking if mustParse "+PrintfHelpers.toSafe($2));
+    };
+   }(function(s)
+   {
+    console.log(s);
+   }))(cur.get_NameSanitized()));
    return Concurrency.Bind(FSharpStation.mustParse(cur),function(a)
    {
-    return a?Concurrency.Bind(FSharpStation.parseFSA(silent),function()
+    ((function($1)
     {
-     FSharpStation.set_parsed(true);
+     return function($2)
+     {
+      return $1("returned2 "+window.String($2));
+     };
+    }(function(s)
+    {
+     console.log(s);
+    }))(a));
+    return a?((function($1)
+    {
+     return function($2)
+     {
+      return $1("going to parse "+PrintfHelpers.toSafe($2));
+     };
+    }(function(s)
+    {
+     console.log(s);
+    }))(cur.get_NameSanitized()),Concurrency.Bind(FSharpStation.parseFSA(silent),function()
+    {
+     ((function($1)
+     {
+      return function($2)
+      {
+       return $1("recursive parseIfMustThen "+PrintfHelpers.toSafe($2));
+      };
+     }(function(s)
+     {
+      console.log(s);
+     }))(cur.get_NameSanitized()));
      return Concurrency.Bind(FSharpStation.parseIfMustThen(cur,silent),function()
      {
       return Concurrency.Return(null);
      });
-    }):Concurrency.Zero();
+    })):Concurrency.Zero();
    });
   });
  };
@@ -5398,10 +5436,39 @@
   b=null;
   return Concurrency.Delay(function()
   {
-   return!FSharpStation.parsed()?Concurrency.Return(true):Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   ((function($1)
    {
+    return function($2)
+    {
+     return $1("parsed = "+window.String($2));
+    };
+   }(function(s)
+   {
+    console.log(s);
+   }))(FSharpStation.parsed()));
+   return!FSharpStation.parsed()?Concurrency.Return(true):((function($1)
+   {
+    return function($2)
+    {
+     return $1("going to call autoCompleteClient.MustParse "+PrintfHelpers.toSafe($2));
+    };
+   }(function(s)
+   {
+    console.log(s);
+   }))(cur.get_NameSanitized()),Concurrency.Bind(FSharpStation.autoCompleteClient().MustParse(FSharpStation.parseFile(),cur.get_NameSanitized()),function(a)
+   {
+    ((function($1)
+    {
+     return function($2)
+     {
+      return $1("returned1 "+window.String($2));
+     };
+    }(function(s)
+    {
+     console.log(s);
+    }))(a));
     return Concurrency.Return(a);
-   });
+   }));
   });
  };
  FSharpStation.parseFS=function()
