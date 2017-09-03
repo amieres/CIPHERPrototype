@@ -767,10 +767,10 @@
  {
   return h?Doc.GetOrLoadTemplate("main",null,function()
   {
-   return $.parseHTML("<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>${Title}</title>\r\n    <script ws-replace=\"TopScript\"></script>\r\n</head>\r\n<body>\r\n    <div ws-replace=\"Body\"></div>\r\n    <script ws-replace=\"scripts\"></script>\r\n</body>\r\n</html>\r\n");
+   return $.parseHTML("<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>${Title}</title>\r\n    <script ws-replace=\"TopScript\"></script>\r\n</head>\r\n<body style=\"margin: 0px\">\r\n    <div ws-replace=\"Body\"></div>\r\n    <script ws-replace=\"scripts\"></script>\r\n</body>\r\n</html>\r\n");
   },h):Doc.PrepareTemplate("main",null,function()
   {
-   return $.parseHTML("<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>${Title}</title>\r\n    <script ws-replace=\"TopScript\"></script>\r\n</head>\r\n<body>\r\n    <div ws-replace=\"Body\"></div>\r\n    <script ws-replace=\"scripts\"></script>\r\n</body>\r\n</html>\r\n");
+   return $.parseHTML("<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>${Title}</title>\r\n    <script ws-replace=\"TopScript\"></script>\r\n</head>\r\n<body style=\"margin: 0px\">\r\n    <div ws-replace=\"Body\"></div>\r\n    <script ws-replace=\"scripts\"></script>\r\n</body>\r\n</html>\r\n");
   });
  };
  WebServer_Templates.t$1=function(h)

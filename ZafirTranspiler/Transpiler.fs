@@ -160,7 +160,7 @@ let compileMainW: Context -> seq<string> -> Wrap<string> =
                 | "ignore"                     -> ()
                 | "library"                    -> ()
                 | _                            -> invalidArg "type" ("Invalid project type: " + wsProjectType)
-            | StartsWith "--project:"        p -> wsArgs := { !wsArgs with ProjectFile   = Path.Combine(Directory.GetCurrentDirectory(), p) }
+            | StartsWith "--project:"        p -> wsArgs := { !wsArgs with ProjectFile   = p      } //Path.Combine(Directory.GetCurrentDirectory(), p) }
             | StartsWith "--wsoutput:"       o -> wsArgs := { !wsArgs with OutputDir     = Some o }
             | StartsWith "--keyfile:"        k -> wsArgs := { !wsArgs with KeyFile       = Some k }
             | "--jsmap"                        -> wsArgs := { !wsArgs with SourceMap     = true   } 
@@ -227,7 +227,7 @@ let compileW: Context -> string -> seq<string> -> Wrap<string> =
                                   "--site"
                                   "--wsoutput:."
                                   "-o:" + dll
-                                  "--project:project.xxx"
+                                  "--project:WebServer3"
                                   src 
                                   |]
                            yield! options0 |> Seq.toArray 
