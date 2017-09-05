@@ -8,31 +8,25 @@
 #r @"WebSharper.JavaScript.dll"
 #r @"WebSharper.Web.dll"
 #r @"WebSharper.Sitelets.dll"
-#r @"Owin.dll"
-#r @"Microsoft.Owin.dll"
-#r @"Microsoft.Owin.Hosting.dll"
-#r @"Microsoft.Owin.Host.HttpListener.dll"
-#r @"Microsoft.Owin.StaticFiles.dll"
-#r @"Microsoft.Owin.FileSystems.dll"
-#r @"WebSharper.Owin.dll"
-# 1 "required for nowarns to work"
+#r @"remote.dll"
+#r @"FSharp.Compiler.Service.dll"
+//# 1 "required for nowarns to work"
 #nowarn "1182"
 #nowarn "40"
-# 1 @"bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
+#nowarn "1178"
+//# 1 @"bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
 //#nowarn "1182"
 //#nowarn "40"
 //#r @"D:\Abe\CIPHERWorkspace\CIPHERPrototype\WebServer\bin\FSharp.Core.dll"
-#if INTERACTIVE
+//#if INTERACTIVE
 #I @"../WebServer/bin"
 module FSSGlobal   =
-#else
-namespace FSSGlobal
-#endif
+//#endif
 
-  # 1 @"(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
+  //# 1 @"(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
   // Code to be evaluated using FSI: `Evaluate F#`
-    # 1 @"(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
-    #if WEBSHARPER
+    //# 1 @"(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
+//    //#if WEBSHARPER
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
     
@@ -51,634 +45,1069 @@ namespace FSSGlobal
     open WebSharper.UI.Next.Client
     type on   = WebSharper.UI.Next.Html.on
     type attr = WebSharper.UI.Next.Html.attr
-    #endif
-  # 1 @"(2)7479dc9d-94cd-4762-a1b8-cf6e09436c3f WebSharper Code.fsx"
-  //#define WEBSHARPER
-  (*
-   Code to be Compiled to Javascript and run in the browser
-   using `Compile WebSharper` or `Run WebSharper`
-  *)
-  
-    # 1 @"(4)495bce0a-4fb6-48fa-9158-c242d5965baa HtmlNode.fsx"
-    
-    [<JavaScript>]
-    module HtmlNode      =
-    
-      # 1 @"(6)0f5719f0-e95e-498d-ab88-f89ff1440e32 Val.fsx"
-      [<NoComparison>]
-      type Val<'a> =
-          | Constant  of 'a
-          | DynamicV  of IRef<'a>
-          | Dynamic   of View<'a>
+    //#endif
+    //# 1 @"(4)7c4a82bc-58cd-48a7-bd7e-79de148a1cf0 Useful.fsx"
+    [<WebSharper.JavaScript>]
+    module Useful =
+      //# 1 @"(6)368caae7-6a67-4063-9af3-978c25b81ac2 Result, Wrap.fsx"
+      open System
+      //#nowarn "1178"
+      //#if WEBSHARPER
+      [<JavaScript>]
+      ////#endif
+      module Option =
+          let defaultValue v =
+              function
+              | Some x -> x
+              | None   -> v
       
-      module Val =
-          
-          let mapV : ('a -> 'b) -> Val<'a> -> Val<'b> =
-              fun    f             va      ->
-                  match va with
-                  | Constant  a -> f a                   |> Constant
-                  | Dynamic  wa -> wa      |> View.Map f |> Dynamic 
-                  | DynamicV va -> va.View |> View.Map f |> Dynamic 
+          let defaultWith f =
+              function
+              | Some x -> x
+              | None   -> f()
       
-          let iterV : ('a -> unit) -> Val<'a> -> unit = //f v = toView v |> View.Get f
-              fun     f               va      ->
-                  match va with
-                  | Constant  a ->          f  a                  
-                  | Dynamic  wa -> View.Get f wa 
-                  | DynamicV va ->          f va.Value 
+          let call v = 
+              function
+              | None   -> None
+              | Some f -> f v |> Some
       
-          let toView v =
-              match v with
-              | Constant  a -> View.Const a
-              | Dynamic  wa -> wa
-              | DynamicV va -> va.View
+          let iterF v = 
+              function
+              | None   -> ()
+              | Some f -> f v
       
-          let bindV : ('a -> Val<'b>) -> Val<'a> -> Val<'b> =
-              fun     f                  v       -> 
-                  match v with
-                  | Constant  a -> f a
-                  | Dynamic  wa -> wa      |> View.Bind (f >> toView) |> Dynamic 
-                  | DynamicV va -> va.View |> View.Bind (f >> toView) |> Dynamic 
+          let iterFO vO fO = 
+              match vO, fO with
+              | Some v, Some f -> f v
+              | _     , _      -> ()
       
-          let inline map2V f = // : ('a -> 'b -> 'c) -> Val<'a> -> Val<'b> -> Val<'c> =
-              //fun     f                ->
-              let inline swap f a b = f b a
-              let inline fv vb = bindV (swap (f >> mapV) vb)
-              swap fv
+          let apply vO fO =
+              match vO, fO with
+              | Some v, Some f -> f v |> Some
+              | _     , _      -> None
       
-          let inline map3V f3 v1 v2 v3    = map2V f3 v1 v2    |> map2V (|>) v3
-          let inline map4V f3 v1 v2 v3 v4 = map3V f3 v1 v2 v3 |> map2V (|>) v4
-          
-          let tagDoc: ('a -> Doc) -> Val<'a> -> Doc =
-              fun     tag            va      ->
-                  match va with
-                  | Constant  a -> tag   a
-                  | Dynamic  wa -> wa      |> View.Map tag |> Doc.EmbedView
-                  | DynamicV va -> va.View |> View.Map tag |> Doc.EmbedView
+          let modify modifier = Option.map (fun f -> modifier f) >> defaultValue id
+            
       
-          let tagElt: ('a -> Elt) -> Val<'a> -> Doc =
-              fun     tag            va     ->
-                  match va with
-                  | Constant  a -> tag   a :> Doc
-                  | Dynamic  wa -> wa     |> View.Map tag |> Doc.EmbedView
-                  | DynamicV va -> va.View |> View.Map tag |> Doc.EmbedView
+      //#nowarn "25"
+      type ErrMsg = 
+          abstract member ErrMsg   : string
+          abstract member IsWarning: bool
       
-          let attrVO att       vao     =
-                  match vao with
-                  | Constant (Some a)-> Attr.Create      att   a
-                  | Constant  None   -> Attr.DynamicPred att  (View.Const false              ) (View.Const                      ""         )
-                  | Dynamic       wa -> Attr.DynamicPred att  (View.Map Option.isSome wa     ) (View.Map   (Option.defaultValue "") wa     )
-                  | DynamicV      va -> Attr.DynamicPred att  (View.Map Option.isSome va.View) (View.Map   (Option.defaultValue "") va.View)
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      type ExceptionThrown(exn:Exception) =
+          interface ErrMsg with
+              member this.ErrMsg   : string = sprintf "%A" exn
+              member this.IsWarning: bool   = false
       
-          let attrV att       va      =
-                  match va with
-                  | Constant  a -> Attr.Create  att   a
-                  | Dynamic  wa -> Attr.Dynamic att  wa
-                  | DynamicV va -> Attr.Dynamic att  va.View
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      type ErrOptionIsNone() =
+          interface ErrMsg with
+              member this.ErrMsg   : string = "Option is None"
+              member this.IsWarning: bool   = false
+      
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      type Result<'TSuccess> = Result of 'TSuccess option * ErrMsg list     
+      
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      module Result =
+          let inline succeed             x       = Result (Some x           , [  ]             )
+          let inline succeedWithMsg      x  m    = Result (Some x           , [m ]             )
+          let inline succeedWithMsgs     x  ms   = Result (Some x           ,  ms              )
+          let inline fail                   m    = Result (None             , [m ]             )
+          let inline failWithMsgs           ms   = Result (None             ,  ms              )
+          let inline map       f (Result(o, ms)) = Result (o |> Option.map f,  ms              )
+          let inline mapMsg    f (Result(o, ms)) =        (o                ,  ms |> List.map f)
+          let inline mapMsgs   f (Result(o, ms)) =        (o                ,  ms |>          f)
+          let inline getOption   (Result(o, _ )) =         o                   
+          let inline getMsgs     (Result(_, ms)) =                             ms
+          let inline mergeMsgs              ms r = Result (r |> mapMsgs   ((@) ms) )
+          let inline combine     (Result(_, ms)) = mergeMsgs ms
+          let inline bind      f (Result(o, ms)) = 
+              match o with
+              | Some x   -> match f x with Result(o2, ms2) -> Result(o2, ms @ ms2)
+              | None     -> Result(None, ms)
+          let inline apply (Result(fO, fMs))  (Result(o , ms)) = 
+              match fO, o with
+              | Some f, Some x -> Result(f x |> Some, fMs @ ms)
+              | _              -> Result(None       , fMs @ ms)
       
       
-          type HelperType = HelperType with
-              static member (&>) (HelperType, a :     string option   ) = Constant  a
-              static member (&>) (HelperType, a :     string          ) = Constant  a
-              static member (&>) (HelperType, a :     bool            ) = Constant  a
-              static member (&>) (HelperType, a :     int             ) = Constant  a
-              static member (&>) (HelperType, a :     float           ) = Constant  a
-              static member (&>) (HelperType, a :     Doc             ) = Constant  a
-              static member (&>) (HelperType, va: Val<string option>  ) =          va
-              static member (&>) (HelperType, va: Val<string       >  ) =          va
-              static member (&>) (HelperType, va: Val<bool         >  ) =          va
-              static member (&>) (HelperType, va: Val<int          >  ) =          va
-              static member (&>) (HelperType, va: Val<float        >  ) =          va
-              static member (&>) (HelperType, va: Val<Doc          >  ) =          va
-              static member (&>) (HelperType, va: Val<_            >  ) =          va
-              static member (&>) (HelperType, vr: IRef<_           >  ) = DynamicV vr
-              static member (&>) (HelperType, vw: View<_           >  ) = Dynamic  vw
+          let (|Success|Failure|) =
+              function 
+              | Result(Some x, ms) -> Success (x, ms) 
+              | Result(None  , ms) -> Failure     ms  
       
-          [< Inline @"(
-                  typeof($v) == 'function' ? {$:2, $0:$v} // View
-                  :   typeof($v) == 'object'
-                            ? typeof($v.$) != 'undefined' // Val
-                                  ? $v 
-                                  : typeof($v.Id) == 'number' || typeof($v.i) == 'number' || typeof($v.RView == 'function')// Var
-                                       ? {$:1, $0:$v}
-                                       : typeof($v.docNode) != 'undefined'
-                                           ? {$:0, $0:$v} // Doc
-                                           : {$:2, $0:$v} // View?
-                            : {$:0, $0:$v}) // other
-                                           " >]
-          let fixit0 v = Constant v
-          let fixit2 v = let result = fixit0 v
-                         result
-                         
-          [< Direct "FSSGlobal.HtmlNode.Val.fixit2($v)" >]
-          //[< Inline >]
-          let inline fixit v = HelperType &> v
+          let x = function
+                    | Success (x, ms) -> "yes"
+                    | Failure     ms  -> "No"
       
-          [< Inline >]
-          let inline bindIRef0 (f: 'a->IRef<'b>) (view: View<'a>) = 
-              let contentVar = Var.Create Unchecked.defaultof<'b>
-              let changingIRefO : IRef<'b> option ref = ref None
-              let contentVarChanged = ref 0L
-              let refVarChanged     = ref 0L
-          
-              contentVar.View 
-              |> View.Sink (fun _ -> 
-                  !changingIRefO 
-                  |> Option.iter (fun r -> 
-                      if  !contentVarChanged  > !refVarChanged   then refVarChanged := !contentVarChanged
-                      elif r.Value           <> contentVar.Value then refVarChanged := !refVarChanged       + 1L ; r.Value         <-  contentVar.Value
-                     )
+      //    let successTee f result =                           // given an RopResult, call a unit function on the success branch
+      //        let fSuccess (x,msgs) =                         // and pass thru the result
+      //            f (x,msgs)
+      //            Success (x,msgs) 
+      //        either fSuccess Failure result
+      //
+      //    let fFailure2 f errs = 
+      //        f errs
+      //        Failure errs 
+      //    let failureTee f result =                           /// given an RopResult, call a unit function on the failure branch
+      //        either Success (fFailure2 f) result
+      //
+      //    let mapMessagesR f result =                         /// given an RopResult, map the messages to a different error type
+      //        match result with 
+      //        | Success (x,msgs) -> 
+      //            let msgs' = List.map f msgs
+      //            Success (x, msgs')
+      //        | Failure errors -> 
+      //            let errors' = List.map f errors 
+      //            Failure errors' 
+      //
+      //    let valueOrDefault f result =                       /// given an RopResult, in the success case, return the value.
+      //        match result with                               /// In the failure case, determine the value to return by 
+      //        | Success (x,_) -> x                            /// applying a function to the errors in the failure case
+      //        | Failure errors -> f errors
+      //
+      //    let failIfNone message = function                   /// lift an option to a RopResult.
+      //        | Some x -> succeed x                           /// Return Success if Some
+      //        | None -> fail message                          /// or the given message if None
+      //
+      //    let failIfNoneR message = function                  /// given an RopResult option, return it
+      //        | Some rop -> rop                               /// or the given message if None
+      //        | None -> fail message 
+      
+          let failException e = ExceptionThrown(e) :> ErrMsg
+      
+      ///            tryCall: (exn -> Result<'b>) ->  ('a -> Result<'b>) -> 'a -> Result<'b> =
+          let inline tryCall (f:'a -> Result<'b>) (v:'a) : Result<'b> = try f v with e -> failException e |> fail
+      
+          type ropBuilder() =
+              member inline this.Return     (x)                       = succeed x
+              member inline this.ReturnFrom (x)                       = x
+              member        this.Bind       (w:Result<'a>, r: 'a -> Result<'b>) = bind (tryCall r) w
+              member inline this.Using      (disposable, restOfCExpr) = using disposable restOfCExpr
+              member inline this.Zero       ()                        = succeed ()
+              member inline this.Delay      (f)                       = f()
+              member inline this.Combine    (a, b)                    = combine a b
+      //        member this.Run        (f)                       = f
+      //        member this.While(guard, body) =
+      //            if not (guard()) 
+      //            then this.Zero() 
+      //            else this.Bind( body(), fun () -> 
+      //                this.While(guard, body))  
+      //        member this.For(sequence:seq<_>, body) =
+      //            this.Using(sequence.GetEnumerator(),fun enum -> 
+      //                this.While(enum.MoveNext, 
+      //                    this.Delay(fun () -> body enum.Current)))
+      
+          let result = ropBuilder()
+      //    let inline flow_ () = new ropBuilder ()
+      
+          let fromChoice context c =
+              match c with | Choice1Of2 v -> succeed v
+                           | Choice2Of2 e -> fail    e
+      
+          let fromOption m =
+              function | None   -> fail    m
+                       | Some v -> succeed v
+      
+          let toOption (Result(o, _)) = o
+      
+          let tryProtection() : Result<unit> = succeed ()
+      
+          let failIfFalse m v : Result<unit>  = if v then succeed () else m |> fail 
+          let failIfTrue  m v : Result<unit>  = if v then m |> fail  else succeed () 
+                  
+          let ifError   def (Result(o, _ )) = o |> Option.defaultValue            def
+          let withError f   (Result(o, ms)) = o |> Option.defaultWith  (fun () -> f ms)
+      
+      //    let processMessages mtype (msgs: PossibleMessages list) =
+      //        msgs
+      //        |> List.iter (fun o -> WebSharper.JavaScript.JS.Alert     <| mtype + ": " + (sprintf "%A" o)
+      //                               WebSharper.JavaScript.Console.Log o)
+      //
+      //    let notifyMessages R =
+      //        match R with | Success (_, m) -> processMessages "N" m
+      //                     | Failure     m  -> processMessages "E" m
+      //
+      //    let messagesDo f =
+      //        function | Success (_, ms) -> f false ms
+      //                 | Failure     ms  -> f true  ms
+      
+          let seqCheck s = 
+              s 
+              |> (fun elems -> match      elems |> Seq.exists(function | Failure _    -> true    | _ -> false) with
+                               | true  -> elems |> Seq.pick  (function | Failure ms   -> Some ms | _ -> None ) |> failWithMsgs
+                               | false -> elems |> Seq.map   (function | Result (vO,_)-> vO.Value            ) |> succeed
+              )
+      
+          let getMessages (ms: ErrMsg list) =
+              if ms = [] then "" else
+              let errors   = ms |> List.filter(fun m -> m.IsWarning |> not)
+              let warnings = ms |> List.filter(fun m -> m.IsWarning       )
+              if errors.Length = 0 
+              then sprintf "%s"
+              else sprintf "%d errors\n%s" errors.Length
+              <| (ms |> List.map (fun m -> m.ErrMsg) |> String.concat "\n")
+       
+      open Result
+      
+      type Wrap<'T> =
+      | WResult of Result<'T>
+      | WAsync  of Async<'T>
+      | WAsyncR of Async<Result<'T>>
+      | WSimple of 'T
+      | WOption of 'T option
+      
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      module Wrap =
+          let errOptionIsNone = ErrOptionIsNone() :> ErrMsg
+      
+          let wb2arb ms = 
+              function
+              | WAsync       ab  -> async { let!   b = ab
+                                            return succeedWithMsgs b                   ms }
+              | WAsyncR     arb  -> async { let!   rb = arb                               
+                                            return rb |> mergeMsgs                     ms }
+              | WResult      rb  -> async { return rb |> mergeMsgs                     ms }
+              | WSimple       b                                                           
+              | WOption (Some b) -> async { return succeedWithMsgs b                   ms }
+              | WOption None     -> async { return failWithMsgs      (errOptionIsNone::ms)}
+      
+          let tryCall (f: 'a -> Wrap<'b>) (a:'a) = 
+              try f a 
+              with e -> failException e |> fail |> WResult
+      
+          let bind (f: 'a -> Wrap<'b>) (wa: Wrap<'a>) :Wrap<'b> =
+              match wa with
+              | WSimple         a       
+              | WOption(Some    a)       
+              | WResult(Success(a, [])) -> tryCall f a
+              | WOption None            -> None            |> WOption
+              | WResult(Failure    ms ) -> failWithMsgs ms |> WResult 
+              | WResult(Success(a, ms)) -> tryCall f a
+                                           |> function
+                                           | WSimple         b              
+                                           | WOption(Some    b     ) -> succeedWithMsgs b  ms             |> WResult 
+                                           | WOption None            -> failWithMsgs (errOptionIsNone::ms)|> WResult
+                                           | WResult(Success(b, [])) -> succeedWithMsgs b  ms             |> WResult 
+                                           | WResult(Success(b, m2)) -> succeedWithMsgs b (ms @ m2)       |> WResult 
+                                           | WResult(Failure    m2)  -> failWithMsgs      (ms @ m2)       |> WResult 
+                                           | WAsync  ab              -> async { let!  b = ab
+                                                                                return succeedWithMsgs b ms
+                                                                        } |> WAsyncR
+                                           | WAsyncR arb             -> async { let! rb = arb
+                                                                                return mergeMsgs ms rb
+                                                                        } |> WAsyncR
+              | WAsync         aa       -> async {
+                                               let! a  = aa
+                                               return! tryCall f a |> wb2arb []
+                                           } |> WAsyncR
+              | WAsyncR       ara       -> async {
+                                               let! ar  = ara
+                                               let  arb = match ar with
+                                                          | Success(a, ms) -> tryCall f a |> wb2arb ms
+                                                          | Failure    ms  -> async { return failWithMsgs ms }
+                                               return! arb
+                                           } |> WAsyncR
+          let Return = WSimple 
+          let map  (f: 'a -> 'b  ) = bind (f >> Return)     
+      
+          let wrapper2Async (f: 'a -> Wrap<'b>) a : Async<Result<'b>> =
+              let wb = tryCall f a
+              match wb with
+              | WSimple _
+              | WOption _               -> wb |> wb2arb []
+              | WResult (Result(_, ms)) -> wb |> wb2arb ms
+              | WAsync  ab              -> async { let!   b = ab
+                                                   return succeed b }
+              | WAsyncR arb              -> arb
+      
+          let addMsgs errOptionIsNone ms wb =
+              if ms = [] then wb else
+              match wb with
+              | WSimple          v       
+              | WOption (Some    v)      -> WResult (succeedWithMsgs                        v ms)
+              | WOption (None     )      -> WResult (fail errOptionIsNone |> Result.mergeMsgs ms)
+              | WResult r                -> WResult (r                    |> Result.mergeMsgs ms)
+              | WAsync           va      -> async {
+                                              let! v = va
+                                              return succeedWithMsgs v ms
+                                            } |> WAsyncR
+              | WAsyncR          vra     -> async {
+                                              let! vr = vra
+                                              return vr                    |> Result.mergeMsgs ms
+                                            } |> WAsyncR
+      
+          let combine errOptionIsNone wa wb =
+              match wa with
+              | WSimple          _
+              | WOption (Some    _)
+              | WResult (Result (_, []))
+              | WAsync           _       -> wb
+              | WAsyncR          _       -> wb
+              | WOption (None     )      -> wb |> addMsgs errOptionIsNone [errOptionIsNone]
+              | WResult (Result(_, ms))  -> wb |> addMsgs errOptionIsNone ms
+      
+          type Builder() =
+      //        member        this.Bind (wrapped: Async<Result<'a>>, restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WAsyncR |> bind restOfCExpr //<< cannot differentiate from next 
+              member        this.Bind (wrapped: Wrap<'a>         , restOfCExpr: 'a -> Wrap<'b>) = wrapped            |> bind restOfCExpr 
+              member        this.Bind (wrapped: Async<'a>        , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WAsync  |> bind restOfCExpr  
+              member        this.Bind (wrapped: Result<'a>       , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WResult |> bind restOfCExpr 
+              member        this.Bind (wrapped: 'a option        , restOfCExpr: 'a -> Wrap<'b>) = wrapped |> WOption |> bind restOfCExpr 
+              member inline this.Zero         ()  = WSimple ()
+              member inline this.Return       (x) = WSimple x
+              member inline this.ReturnFrom   (w) = w
+      //        member inline this.ReturnFrom   (w) = WAsync  w
+      //        member inline this.ReturnFrom   (w) = WResult w
+      //        member inline this.ReturnFrom   (w) = WOption w        
+              member inline this.Delay        (f) = f()
+              member        this.Combine   (a, b) = combine errOptionIsNone a b
+              member        this.Using (resource, body: 'a -> Wrap<'b>) =
+                  async.Using(resource, wrapper2Async body) |> WAsyncR
+                          
+          let wrapper = Builder()
+      
+          let getResult callback (wb: Wrap<'T>) =
+              match wb with
+              | WSimple      s  -> s               |> succeed                                      |> callback
+              | WOption(Some s) -> s               |> succeed                                      |> callback
+              | WOption None    -> errOptionIsNone |> fail                                         |> callback
+              | WResult      rb -> rb                                                              |> callback
+              | WAsync       ab -> Async.StartWithContinuations(ab , (fun v   -> succeed v         |> callback), 
+                                                                     (fun exc -> failException exc |> fail |> callback), 
+                                                                      fun can -> failException can |> fail |> callback)
+              | WAsyncR     arb -> Async.StartWithContinuations(arb,                                          callback , 
+                                                                     (fun exc -> failException exc |> fail |> callback), 
+                                                                      fun can -> failException can |> fail |> callback)
+      
+          let inline getAsyncR (wb: Wrap<'T>) =
+              match wb with
+              | WAsync      va  -> async {
+                                     let! v = va
+                                     return      succeed                           v}
+              | WSimple     v   -> async.Return (succeed                           v)
+              | WOption     v   -> async.Return (Result.fromOption errOptionIsNone v)
+              | WResult     v   -> async.Return                                    v
+              | WAsyncR     vra -> vra
+              
+          let inline getAsyncWithDefault f (wb: Wrap<'T>) = 
+              async {
+                  let!   vR = getAsyncR wb
+                  return vR |> Result.withError f
+              }
+      
+          let inline getAsync w =
+              match w with
+              | WAsync      va  ->              va
+              | WSimple     v   -> async.Return v
+              | WOption     vo  -> async {
+                                      return
+                                          match vo with 
+                                          | Some v         -> v
+                                          | None           -> raise (exn(getMessages [errOptionIsNone]))
+                                   }
+              | WResult     vr  -> async {
+                                      return
+                                          match vr with 
+                                          | Success (v, _) -> v
+                                          | Failure ms     -> raise (exn(getMessages ms))
+                                   }
+              | WAsyncR     vra -> async {
+                                      let! vr = vra
+                                      return
+                                          match vr with 
+                                          | Success (v, _) -> v
+                                          | Failure ms     -> raise (exn(getMessages ms))
+                                   }
+      //    let call wb = wb |> getR Rop.notifyMessages
+          let start (printMsg: string->unit) (w: Wrap<unit>) =
+              w
+              |> getAsyncR
+              |> fun asy -> Async.StartWithContinuations
+                              (asy 
+                             , Result.mapMsgs Result.getMessages
+                               >> function
+                                  | Some _, msgs -> msgs
+                                  | None  , msgs -> printfn "Failed!" ; msgs
+                               >> sprintf "%s" >> printMsg
+                             ,    sprintf "%A" >> printMsg
+                             ,    sprintf "%A" >> printMsg)
+      //#if WEBSHARPER
+          [< Inline "console.log('runSynchronously should not be used in Javascript')" >]                       
+      //#endif
+          let runSynchronously (printMsg: string->unit) (w: Wrap<unit>) =
+              w
+              |> getAsyncR
+              |> Async.RunSynchronously
+              |> (Result.mapMsgs Result.getMessages
+                  >> function
+                     | Some _, msgs -> msgs
+                     | None  , msgs -> printfn "Failed!" ; msgs
+                  >> sprintf "%s" 
+                  >> printMsg
                  )
+      
+      //#if WEBSHARPER
+      [<JavaScript>]
+      //#endif
+      type Wrap<'T> with
+          static member Start           (w:Wrap<_   >,           ?cancToken) = Async.Start           (Wrap.getAsync  w,                                ?cancellationToken= cancToken)
+          static member StartAsTask     (w:Wrap<'T  >, ?options, ?cancToken) = Async.StartAsTask     (Wrap.getAsyncR w, ?taskCreationOptions= options, ?cancellationToken= cancToken)
+      //#if WEBSHARPER
+          [< Inline "console.log('RunSynchronously should not be used in Javascript')" >]                       
+      //#endif
+          static member RunSynchronously(w:Wrap<'T  >, ?timeout, ?cancToken) = Async.RunSynchronously(Wrap.getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
+      
+      //# 1 @"(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
+      let extract n (s:string) = s.Substring(0, min n s.Length)
+      
+      //#if WEBSHARPER
+      [< Inline "(function (n) { return n.getFullYear() + '-' +(n.getMonth() + 1) + '-' +  n.getDate() + ' '+n.getHours()+ ':'+n.getMinutes()+ ':'+n.getSeconds()+ ':'+n.getMilliseconds() })(new Date(Date.now()))" >]
+      //#endif
+      let nowStamp() = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture)
+      
+      module Async =
+          let map f va = 
+              async { 
+                  let! a = va
+                  return f a 
+              } 
+      //# 1 @"(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 prepareFsCode.fsx"
+      type PreproDirective =
+      | PrepoR      of string
+      | PrepoDefine of string
+      | PrepoLoad   of string
+      | PrepoLine   of string //* int
+      | PrepoNoWarn of string
+      | PrepoI      of string
+      | PrepoIf     of string
+      | PrepoElse   
+      | PrepoEndIf
+      | PrepoLight  of bool
+      | PrepoOther  of string
+      | NoPrepo
+      
+      let separatePrepros removePrepoLine (code:string[]) =
+          let  quoted (line:string) = line.Trim().Split([| "\""       |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryLast |> Option.defaultValue line
+          let  define (line:string) = line.Trim().Split([| "#define " |], System.StringSplitOptions.RemoveEmptyEntries) |> Seq.tryHead |> Option.defaultValue ""
+          let  comment = ((+)"//") 
+          let  preL    = if removePrepoLine then comment else id 
+          let  prepro (line:string) = match true with 
+                                      | true when line.StartsWith("#define") -> (comment line, line |> define |> PrepoDefine)
+                                      | true when line.StartsWith("#r"     ) -> (comment line, line |> quoted |> PrepoR     )
+                                      | true when line.StartsWith("#load"  ) -> (comment line, line |> quoted |> PrepoLoad  )
+                                      | true when line.StartsWith("#nowarn") -> (comment line, line |> quoted |> PrepoNoWarn)
+                                      | true when line.StartsWith("# "     ) -> (preL    line, line |> quoted |> PrepoLine  )
+                                      | true when line.StartsWith("#line"  ) -> (preL    line, line |> quoted |> PrepoLine  )
+                                      | true when line.StartsWith("#I"     ) -> (comment line, line |> quoted |> PrepoI     )
+                                      | true when line.StartsWith("#if"    ) -> (        line, line           |> PrepoIf    )
+                                      | true when line.StartsWith("//#else"  ) -> (        line,                   PrepoElse  )
+                                      | true when line.StartsWith("//#endif" ) -> (        line,                   PrepoEndIf )
+                                      | true when line.StartsWith("#light" ) -> (        line, false          |> PrepoLight )
+                                      | true when line.StartsWith("#"      ) -> (comment line, line           |> PrepoOther )
+                                      | _                                    -> (        line,                   NoPrepo    ) 
+          code |> Array.map prepro
           
-              view |> View.Bind (fun cur ->
-                  let r = f cur
-                  changingIRefO    := Some r
-                  refVarChanged    := !contentVarChanged + 100L
-                  contentVar.Value <- r.Value
-                  r.View
-              ) |> View.Sink (fun _ -> 
-                  !changingIRefO 
-                  |> Option.iter (fun r -> 
-                      if  !refVarChanged  > !contentVarChanged then contentVarChanged := !refVarChanged
-                      elif r.Value       <> contentVar.Value   then contentVarChanged := !contentVarChanged + 10L; contentVar.Value  <-  r.Value
-                     )
-                  )
-              contentVar
+      let separateDirectives (fsNass:(string * PreproDirective) seq) =
+          let  assembs  = fsNass |> Seq.choose (snd >> (function | PrepoR assemb -> Some assemb | _ -> None)) |> Seq.distinct |> Seq.toArray
+          let  defines  = fsNass |> Seq.choose (snd >> (function | PrepoDefine d -> Some d      | _ -> None)) |> Seq.distinct |> Seq.toArray
+          let  prepoIs  = fsNass |> Seq.choose (snd >> (function | PrepoI      d -> Some d      | _ -> None)) |> Seq.distinct |> Seq.toArray
+          let  nowarns  = fsNass |> Seq.choose (snd >> (function | PrepoNoWarn d -> Some d      | _ -> None)) |> Seq.distinct |> Seq.toArray
+          let  code     = fsNass |> Seq.map     fst                                                                           |> Seq.toArray
+          code, assembs, defines, prepoIs, nowarns
+      
+      
+      //# 1 @"(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
+      open System.IO
+      
+      let copyIfMust f destDir =
+          let t = Path.Combine(destDir, Path.GetFileName(f))
+          let fit = FileInfo t
+          let must = 
+              match fit.Exists with 
+              | false -> true
+              | true  ->
+                  let fif = FileInfo t
+                  fif.Length <> fit.Length || fif.LastWriteTime <> fit.LastWriteTime
+          if must then
+              File.Copy(f, t, true )    
           
-          let inline toDoc       v           = toView      (fixit v ) |> Doc.EmbedView
+      //# 1 @"(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
+      open System.Diagnostics
+      open System.Text
+      
+      let runProcess p ops =
+          let procStart   = ProcessStartInfo(p, ops)
+          let proc        = new Process()
+          proc.StartInfo <- procStart
+          proc.Start() 
+      
+      type ShellExError =
+          | ShellExitCode              of int
+          | ShellOutput                of string
+          | ShellErrors                of string
+          | ShellFailWithMessage       of string
+          | ShellFinishedWithNoMessage 
+          | ShellDidNotStart 
+          | ShellCrashed               of string
+      with interface ErrMsg with
+              member this.ErrMsg    = 
+                  match this with 
+                  | ShellFailWithMessage msg   -> msg  
+                  | ShellFinishedWithNoMessage -> "warning - No output"
+                  | ShellOutput          msg   -> msg
+                  | ShellCrashed         msg   -> "Crashed " + msg
+                  | msg                        -> sprintf "%A" msg
+              member this.IsWarning =
+                  match this with 
+                  | ShellFinishedWithNoMessage
+                  | ShellOutput _              -> true
+                  | _                          -> false 
+      
+      
+      type ShellEx(startInfo: ProcessStartInfo) =
+          let proc                              = new Process()
+          let bufferOutput                      = new StringBuilder()
+          let bufferError                       = new StringBuilder()
+          let consume (sb: StringBuilder)       = 
+              let v = sb.ToString()
+              sb.Clear() |> ignore
+              v
+          do  startInfo.RedirectStandardInput  <- true
+              startInfo.RedirectStandardOutput <- true
+              startInfo.RedirectStandardError  <- true
+              startInfo.UseShellExecute        <- false
+              proc.StartInfo                   <- startInfo
+              proc.EnableRaisingEvents         <- true
+              proc.OutputDataReceived.AddHandler(DataReceivedEventHandler(fun sender args -> try bufferOutput.Append(args.Data + "\n") |> ignore with _ -> () ))
+              proc.ErrorDataReceived .AddHandler(DataReceivedEventHandler(fun sender args -> try bufferError .Append(args.Data + "\n") |> ignore with _ -> () ))
+      //        proc.Exited            .AddHandler(System.EventHandler     (fun sender args -> try proc.Close()                                    with _ -> () ))
+          new (program, args) =             
+              let startInfo                         = new ProcessStartInfo()
+              do  startInfo.FileName               <- program
+                  startInfo.Arguments              <- args
+              new ShellEx(startInfo)
+          member this.Start() = 
+              let r = proc.Start() 
+              proc.BeginOutputReadLine()
+              proc.BeginErrorReadLine ()
+              r
+          member this.StartAndWait() =
+              let started = this.Start()
+              proc.WaitForExit()
+              let    output  = (consume bufferOutput).Trim()
+              let    error   = (consume bufferError ).Trim() 
+              let    msgs    = [ if                   output        <> "" then yield ShellOutput   output        :> ErrMsg
+                                 if                   error         <> "" then yield ShellErrors   error         :> ErrMsg
+                                 if proc.HasExited && proc.ExitCode <> 0  then yield ShellExitCode proc.ExitCode :> ErrMsg]
+              let    msgs2   = if msgs.IsEmpty && not started then [ ShellDidNotStart :> ErrMsg ] else msgs                           
+              let    res     = Result ((if not started || (proc.HasExited && proc.ExitCode = 0) then Some() else None), msgs2) 
+              res
+          member this.Send(txt: string)   = proc.StandardInput.WriteLine txt
+          member this.Output  ()          = consume bufferOutput
+          member this.Error   ()          = consume bufferError
+          member this.Response(out:string, err:string)  = 
+              match out.Trim(), err.Trim() with
+      //        | ""  , ""  -> None
+              | good, ""  -> Some( Result.succeed        good                             )
+              | ""  , bad -> Some( Result.fail                <| ShellFailWithMessage bad )
+              | good, bad -> Some( Result.succeedWithMsg good <| ShellFailWithMessage bad )
+          member this.Response()          = this.Response(this.Output(), this.Error())
+          member this.SendAndWait(send, wait, ?onError) =
+              let eventWait = 
+                  if defaultArg onError false then proc.ErrorDataReceived else proc.OutputDataReceived
+                  |> Event.choose (fun evArgs -> try evArgs.Data |> (fun v -> if v.Contains wait then Some <| Result.succeed v else None) with _ -> None)
+              let eventAll = Event.merge eventWait  (Event.map (fun _ -> Result.fail <| ShellCrashed startInfo.FileName) proc.Exited)
+              Wrap.wrapper {
+                  do! Result.tryProtection()
+                  async { 
+                      do!    Async.Sleep 20 
+                      this.Send send        } |> Async.Start
+                  let!   waitedR = Async.AwaitEvent eventAll
+                  let!   waited  = waitedR
+                  do!    Async.Sleep 200
+                  let!   res =
+                         if defaultArg onError false then 
+                             this.Response(this.Output(), this.Error() |> fun msg -> msg.Split([| waited |], System.StringSplitOptions.None) |> Array.head)
+                         else this.Response()
+                         |> Option.defaultWith (fun () -> Result.succeedWithMsg "" ShellFinishedWithNoMessage)
+                  return res
+              }
+          member this.HasExited = try proc.HasExited with _ -> true
+          interface System.IDisposable with
+              member this.Dispose () =
+                  try proc.Kill   () with _ -> ()
+                  try proc.Close  () with _ -> ()
+                  try proc.Dispose() with _ -> ()
+      
+    //# 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
+    //#if WEBSHARPER
+    [<WebSharper.JavaScript>]
+    //#endif
+    module FsStationShared =
+    
+      //# 1 @"(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
+      open Useful
+      
+      let inline swap f a b = f b a
+            
+      let snippetName name (content: string) =
+          if name <> "" then name else 
+          content.Split([| '\n' |], System.StringSplitOptions.RemoveEmptyEntries)
+          |> Seq.map    (fun l -> l.Trim())
+          |> Seq.filter (fun l -> not (l.StartsWith("#") || l.StartsWith("[<") || l.StartsWith("//")))
+          |> Seq.tryHead
+          |> Option.defaultValue "<empty>"
+      
+      let sanitize n =
+          let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
+                          '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
+                          '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
+                          '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
+                          '\\'  ; '/'|] //"
+          n |> String.filter (fun c -> not <| Array.contains c illegal)
+      
+      type CodeSnippetId = CodeSnippetId of System.Guid   
+      with static member New = CodeSnippetId <| System.Guid.NewGuid()
+           member this.Text  = match this with CodeSnippetId guid -> guid.ToString()
+      
+      type CodeSnippet = {
+          name         : string
+          content      : string
+          parent       : CodeSnippetId option
+          predecessors : CodeSnippetId list
+          id           : CodeSnippetId
+          expanded     : bool
+          level        : int
+          properties   : Map<string, string>
+      } with
+          member this.Name = snippetName this.name this.content
+          member this.NameSanitized =
+              this.Name
+              |> sanitize
+              |> (fun c -> this.id.Text + " " + c + ".fsx")
+      //    member this.ContentIndented addLinePrepos =
+      //        let indent        = this.level * 2
+      //        let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
+      //        let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |] 
+      //        this.content.Split('\n') 
+      //        |> addLinePs
+      //        |> separatePrepros (not addLinePrepos)
+      //        |> indentF
+      //      , indent
+      
+      // tail recursion does not optimize
+      let rec preds fetcher outs (ins : CodeSnippetId list) : CodeSnippetId list =
+          match ins with
+          | []         -> outs
+          | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                          |> preds fetcher (if outs |> Seq.contains hd then outs else hd::outs)
+      
+      let predsL fetcher (ins : CodeSnippetId list) : CodeSnippetId list =
+          let mutable ins  = ins 
+          let mutable outs = []
+          while not ins.IsEmpty do
+              match ins with
+              | []         -> ()
+              | hd :: rest -> if outs |> Seq.contains hd then
+                                  ins  <- rest
+                              else
+                                  ins  <- List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                                  outs <- hd::outs
+          outs
+      
+      type CodeSnippet with
+          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) = predsL fetcher [ this.id ]        
+          static member TryFindByKey  snps key = snps |> Seq.tryFind (fun snp        -> snp.id = key)
+          member this.SeparateCode addLinePrepos =
+              let indent        = this.level * 2
+              let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
+              let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |]
+              let code, assembs, defines, prepIs, nowarns  =
+                  this.content.Split('\n') 
+                  |> addLinePs
+                  |> separatePrepros (not addLinePrepos)
+                  |> indentF
+                  |> separateDirectives
+              [| this.NameSanitized, code.Length, indent |] , code, assembs, defines, prepIs, nowarns
+          static member AddSeps (lines1:(string*int*int)[], code1:string[], assembs1:string[], defines1:string[], prepIs1:string[], nowarns1:string[])
+                                (lines2:(string*int*int)[], code2:string[], assembs2:string[], defines2:string[], prepIs2:string[], nowarns2:string[]) =
+              Array.append lines1   lines2
+            , Array.append code1    code2
+            , Seq  .append assembs1 assembs2 |> Seq.distinct |> Seq.toArray
+            , Seq  .append defines1 defines2 |> Seq.distinct |> Seq.toArray
+            , Seq  .append prepIs1  prepIs2  |> Seq.distinct |> Seq.toArray
+            , Seq  .append nowarns1 nowarns2 |> Seq.distinct |> Seq.toArray
+          static member ReducedCode  addLinePrepos (snippets: CodeSnippet seq) =
+              snippets
+              |> Seq.map(fun snp -> snp.SeparateCode addLinePrepos)
+              |> fun snps -> if snps |> Seq.isEmpty then seq [ [||],  [||],  [||],  [||],  [||],  [||] ] else snps
+              |> Seq.reduce CodeSnippet.AddSeps
+              |> fun (lines, code, assembs, defines, prepIs, nowarns) ->
+                 (lines, code |> String.concat "\n" |> Array.singleton, assembs, defines, prepIs, nowarns)
+          static member FinishCode addLinePrepos (lines:(string*int*int)[],code:string[], assembs:string[], defines:string[], prepIs:string[], nowarns:string[]) =
+              let config = defines |> Seq.sort |> Seq.map ((+)"-d:") |> String.concat " "
+              let part1  =
+                [ if config <> "" then yield "////" + config
+                  yield! prepIs  |> Seq.map (sprintf "#I @\"%s\""    )
+                  yield! assembs |> Seq.map (sprintf "#r @\"%s\""    )
+                  if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+                  yield! nowarns |> Seq.map (sprintf "#nowarn \"%s\"")
+                ]
+              Seq.append part1 code |> String.concat "\n"
+            , lines 
+              |> Seq.mapFold (fun firstLine (name, len, ind) -> (name, (ind, firstLine, firstLine + len)), firstLine + len) part1.Length
+              |> fst
+              |> Seq.toArray
+          static member CodeAndStarts   addLinePrepos (snippets:CodeSnippet seq) =
+              CodeSnippet.ReducedCode   addLinePrepos snippets
+              |> CodeSnippet.FinishCode addLinePrepos
+          static member CodeFsx         addLinePrepos snps = CodeSnippet.CodeAndStarts addLinePrepos snps |> fst
+      //    static member CodeMerged  addLinePrepos (snippets: CodeSnippet seq) =
+      //        let bySnippet = 
+      //            snippets
+      //            |> Seq.map(fun snp -> 
+      //                let code, indent = snp.ContentIndented addLinePrepos
+      //                snp, indent, code
+      //            )
+      //        (bySnippet, bySnippet |> Seq.collect (function _, _, code -> code))
+      //    static member CodeParts addLinePrepos snippets =
+      //        let bySnippet, merged                        = CodeSnippet.CodeMerged addLinePrepos snippets
+      //        let code, assembs, defines, prepIs, nowarns  = separateDirectives merged
+      //        let config = defines |> Seq.distinct |> Seq.sort |> Seq.map ((+)"-d:")             |> String.concat " "
+      //        [   if config <> "" then yield "////" + config
+      //            yield! prepIs  |> Seq.distinct             |> Seq.map (sprintf "#I @\"%s\""    )
+      //            yield! assembs |> Seq.distinct             |> Seq.map (sprintf "#r @\"%s\""    )
+      //            if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+      //            yield! nowarns |> Seq.distinct             |> Seq.map (sprintf "#nowarn \"%s\"")
+      //        ], code, bySnippet
+      //    static member CodeFsx0 addLinePrepos (cur, snippets) =
+      //        let part1, part2, bySnippet = CodeSnippet.CodeParts addLinePrepos (Array.append snippets [| cur |])
+      //        [ yield! part1 ; yield! part2 ] |> String.concat "\n"
+      
+      
+      //# 1 @"(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
+      //#r "remote.dll"
+      open CIPHERPrototype.Messaging
+      
+      open WebSharper
+      open Useful
+      
+      type MessagingClient(clientId, ?timeout, ?endPoint:string) =
+          let wsEndPoint = endPoint    |> Option.defaultValue "http://localhost:9000/FSharpStation.html"
+          let tout       = timeout     |> Option.defaultValue 100_000
+          let fromId     = AddressId clientId
+          do WebSharper.Remoting.EndPoint <- wsEndPoint 
+          let awaitMessage respond =
+              async {
+                  while true do
+                      printfn "%s awaitRequest %s" (nowStamp()) clientId
+      //#if WEBSHARPER
+                      let! msgA  = Async.StartChild(awaitRequestFor    fromId, tout)
+      //#else
+                      let! msgA  = Async.StartChild(awaitRequestForRpc fromId, tout)
+      //#endif          
+                      try
+                          let! msg   = msgA
+                          let! resp  = respond clientId msg.content
+      //#if WEBSHARPER
+                          do!          replyTo    msg.messageId.Value resp
+      //#else
+                          do!          replyToRpc msg.messageId.Value resp
+      //#endif              
+                      with 
+                      | :? System.TimeoutException -> ()
+                      | e                          -> printfn "%A" e
+              } 
+      //#if WEBSHARPER
+              |> fun asy -> Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))
+      //#else
+              |> Async.Start
+      //#endif                
+      //#if WEBSHARPER
+          let sendMessage  toId msg = sendRequest    toId fromId msg
+      //#else
+          let sendMessage  toId msg = sendRequestRpc toId fromId msg
+      //#endif                
+          let poMsg checkResponse msg =
+              async {
+                  let! resp = sendMessage (AddressId "WebServer:PostOffice") (Json.Serialize<POMessage> msg)
+                  return checkResponse (Json.Deserialize<POResponse> resp)
+              }
+          let poString resp =
+                      match resp with
+                      | POString  v  -> v
+                      | POStrings vs -> sprintf "%A" vs
+          let poStrings resp =
+                      match resp with
+                      | POString  v  -> [| sprintf "unexpected response: %s" v |]
+                      | POStrings vs -> vs
+        with 
+          member this.AwaitMessage respond  = awaitMessage (fun clientId request -> async { return respond clientId request })
+          member this.AwaitMessage respondA = awaitMessage respondA
+          member this.SendMessage toId msg  = sendMessage toId msg
+          member this.POMessage        msg  = poMsg id        msg
+          member this.POListeners      ()   = poMsg poStrings POListeners
+          member this.EndPoint              = wsEndPoint
+          member this.ClientId              = clientId
+          static member EndPoint_           = "http://localhost:9000/FSharpStation.html"
+          
+          
+      
+      
+      //# 1 @"(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
+      type FSMessage =
+          | GetIdentification
+          | GenericMessage        of string
+          | GetSnippetContentById of CodeSnippetId
+          | GetSnippetCodeById    of CodeSnippetId
+          | GetSnippetPredsById   of CodeSnippetId
+          | GetSnippetById        of CodeSnippetId
+          | GetSnippetContent     of string []
+          | GetSnippetCode        of string []
+          | GetSnippetPreds       of string []
+          | GetSnippet            of string []
+          | GetSnippetJSCode      of string []
+          | GetWholeFile
+          | RunSnippetUrlJSById   of CodeSnippetId * string
+          | RunSnippetUrlJS       of string []     * string
+      
+      type FSSeverity =
+          | FSError
+          | FSWarning
+          | FSInfor
+      
+      type FSResponse =
+          | IdResponse        of string
+          | StringResponse    of string option
+          | SnippetResponse   of CodeSnippet option
+          | SnippetsResponse  of CodeSnippet []
+          | StringResponseR   of string option * (string * FSSeverity)[]
+      
+      
+      //# 1 @"(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
+      open CIPHERPrototype.Messaging
+      
+      type FsStationClientErr =
+          | FSMessage             of string * FSSeverity
+          | ``Snippet Not Found`` of string
+      with interface ErrMsg with
+              member this.ErrMsg    = 
+                  match this with 
+                  | FSMessage (msg, sev    )   -> sprintf "%A %s" sev msg
+                  | msg                        -> sprintf "%A"        msg
+              member this.IsWarning =     
+                  match this with 
+                  | FSMessage (_  , FSError)   -> true
+                  | msg                        -> false
+      
+      type FsStationClient(clientId, ?fsStationId:string, ?timeout, ?endPoint) =
+          let fsIds      = fsStationId |> Option.defaultValue "FSharpStation"
+          let msgClient  = MessagingClient(clientId, ?timeout= timeout, ?endPoint= endPoint)
+          let toId       = AddressId fsIds
+          let stringResponseR response =
+              match response with
+              | StringResponseR (Some code, msgs) -> Result.succeedWithMsgs code (msgs |> Seq.map (fun v -> FSMessage v :> ErrMsg) |> Seq.toList)
+              | _                                 -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
+          let stringResponse  response =
+              match response with
+              | StringResponse (Some code)    -> Result.succeed code
+              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
+          let snippetsResponse response =
+              match response with
+              | SnippetsResponse snps         -> Result.succeed snps
+              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
+          let snippetResponse response =
+              match response with
+              | SnippetResponse  snp          -> Result.succeed snp
+              | _                             -> Result.fail    (``Snippet Not Found`` <| response.ToString()) 
           [< Inline >]
-          let inline bindIRef f  v           = bindIRef0 f (fixit v   |> toView)
-          let inline iter     f  v           = iterV     f (fixit v )
-          let inline bind     f  v           = bindV     f (fixit v )
-          let inline map      f  v           = mapV      f (fixit v )
-          let inline map2     f  v1 v2       = map2V     f (fixit v1) (fixit v2)
-          let inline map3     f  v1 v2 v3    = map3V     f (fixit v1) (fixit v2) (fixit v3)
-          let inline map4     f  v1 v2 v3 v4 = map4V     f (fixit v1) (fixit v2) (fixit v3) (fixit v4)
-          let inline sink     f  v           = fixit v |> toView |> View.Sink f
+          let sendMsg toId (msg: FSMessage) (checkResponse: FSResponse -> Result<'a>) =
+              Wrap.wrapper {
+                  let!   response = msgClient.SendMessage toId (msg |> Json.Serialize)
+                  let!   resp     = checkResponse (Json.Deserialize<FSResponse> response)
+                  return resp
+              } 
+        with 
+          member this.SendMessage     (toId2,  msg:FSMessage) = sendMsg toId2  msg    Result.succeed   
+          member this.SendMessage     (        msg:FSMessage) = sendMsg toId   msg    Result.succeed   
+          member this.RequestSnippet  (    snpPath:string   ) = sendMsg toId  (GetSnippet          (snpPath.Split '/'     ))    snippetResponse  
+          member this.RequestCode     (    snpPath:string   ) = sendMsg toId  (GetSnippetCode      (snpPath.Split '/'     ))    stringResponse   
+          member this.RequestJSCode   (    snpPath:string   ) = sendMsg toId  (GetSnippetJSCode    (snpPath.Split '/'     ))    stringResponseR  
+          member this.RequestPreds    (    snpPath:string   ) = sendMsg toId  (GetSnippetPreds     (snpPath.Split '/'     ))    snippetsResponse 
+          member this.RequestPredsById(      snpId          ) = sendMsg toId  (GetSnippetPredsById  snpId                  )    snippetsResponse 
+          member this.RequestWholeFile(                     ) = sendMsg toId   GetWholeFile                                     stringResponse   
+          member this.GenericMessage  (        txt:string   ) = sendMsg toId  (GenericMessage       txt                    )    stringResponse   
+          member this.RunSnippet      (url,snpPath:string   ) = sendMsg toId  (RunSnippetUrlJS     (snpPath.Split '/', url))    stringResponseR
+          member this.FSStationId                             = fsIds
+          member this.MessagingClient                         = msgClient    
+          static member FSStationId_                          = "FSharpStation"
       
-          let inline iter2    f  v1 v2       = map2      f v1 v2       |> iterV id
-          let inline iter3    f  v1 v2 v3    = map3      f v1 v2 v3    |> iterV id
-          let inline iter4    f  v1 v2 v3 v4 = map4      f v1 v2 v3 v4 |> iterV id
       
-          let inline mapAsync f  v           = View.MapAsync f (fixit v |> toView) 
+      //# 1 @"(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
+      //#r "FSharp.Compiler.Service.dll"
+      open Microsoft.FSharp.Compiler.SourceCodeServices
+      open System.IO
       
-      
-      # 1 @"(6)d9124644-0af6-4a7f-a711-ef76ca77f0de HtmlNode.fsx"
-      [<NoComparison ; NoEquality>]
-      type HtmlNode =
-          | HtmlElement    of name: string * children: HtmlNode seq
-          | HtmlAttribute  of name: string * value:    Val<string>
-          | HtmlAttributeO of name: string * value:    Val<string option>
-          | HtmlText       of Val<string>
-          | HtmlEmpty
-          | HtmlElementV   of Val<HtmlNode>
-          | SomeDoc        of Doc
-          | SomeAttr       of Attr
+      let prepOptions options file (code, assembs, defines, prepoIs, nowarns) =
+          let  code2 =
+             [
+                yield! nowarns |> Seq.distinct |> Seq.map (sprintf "#nowarn \"%s\"")
+                yield! code 
+             ] |> String.concat "\n"
+          do System.IO.File.WriteAllText(file, code2)
+          let  options2 = [|
+                             yield  "IGNOREDfsc.exe"
+                             yield! prepoIs |> Array.map ((+) "-I:")
+                             yield! assembs |> Array.map ((+) "-r:")
+                             yield! defines |> Array.map ((+) "-d:")
+                             yield! options |> Array.filter (fun (s:string) -> s.StartsWith "++" |> not)
+                             yield  file 
+                             if options |> Array.exists ((=) "++staticlinkall") then 
+                                 yield! assembs |> Array.map (Path.GetFileNameWithoutExtension >> ((+) "--staticlink:"))         
+                         |]        
+          if options |> Array.exists ((=) "++showoptions"   ) then printfn "%s" (options2 |> String.concat "\n")               
+          if options |> Array.exists ((=) "++copyassemblies") then 
+              assembs |> Array.iter (fun f -> Path.GetDirectoryName(file) |> copyIfMust f)      
+          options2
           
-      let addClassX    (classes:string) (add:string) = classes.Split ' ' |> Set.ofSeq |> Set.union  (Set.ofSeq <| add.Split ' ') |> String.concat " "
-      //let removeClass (classes:string) (rem:string) = classes.Split ' ' |> Set.ofSeq |> Set.remove               rem            |> String.concat " "
+      type CodeSnippet with
+          static member PrepareCompileOptions options fileName (snps: CodeSnippet seq) =
+              let  addLinePrepos =  options |> Array.exists ((=) "++removelinedirectives") |> not
+              let  lines, code, assembs, defines, prepoIs, nowarns = CodeSnippet.ReducedCode addLinePrepos snps
+              let  options2    = prepOptions options fileName (code, assembs, defines, prepoIs, nowarns)
+              options2
       
-      //let callAddClassX = addClassX "a" "b" // so that WebSharper.Collections.js is included
+      open System.IO
       
-      let inline chooseAttr node = 
-          match node with
-          | HtmlAttribute (name, value   ) when name <> "class" && name <> "style" 
-                                           -> Some <| Val.attrV    name value
-          | HtmlAttributeO(name, valueO  ) when name <> "class" && name <> "style" 
-                                           -> Some <| Val.attrVO   name valueO
-          | SomeAttr             attr      -> Some <| attr
-          | _                              -> None
+      let compileOptionsWinExeDebug filename =
+          [| @"--target:winexe"    
+             sprintf "-o:%s" <| Path.ChangeExtension(filename, "exe")
+             @"-g"
+             @"--debug:full"
+             //@"--noframework"
+             @"--define:DEBUG"
+             @"--define:TRACE"
+             @"--optimize-"
+             @"--tailcalls-"
+             @"--warn:3"
+             @"--warnaserror:76"
+             @"--vserrors"
+             @"--utf8output"
+             @"--fullpaths"
+             @"--flaterrors"
+             @"--subsystemversion:6.00"
+             @"--highentropyva+"
+             //@"++showoptions"
+             @"++removelinedirectives"
+          |]
+                
+      let compileOptionsExeDebug filename =
+          [| @"--target:exe"    
+             sprintf "-o:%s" <| Path.ChangeExtension(filename, "exe")
+             @"-g"
+             @"--debug:full"
+             //@"--noframework"
+             @"--define:DEBUG"
+             @"--define:TRACE"
+             @"--optimize-"
+             @"--tailcalls-"
+             @"--warn:3"
+             @"--warnaserror:76"
+             @"--vserrors"
+             @"--utf8output"
+             @"--fullpaths"
+             @"--flaterrors"
+             @"--subsystemversion:6.00"
+             @"--highentropyva+"
+             //@"++showoptions"
+             @"++removelinedirectives"
+          |]
+                
+      let compileOptionsDllDebug filename =
+          [| @"--target:library"   
+             sprintf "-o:%s" <| Path.ChangeExtension(filename, "dll")
+             @"-g"
+             @"--debug:full"
+             //@"--noframework"
+             @"--define:DEBUG"
+             @"--define:TRACE"
+             @"--optimize-"
+             @"--tailcalls-"
+             @"--warn:3"
+             @"--warnaserror:76"
+             @"--vserrors"
+             @"--utf8output"
+             @"--fullpaths"
+             @"--flaterrors"
+             @"--subsystemversion:6.00"
+             @"--highentropyva+"
+             //@"++showoptions"
+             @"++removelinedirectives"
+          |]
       
-      let chooseThisAttr this node =
-          match node with
-          | HtmlAttribute (att, value) when att = this -> Some value
-          | _                                          -> None
+      type FsStationClient with
+          member this.PrepareCompileOptions(optionsC, fileName, snpPath) = 
+              Wrap.wrapper {
+                  let!   preds   = this.RequestPreds snpPath
+                  let    options = CodeSnippet.PrepareCompileOptions (optionsC fileName) fileName preds
+                  return options
+              }
+          member this.CompileSnippet(optionsC, fileName, snpPath, printMsgs) = 
+              Wrap.wrapper {
+                  printMsgs <| sprintf "Compiling %s ..."                      snpPath
+                  let! options2   = this.PrepareCompileOptions (optionsC, fileName, snpPath)
+                  let! msgs, stat = FSharpChecker.Create().Compile options2
+                  printMsgs <|
+                      match msgs with
+                      | [||] -> "Compiled " + fileName
+                      | _    -> msgs |> Seq.map (sprintf "%A") |> String.concat "\n"
+              } |> Wrap.runSynchronously printMsgs
+          member this.CompileSnippet(optionsC, fileName, snpPath) = this.CompileSnippet(optionsC, fileName, snpPath, printfn "%s")
+              
       
-      let concat s a b = a + s + b
-      let groupAttr name sep children = 
-          children 
-          |> Seq.choose (chooseThisAttr name)
-          |> (fun ss -> if ss |> Seq.isEmpty 
-                        then None 
-                        else ss |> Seq.reduce (Val.map2 <| concat sep ) |> Val.attrV name |> Some)
-      
-      let inline getAttrsFromSeq children =
-          children 
-          |> Seq.choose chooseAttr
-          |> Seq.append (List.choose id [ children |> groupAttr "class" " " ; children |> groupAttr "style" "; " ])
-      
-      let rec chooseNode node =
-          match node with
-          | HtmlElement (name, children) -> Some <| (Doc.Element name (getAttrsFromSeq children) (children |> Seq.choose chooseNode) :> Doc)
-          | HtmlText     vtext           -> Some <| Val.tagDoc WebSharper.UI.Next.Html.text vtext
-          | SomeDoc      doc             -> Some <| doc
-          | HtmlElementV vnode           -> Some <| (vnode |> Val.toView |> Doc.BindView (chooseNode >> Option.defaultValue Doc.Empty))
-          | _                            -> None
-      
-      let getAttrChildren attr =
-          Seq.tryPick (function 
-                      | HtmlAttribute(a, v) when a = attr -> Some v 
-                      | _                                 -> None)
-          >> Option.defaultValue (Constant "")
-      
-      let rec mapHtmlElement (f:string -> seq<HtmlNode> -> string * HtmlNode seq) (element:HtmlNode) :HtmlNode =
-          match element with
-          | HtmlElement (name, children) -> f name  children                    |> HtmlElement
-          | HtmlElementV vnode           -> vnode |> Val.map (mapHtmlElement f) |> HtmlElementV
-          | _                            -> element
-      
-      //let getAttr attr element =
-      //    match element with
-      //    | HtmlElement(_, children) -> children
-      //    | _                        -> seq []
-      //    |> getAttrChildren attr
-      //
-      //let getClass = getAttr "class"
-      //let getStyle = getAttr "style"
-      
-      //let replaceAttribute att (children: HtmlNode seq) newVal =
-      //    HtmlAttribute(att, newVal)
-      //    :: (children
-      //        |> Seq.filter (function HtmlAttribute(old, _) when old = att -> false | _ -> true)
-      //        |> Seq.toList
-      //       )
-      //
-      //let replaceAtt att node newVal = mapHtmlElement (fun n ch -> n, replaceAttribute att ch newVal |> Seq.ofList) node
-      
-      let inline htmlElement    name ch = HtmlElement   (name, ch           )
-      let inline htmlAttribute  name v  = HtmlAttribute (name, Val.fixit v  )
-      let inline htmlAttributeO name v  = HtmlAttributeO(name, Val.fixit v  )
-      let inline htmlText       txt     = HtmlText      (      Val.fixit txt)
-      let inline someElt        elt     = SomeDoc       (elt :> Doc         )    
-        
-      let inline addChildren    add (h:HtmlNode) = h |> mapHtmlElement (fun n ch -> n, Seq.append ch   add)
-      let inline insertChildren add (h:HtmlNode) = h |> mapHtmlElement (fun n ch -> n, Seq.append add  ch )
-      let inline addClass       c    h           = h |> addChildren [ htmlAttribute  "class" c ] 
-      let inline addClassIf     c v              = addClass <| Val.map (fun b -> if b then c else "") (Val.fixit v)
-      
-      type HtmlNode with
-          member inline this.toDoc = 
-              match this with
-              | HtmlAttribute _
-              | HtmlEmpty       -> Doc.Empty
-              | _               -> chooseNode this |> Option.defaultValue Doc.Empty
-          // member inline   this.Class          clas = Val.fixit clas |> replaceAtt "class" this
-          member          this.AddChildren    add  = this |> addChildren    add
-          member          this.InsertChildren add  = this |> insertChildren add
-          member inline   this.AddClass       c    = this |> addClass       c
-      
-      let renderDoc = chooseNode >> Option.defaultValue Doc.Empty
-          
-      # 1 @"(6)c3755c07-1385-495d-bad7-a5b0fa54ac9b HTML Elements & Attributes.fsx"
-      let inline atr att v = Val.attrV  att (Val.fixit v)
-      let inline tag tag v = Val.tagDoc tag (Val.fixit v)
-      
-      let inline _class       v = atr "class"       v
-      let inline _type        v = atr "type"        v
-      let inline _style       v = atr "style"       v
-      let inline _placeholder v = atr "placeholder" v
-      let inline textV        v = tag  Html.text    v
-      
-      let inline a           ch = htmlElement   "a"           ch
-      let inline ul          ch = htmlElement   "ul"          ch
-      let inline li          ch = htmlElement   "li"          ch
-      let inline br          ch = htmlElement   "br"          ch
-      let inline hr          ch = htmlElement   "hr"          ch
-      let inline h1          ch = htmlElement   "h1"          ch
-      let inline h2          ch = htmlElement   "h2"          ch
-      let inline h3          ch = htmlElement   "h3"          ch
-      let inline h4          ch = htmlElement   "h4"          ch
-      let inline h5          ch = htmlElement   "h5"          ch
-      let inline h6          ch = htmlElement   "h6"          ch
-      let inline div         ch = htmlElement   "div"         ch
-      let inline img         ch = htmlElement   "img"         ch
-      let inline span        ch = htmlElement   "span"        ch
-      let inline form        ch = htmlElement   "form"        ch
-      let inline table       ch = htmlElement   "table"       ch
-      let inline thead       ch = htmlElement   "thead"       ch
-      let inline th          ch = htmlElement   "th"          ch
-      let inline tr          ch = htmlElement   "tr"          ch
-      let inline td          ch = htmlElement   "td"          ch
-      let inline tbody       ch = htmlElement   "tbody"       ch
-      let inline label       ch = htmlElement   "label"       ch
-      let inline button      ch = htmlElement   "button"      ch
-      let inline script      sc = htmlElement   "script"      sc
-      let inline styleH      st = htmlElement   "style"       st
-      let inline fieldset    ch = htmlElement   "fieldset"    ch
-      let inline link        sc = htmlElement   "link"        sc
-      let inline iframe      at = htmlElement   "iframe"      at
-      let inline body        ch = htmlElement   "body"        ch
-      
-      
-      let inline href        v  = htmlAttribute  "href"        v
-      let inline hrefO       vO = htmlAttributeO "href"        vO
-      let inline rel         v  = htmlAttribute  "rel"         v
-      let inline src         v  = htmlAttribute  "src"         v
-      let inline ``class``   v  = htmlAttribute  "class"       v
-      let inline ``type``    v  = htmlAttribute  "type"        v
-      let inline width       v  = htmlAttribute  "width"       v
-      let inline title       v  = htmlAttribute  "title"       v
-      let inline Id          v  = htmlAttribute  "id"          v
-      let inline frameborder v  = htmlAttribute  "frameborder" v
-      let inline spellcheck  v  = htmlAttribute  "spellcheck"  v
-      let inline draggable   v  = htmlAttribute  "draggable"   v
-      let inline style       v  = htmlAttribute  "style"       v
-      
-      let inline style1    n v  = style <| Val.map ((+) (n + ":")) v
-      
-      type HtmlNode with
-          member inline   this.Style          sty  = this.AddChildren([ style sty ])
-      
-      let inline css         v  = styleH [ htmlText v ] 
-      
-      let inline classIf cls v = ``class`` <| Val.map (fun b -> if b then cls else "") (Val.fixit v)
-      
-      let inline ``xclass`` v  = 
-          match Val.fixit v with
-          | Constant c  -> Attr.Class        c       
-          | Dynamic  cw -> Attr.DynamicClass "class_for_view_not_implemented" cw      ((<>)"")
-          | DynamicV cv -> Attr.DynamicClass cv.Value                         cv.View ((<>)"")
-          |> SomeAttr
-      
-      let style2pairs (ss:string) : (string * string) [] =
-          ss.Split(';') 
-          |> Array.map   (fun s -> s.Split(':') ) 
-          |> Array.filter(fun d -> d.Length = 2 )
-          |> Array.map   (fun d -> d.[0].Trim(), d.[1].Trim() )
-      
-      let string2Styles = style2pairs >> Array.map (fun (n, v) -> Attr.Style n v |> SomeAttr)
-      
-      //let composeDoc elt dtl dtlVal = dtlVal |> Val.toView |> Doc.BindView (Seq.append dtl >> elt >> renderDoc) |> SomeDoc
-      
-      let inline bindHElem hElemF v  = Val.map hElemF  (Val.fixit v) |> HtmlElementV
-      
-      let createIFrame f =
-          let cover = Var.Create true
-          div [ style           "position: relative; overflow: hidden; height: 100%; width: 100%;" 
-                iframe 
-                  [ style       "position: absolute; width:100%; height:100%;"
-                    frameborder "0"
-                    SomeAttr <| on.afterRender f
-                    SomeAttr <| on.mouseLeave (fun _ _ -> cover.Value <- true)
-                  ]
-                div 
-                  [ style       "position: absolute;"
-                    classIf     "iframe-cover" (Val.map id cover)               
-                    SomeAttr <| on.mouseEnter (fun _ _ -> Input.Mouse.MousePressed 
-                                                          |> View.Get (fun pressed -> if not pressed then cover.Value <- false))
-                  ]          
-                styleH [ htmlText ".iframe-cover { top:0; left:0; right:0; bottom:0; background: blue; opacity: 0.04; z-index: 2; }" ]
-              ]
-      
-      [< Inline """(!$v)""">]
-      let isUndefined v = true
-      
-      let  findRootElement (e:Dom.Element) =
-          let root = e.GetRootNode()
-          if isUndefined root?body 
-          then root.FirstChild :?> Dom.Element
-          else root?body  |> unbox<Dom.Element>
-      
-    # 1 @"(4)3709b431-1507-48ed-9487-dd49ce7be748 open HtmlNode.fsx"
-    open HtmlNode
-    # 1 @"(4)e9ac2d66-474a-46a6-95fa-d369e6d703d1 Template.fsx"
-    [<JavaScript>]
-    module Template      =
-      # 1 @"(6)29c4d6ae-2bb7-457a-ba64-fcb7cce96a30 Input.fsx"
-      [<NoComparison ; NoEquality>]
-      type Input = {
-          _type       : Val<string>
-          _class      : Val<string>
-          style       : Val<string>
-          placeholder : Val<string>
-          id          : string
-          var         : IRef<string>
-          prefix      : HtmlNode
-          suffix      : HtmlNode
-          content     : Attr seq
-          prefixAdded : bool
-          suffixAdded : bool
-      } with
-        static member  New(var) = { _class      = Val.fixit "form-control" 
-                                    _type       = Val.fixit "text" 
-                                    style       = Val.fixit "" 
-                                    placeholder = Val.fixit "Enter text:"
-                                    id          = ""
-                                    content     = []
-                                    prefix      = HtmlEmpty
-                                    prefixAdded = false
-                                    suffix      = HtmlEmpty
-                                    suffixAdded = false
-                                    var         = var   
-                                  }
-        static member  New(v)   = Input.New(Var.Create v)
-        member        this.Render    =         
-          let groupClass det = match det with HtmlText _  -> "input-group-addon" | _ -> "input-group-btn"
-          div [
-              if this.prefixAdded || this.suffixAdded then
-                  yield ``class`` "input-group"
-              if this.prefixAdded then
-                  yield  span     [ ``class`` <| groupClass this.prefix 
-                                    this.prefix       ]
-              yield Doc.Input ([_type            this._type
-                                _class           this._class
-                                _style           this.style
-                                attr.id          this.id  
-                                _placeholder     this.placeholder ] |> Seq.append this.content)
-                                this.var
-                    :> Doc |> SomeDoc
-              if this.suffixAdded then
-                  yield  span     [ ``class`` <| groupClass this.suffix 
-                                    this.suffix       ]
-            ]
-        member inline this.Class       clas = { this with _class      = Val.fixit clas                  }
-        member inline this.Type        typ  = { this with _type       = Val.fixit typ                   }
-        member inline this.Style       sty  = { this with style       = Val.fixit sty                   }
-        member inline this.Placeholder plc  = { this with placeholder = Val.fixit plc                   }
-        member inline this.Id          id   = { this with id          =       id                        }
-        member inline this.Content     c    = { this with content     =       c                         }
-        member inline this.Prefix      p    = { this with prefix      =       p    ; prefixAdded = true }
-        member inline this.Suffix      s    = { this with suffix      =       s    ; suffixAdded = true }
-        member inline this.SetVar      v    = { this with var         = v                               }
-        member inline this.Var              = this.var
-      # 1 @"(6)0a11766b-f227-4b38-88a3-919d964387bf Panel.fsx"
-      [<NoComparison ; NoEquality>]
-      type Panel = {
-          _class   : Val<string>
-          _style   : Val<string>
-          title    : Val<string>
-          header   : HtmlNode seq
-          content  : HtmlNode seq
-          disabled : Val<bool>
-      } with
-        static member  New   = { _class   = Val.fixit <| "panel panel-default shadow"
-                                 _style   = Val.fixit <| "text-align:center" 
-                                 title    = Val.fixit <| "Panel"        
-                                 header   =          [ htmlText "Some text"    ] 
-                                 content  =          [ htmlText "Some Content" ] 
-                                 disabled = Val.fixit <| Var.Create false
-                               }
-        member        this.Render          =  
-          fieldset [ SomeAttr <| attr.disabledDynPred (View.Const "")  (this.disabled |> Val.toView)
-                     div [ ``class`` this._class
-                           div (Seq.append
-                                    [ ``class`` "panel-heading"
-                                      label [ ``class``  "panel-title text-center" ; htmlText this.title ]
-                                    ]
-                                    this.header)
-      
-                           div (Seq.append
-                                    [ ``class`` "panel-body"
-                                      style     this._style 
-                                    ]
-                                    this.content)
-                         ] 
-                   ]
-        member inline this.Class       clas = { this with _class   = Val.fixit clas                                        }
-        member inline this.Style       sty  = { this with _style   = Val.fixit sty                                         }
-        member inline this.Title       txt  = { this with title    = Val.fixit txt                                         }
-        member inline this.Header      h    = { this with header   =       h                                           }
-        member inline this.Content     c    = { this with content  =       c                                           }
-        member inline this.Disabled    dis  = { this with disabled =       dis                                         }
-      
-    # 1 @"(4)e2ca8cb1-fb1e-4793-855f-55e3ca07b8f5 RunCode.fsx"
-    [<JavaScript>]
-    module RunCode       =
-      # 1 @"(6)f2571ac9-37ec-4d7c-9ead-9e5f79ae1be1 type RunNode(nodeName, clearNode bool) =.fsx"
-      type RunNode(nodeName, ?clearNode: bool) =
-        let bClearNode    = defaultArg clearNode true
-        let createBaseNode () =
-            let el = JS.Document.CreateElement "div"
-            el.SetAttribute("id", nodeName)
-            JS.Document.Body.AppendChild el |> ignore
-            el
-        let baseNode = 
-            match JS.Document.GetElementById nodeName with
-            | null -> createBaseNode()
-            | node -> node
-        let runNode =
-            match baseNode.ShadowRoot with
-            | null -> let e = JS.Document.CreateElement "div"
-                      baseNode.AttachShadow(Dom.ShadowRootInit(Dom.ShadowRootMode.Open)).AppendChild e |> ignore
-                      e?style <- "height: 100%; width: 100%;"
-                      e
-            | root -> root.FirstChild :?> Dom.Element
-        do if bClearNode then runNode.InnerHTML <- ""
-      with
-        new(?clearNode: bool) = RunNode("TestNode", defaultArg clearNode true)
-        member this.RunNode   = runNode
-      # 1 @"(6)081bac32-e739-4124-87eb-eb7d6f2220bc AddBootstrap.fsx"
-        member this.AddBootstrap =
-          JS.Document.CreateElement "div"
-          |> fun el -> 
-              el.InnerHTML <- 
-                @"<script src='http://code.jquery.com/jquery-3.1.1.min.js' type='text/javascript' charset='UTF-8'></script>
-                  <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' type='text/javascript' charset='UTF-8'></script>
-                  <link type='text/css' rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-                  <link type='text/css' rel='stylesheet' href='/EPFileX/css/main.css'>
-                 "
-              runNode.AppendChild el |> ignore
-          this
-      # 1 @"(6)c110a9c9-bc3b-4be7-8e5d-f43cc75f93ed RunDoc.fsx"
-        member inline this.RunDoc  doc  = doc  :> Doc       |> Doc.Run this.RunNode
-      # 1 @"(6)3038cd62-093c-4385-aa9b-799297bd379c RunHtml.fsx"
-        member inline this.RunHtml node = node |> renderDoc |> this.RunDoc
-      # 1 @"(6)bf400a85-8264-4540-9381-f3be0c968c94 ShowHtmlResult.fsx"
-        member inline this.ShowHtmlResult res =
-          this.AddBootstrap |> ignore
-          div [ ``class`` "container"
-                Template.Panel.New
-                  .Title("Result:")
-                  .Header([])
-                  .Content([ h3 res ; style "font-family:monospace;" ])
-                  .Render
-           ] |> this.RunHtml
-        member inline this.ShowHtmlResult res = this.ShowHtmlResult [res]
-      
-      # 1 @"(6)c47adc01-4550-4830-8df5-e1ebedaee7d0 ShowResult.fsx"
-        member inline this.ShowResult res = htmlText (sprintf "%A" res) |> this.ShowHtmlResult
-      
-    # 1 @"(4)57a30378-4a52-4122-b297-fe5cec1bd067 WebSharper Snippets2.fsx"
-    [< JavaScript >]
-    module Snippets2 = 
-      # 1 @"(6)0dabc34f-673d-4f79-ae00-3960ca196392 Client-Server.fsx"
-      let invert (txt: string) : string = txt |> Seq.rev |> Seq.map string |> String.concat ""
-      
-      [< Rpc >]
-      let invertA txt = async { return invert txt }
-      
-      #if COMPILING
-      #else
-      let inp = Template.Input.New("Type something...")
-      
-      let inline h1 ch = htmlElement "h1" ch
-      
-      h3 [
-        inp.Render
-        htmlText inp.Var
-        htmlElement "h2" [ htmlText inp.Var ]
-        h1 [ htmlText <| Val.mapAsync invertA inp.Var ]
-      ]
-      |> RunCode.RunNode().ShowHtmlResult
-      
-      #endif
-      # 1 @"(6)92837099-e4e4-4c7f-ac52-6c922824304f Server.fsx"
-      //#r @"Owin.dll"
-      //#r @"Microsoft.Owin.dll"
-      //#r @"Microsoft.Owin.Hosting.dll"
-      //#r @"Microsoft.Owin.Host.HttpListener.dll"
-      //#r @"Microsoft.Owin.StaticFiles.dll"
-      //#r @"Microsoft.Owin.FileSystems.dll"
-      //#r @"WebSharper.Owin.dll"
-      
-      WebSharper.Web.Remoting.AddAllowedOrigin "http://localhost"
-      WebSharper.Web.Remoting.AddAllowedOrigin "http://*"
-      WebSharper.Web.Remoting.AddAllowedOrigin "file://"
-      WebSharper.Web.Remoting.DisableCsrfProtection()
-      
-      //#define WEBSHARPER
-      open WebSharper.Sitelets
-      open WebSharper.UI.Next.Server
-      
-      type EndPoint = EP
-      
-      let content (ctx:Context<EndPoint>) (endpoint:EndPoint) : Async<Content<EndPoint>> =
-          Content.Page( Html.html [ Html.body [ Html.h1 [ Html.text "Hello Dolly" ] ]])
-      
-      let site = Application.MultiPage content
-      
-      module SelfHostedServer =
-      
-          open global.Owin
-          open Microsoft.Owin.Hosting
-          open Microsoft.Owin.StaticFiles
-          open Microsoft.Owin.FileSystems
-          open WebSharper.Owin
-      
-          //[<EntryPoint>]
-          let Main args =
-              let rootDirectory, url =
-                  match args with
-                  | [| rootDirectory; url |] -> rootDirectory, url
-                  | [| url                |] -> ".."         , url
-                  | [|                    |] -> ".."         , "http://localhost:9001/"
-                  | _ -> eprintfn "Usage: WebServer ROOT_DIRECTORY URL"; exit 1
-              use server = 
-                  WebApp.Start(url, fun appB ->
-                      appB.UseStaticFiles(StaticFileOptions(FileSystem = PhysicalFileSystem(rootDirectory)))
-                          .UseWebSharper(WebSharperOptions(ServerRootDirectory = rootDirectory
-                                                         , Sitelet             = Some site
-                                                         , BinDirectory        = "."
-                                                         , Debug               = true))
-                      |> ignore
-                      let listener = appB.Properties.["Microsoft.Owin.Host.HttpListener.OwinHttpListener"] |> unbox<Microsoft.Owin.Host.HttpListener.OwinHttpListener>
-                      let maxA = ref 0
-                      let maxB = ref 0
-                      listener.SetRequestProcessingLimits(1000, 1000)
-                      listener.GetRequestProcessingLimits(maxA, maxB)
-                      printfn "Accepts: %d Requests:%d" !maxA !maxB
-                      )
-              stdout.WriteLine("Serving {0}", url)
-              stdin.ReadLine() |> ignore
-              0
-          Main [||] |> ignore
+//# 1 @"f3c40a7d-724c-47fb-88fd-a38b9680b7cb ACTIONS.fsx"
+module Actions =
+  //# 1 @"(2)c8c93861-321c-4d73-beb0-2fef0052bc7b compile & run Demo as WebServer3.fsx"
+  //#define WEBSHARPER
+  
+  open System.IO
+  open FSSGlobal.FsStationShared
+  open FSSGlobal.Useful
+  
+  Wrap.wrapper {
+      let  snippet   = @"FSSGlobal/WebSharper Code/WebSharper Client-Server Demo/Server"
+      let  dest      = @"Compiled\WebServer3"
+      let  fsFile    = @"WebServer3.fs"
+      let  url       = @"http://localhost:9001/"
+      let  file      = Path.Combine(dest, fsFile)
+      let  optionsF  = compileOptionsExeDebug >> Array.append [| "++copyassemblies" ;  "--project:WebServer3" ; "--ws:Site" ; sprintf @"--wsoutput:%s\site" dest |]
+      let  fsstation = FsStationClient("Compile Server3")
+      do   printfn     "Assembling Code %s" fsFile
+      let! options   = fsstation.PrepareCompileOptions(optionsF, file, snippet)
+      do   Directory.CreateDirectory(dest + @"\site") |> ignore
+      do   printfn     "Compiling %s" fsFile
+      do!  options
+           |> Seq.skip 1
+           |> Seq.map (sprintf "%A")
+           |> String.concat "  "
+           |> fun ops -> printfn "%s" ops ; ops
+           |> fun ops -> (new ShellEx(@"D:\Abe\CIPHERWorkspace\CIPHERPrototype\Common\packages\Zafir.FSharp\build\..\tools\WsFsc.exe", ops)).StartAndWait()
+      do   copyIfMust  "FSharp.Core.dll" dest
+      do   printfn     "Starting %s"     fsFile
+      do   runProcess  (System.IO.Path.ChangeExtension(file, "exe")) url |> ignore
+      do   runProcess  url "" |> ignore
+  } |> Wrap.runSynchronously (printfn "%s")
+  
+  
