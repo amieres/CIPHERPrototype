@@ -14,19 +14,17 @@
 #nowarn "1182"
 #nowarn "40"
 #nowarn "1178"
-//# 1 @"bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
+//#elsebf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
 //#nowarn "1182"
 //#nowarn "40"
 //#r @"D:\Abe\CIPHERWorkspace\CIPHERPrototype\WebServer\bin\FSharp.Core.dll"
-//#if INTERACTIVE
 #I @"../WebServer/bin"
-module FSSGlobal   =
-//#endif
+module test =
 
-  //# 1 @"(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
+  //#else(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
   // Code to be evaluated using FSI: `Evaluate F#`
-    //# 1 @"(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
-//    //#if WEBSHARPER
+    //#else(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
+    //#if WEBSHARPER
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
     
@@ -46,15 +44,17 @@ module FSSGlobal   =
     type on   = WebSharper.UI.Next.Html.on
     type attr = WebSharper.UI.Next.Html.attr
     //#endif
-    //# 1 @"(4)7c4a82bc-58cd-48a7-bd7e-79de148a1cf0 Useful.fsx"
+    //#else(4)7c4a82bc-58cd-48a7-bd7e-79de148a1cf0 Useful.fsx"
+    //#if WEBSHARPER
     [<WebSharper.JavaScript>]
+    //#endif
     module Useful =
-      //# 1 @"(6)368caae7-6a67-4063-9af3-978c25b81ac2 Result, Wrap.fsx"
+      //#else(6)368caae7-6a67-4063-9af3-978c25b81ac2 Result, Wrap.fsx"
       open System
       //#nowarn "1178"
       //#if WEBSHARPER
       [<JavaScript>]
-      ////#endif
+      //#endif
       module Option =
           let defaultValue v =
               function
@@ -469,7 +469,7 @@ module FSSGlobal   =
       //#endif
           static member RunSynchronously(w:Wrap<'T  >, ?timeout, ?cancToken) = Async.RunSynchronously(Wrap.getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
       
-      //# 1 @"(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
+      //#else(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
       let extract n (s:string) = s.Substring(0, min n s.Length)
       
       //#if WEBSHARPER
@@ -483,7 +483,7 @@ module FSSGlobal   =
                   let! a = va
                   return f a 
               } 
-      //# 1 @"(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 prepareFsCode.fsx"
+      //#else(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 prepareFsCode.fsx"
       type PreproDirective =
       | PrepoR      of string
       | PrepoDefine of string
@@ -528,7 +528,7 @@ module FSSGlobal   =
           code, assembs, defines, prepoIs, nowarns
       
       
-      //# 1 @"(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
+      //#else(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
       open System.IO
       
       let copyIfMust f destDir =
@@ -543,7 +543,7 @@ module FSSGlobal   =
           if must then
               File.Copy(f, t, true )    
           
-      //# 1 @"(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
+      //#else(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
       open System.Diagnostics
       open System.Text
       
@@ -651,13 +651,83 @@ module FSSGlobal   =
                   try proc.Close  () with _ -> ()
                   try proc.Dispose() with _ -> ()
       
-    //# 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
+      //#else(6)15cf771f-22b1-4796-8e34-6c16f35d6506 Path.Combine.fsx"
+      let inline (+/+) a b = System.IO.Path.Combine(a, b)
+      //#else(6)ef053bdf-997b-49c8-a401-1611a568bd8a CompOptions.fsx"
+      type CompOptionClass = 
+          | OpFSharp
+          | OpWebSharper
+          | OpInternal
+      
+      type CompOption = 
+          {
+              name   : string
+              unique : bool
+              opClass: CompOptionClass  
+              prefix : string
+          }
+      with
+          static member (/=) (op: CompOption, v: CompOptionValue) = op,           v
+          static member (/=) (op: CompOption, v                 ) = op, OpVText   v
+          static member (/=) (op: CompOption, v                 ) = op, OpVTextOF v
+      
+      and CompOptionValue =
+          | OpVText   of                string
+          | OpVTextOF of (CompOptions -> string)
+      with 
+          member this.Value ops = 
+              match this with
+              | OpVText   v  -> v
+              | OpVTextOF fo -> fo ops
+      
+      and CompOptions = CompOptions of (CompOption * CompOptionValue) []
+      with
+          member this.Find  name        =  this |> function CompOptions ops ->  ops |> Array.find   (fun (opT, opV) -> name = opT.name                      )
+          member this.FindV name        = (this.Find name |> snd).Value this
+          member this.Contains v        =  this |> function CompOptions ops ->  ops |> Array.exists (fun (opT, opV) -> v    = opT.prefix + (opV.Value this) )
+          member this.Get   f           =  this |> function CompOptions ops ->  ops |> Array.filter f |> Array.map (fun (opT, opV) ->        opT.prefix + (opV.Value this) )
+          static member FSharpOptions   = fun ({opClass=cls}, _) -> cls = OpFSharp
+          static member WSharperOptions = fun ({opClass=cls}, _) -> cls = OpFSharp || cls = OpWebSharper
+          static member (?) (ops: CompOptions, name: string) = ops.FindV name
+          static member (+) (os1: CompOptions, a2: (CompOption * CompOptionValue) []) = 
+              match os1 with 
+              | CompOptions a1 -> 
+                  a1
+                  |> Array.filter (fun (opT, _) -> (not opT.unique) || (a2 |> Array.exists (fst >> (=) opT) |> not) )
+                  |> Array.append <| a2 
+                  |> CompOptions
+          static member (+) (ops: CompOptions, o:   CompOption * CompOptionValue    ) = ops + [| o |]
+          static member (+) (os1: CompOptions, os2: CompOptions                     ) = match os2 with | CompOptions a2 -> os1 + a2
+      
+      
+      let opSnippet     = { name = "snippet"     ; unique = true  ; opClass = OpInternal   ; prefix = "++snippet:"   }
+      let opDirectory   = { name = "directory"   ; unique = true  ; opClass = OpInternal   ; prefix = "++directory:" }
+      let opName        = { name = "name"        ; unique = true  ; opClass = OpInternal   ; prefix = "++name:"      }
+      let opExtension   = { name = "extension"   ; unique = true  ; opClass = OpInternal   ; prefix = "++extension:" }
+      let opFileName    = { name = "filename"    ; unique = true  ; opClass = OpInternal   ; prefix = "++filename:"  }
+      let opGenInternal = { name = "genInternal" ; unique = false ; opClass = OpInternal   ; prefix = "++"           }
+          
+      let opIOption     = { name = "iOption"     ; unique = false ; opClass = OpFSharp     ; prefix = "-I:"          }
+      let opReference   = { name = "reference"   ; unique = false ; opClass = OpFSharp     ; prefix = "-r:"          }
+      let opSource      = { name = "source"      ; unique = false ; opClass = OpFSharp     ; prefix = ""             }
+      let opTarget      = { name = "target"      ; unique = true  ; opClass = OpFSharp     ; prefix = "--target:"    }
+      let opOutput      = { name = "output"      ; unique = true  ; opClass = OpFSharp     ; prefix = "-o:"          }
+      let opDebug       = { name = "debug"       ; unique = true  ; opClass = OpFSharp     ; prefix = "--debug:"     }
+      let opDefine      = { name = "define"      ; unique = false ; opClass = OpFSharp     ; prefix = "--define:"    }
+      let opGenFSharp1  = { name = "genFSharp1"  ; unique = false ; opClass = OpFSharp     ; prefix = "-"            }
+      let opGenFSharp2  = { name = "genFSharp2"  ; unique = false ; opClass = OpFSharp     ; prefix = "--"           }
+      
+      let opWebSite     = { name = "website"     ; unique = true  ; opClass = OpWebSharper ; prefix = "--wsoutput:"  }
+      let opGenWSharper = { name = "genWSharper" ; unique = false ; opClass = OpWebSharper ; prefix = "--"           }
+      
+      
+    //#else(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
     //#if WEBSHARPER
     [<WebSharper.JavaScript>]
     //#endif
     module FsStationShared =
     
-      //# 1 @"(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
+      //#else(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
       open Useful
       
       let inline swap f a b = f b a
@@ -700,7 +770,7 @@ module FSSGlobal   =
       //    member this.ContentIndented addLinePrepos =
       //        let indent        = this.level * 2
       //        let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
-      //        let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |] 
+      //        let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "# 1 @\"%s%s\"" prfx this.NameSanitized |] 
       //        this.content.Split('\n') 
       //        |> addLinePs
       //        |> separatePrepros (not addLinePrepos)
@@ -733,7 +803,7 @@ module FSSGlobal   =
           member this.SeparateCode addLinePrepos =
               let indent        = this.level * 2
               let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
-              let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |]
+              let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "# 1 @\"%s%s\"" prfx this.NameSanitized |]
               let code, assembs, defines, prepIs, nowarns  =
                   this.content.Split('\n') 
                   |> addLinePs
@@ -762,7 +832,7 @@ module FSSGlobal   =
                 [ if config <> "" then yield "////" + config
                   yield! prepIs  |> Seq.map (sprintf "#I @\"%s\""    )
                   yield! assembs |> Seq.map (sprintf "#r @\"%s\""    )
-                  if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+                  if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "# 1 \"required for nowarns to work\""
                   yield! nowarns |> Seq.map (sprintf "#nowarn \"%s\"")
                 ]
               Seq.append part1 code |> String.concat "\n"
@@ -789,7 +859,7 @@ module FSSGlobal   =
       //        [   if config <> "" then yield "////" + config
       //            yield! prepIs  |> Seq.distinct             |> Seq.map (sprintf "#I @\"%s\""    )
       //            yield! assembs |> Seq.distinct             |> Seq.map (sprintf "#r @\"%s\""    )
-      //            if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+      //            if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "# 1 \"required for nowarns to work\""
       //            yield! nowarns |> Seq.distinct             |> Seq.map (sprintf "#nowarn \"%s\"")
       //        ], code, bySnippet
       //    static member CodeFsx0 addLinePrepos (cur, snippets) =
@@ -797,12 +867,32 @@ module FSSGlobal   =
       //        [ yield! part1 ; yield! part2 ] |> String.concat "\n"
       
       
-      //# 1 @"(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
+      //#else(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
       //#r "remote.dll"
       open CIPHERPrototype.Messaging
       
       open WebSharper
       open Useful
+      
+      
+      //#if WEBSHARPER
+      [< Inline "true" >]
+      //#endif          
+      let inJavaScript = false
+      
+      let selectF fj fn =
+          match inJavaScript with
+          | true  -> fj
+          | false -> fn
+          
+      //#if WEBSHARPER
+      let AsyncStart asy = Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))    
+      //#endif          
+      
+      let awaitRequestForF = selectF awaitRequestFor awaitRequestForRpc
+      let sendRequestF     = selectF sendRequest         sendRequestRpc
+      let replyToF         = selectF replyTo                 replyToRpc
+      let AsyncStartF      = selectF AsyncStart             Async.Start
       
       type MessagingClient(clientId, ?timeout, ?endPoint:string) =
           let wsEndPoint = endPoint    |> Option.defaultValue "http://localhost:9000/FSharpStation.html"
@@ -813,33 +903,17 @@ module FSSGlobal   =
               async {
                   while true do
                       printfn "%s awaitRequest %s" (nowStamp()) clientId
-      //#if WEBSHARPER
-                      let! msgA  = Async.StartChild(awaitRequestFor    fromId, tout)
-      //#else
-                      let! msgA  = Async.StartChild(awaitRequestForRpc fromId, tout)
-      //#endif          
+                      let! msgA  = Async.StartChild(awaitRequestForF fromId, tout)
                       try
                           let! msg   = msgA
                           let! resp  = respond clientId msg.content
-      //#if WEBSHARPER
-                          do!          replyTo    msg.messageId.Value resp
-      //#else
-                          do!          replyToRpc msg.messageId.Value resp
-      //#endif              
+                          do!          replyToF msg.messageId.Value resp
                       with 
                       | :? System.TimeoutException -> ()
                       | e                          -> printfn "%A" e
               } 
-      //#if WEBSHARPER
-              |> fun asy -> Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))
-      //#else
-              |> Async.Start
-      //#endif                
-      //#if WEBSHARPER
-          let sendMessage  toId msg = sendRequest    toId fromId msg
-      //#else
-          let sendMessage  toId msg = sendRequestRpc toId fromId msg
-      //#endif                
+              |> AsyncStartF
+          let sendMessage  toId msg = sendRequestF toId fromId msg
           let poMsg checkResponse msg =
               async {
                   let! resp = sendMessage (AddressId "WebServer:PostOffice") (Json.Serialize<POMessage> msg)
@@ -863,10 +937,7 @@ module FSSGlobal   =
           member this.ClientId              = clientId
           static member EndPoint_           = "http://localhost:9000/FSharpStation.html"
           
-          
-      
-      
-      //# 1 @"(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
+      //#else(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
       type FSMessage =
           | GetIdentification
           | GenericMessage        of string
@@ -896,7 +967,7 @@ module FSSGlobal   =
           | StringResponseR   of string option * (string * FSSeverity)[]
       
       
-      //# 1 @"(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
+      //#else(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
       open CIPHERPrototype.Messaging
       
       type FsStationClientErr =
@@ -955,159 +1026,151 @@ module FSSGlobal   =
           static member FSStationId_                          = "FSharpStation"
       
       
-      //# 1 @"(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
+      //#else(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
       //#r "FSharp.Compiler.Service.dll"
       open Microsoft.FSharp.Compiler.SourceCodeServices
       open System.IO
       
-      let prepOptions options file (code, assembs, defines, prepoIs, nowarns) =
+      let prepOptions (options:CompOptions) (code, assembs, defines, prepoIs, nowarns) =
           let  code2 =
              [
                 yield! nowarns |> Seq.distinct |> Seq.map (sprintf "#nowarn \"%s\"")
                 yield! code 
              ] |> String.concat "\n"
-          do System.IO.File.WriteAllText(file, code2)
-          let  options2 = [|
-                             yield  "IGNOREDfsc.exe"
-                             yield! prepoIs |> Array.map ((+) "-I:")
-                             yield! assembs |> Array.map ((+) "-r:")
-                             yield! defines |> Array.map ((+) "-d:")
-                             yield! options |> Array.filter (fun (s:string) -> s.StartsWith "++" |> not)
-                             yield  file 
-                             if options |> Array.exists ((=) "++staticlinkall") then 
-                                 yield! assembs |> Array.map (Path.GetFileNameWithoutExtension >> ((+) "--staticlink:"))         
-                         |]        
-          if options |> Array.exists ((=) "++showoptions"   ) then printfn "%s" (options2 |> String.concat "\n")               
-          if options |> Array.exists ((=) "++copyassemblies") then 
-              assembs |> Array.iter (fun f -> Path.GetDirectoryName(file) |> copyIfMust f)      
+          let  fileName = options?filename
+          do   File.WriteAllText(fileName, code2)
+          let  options2 = 
+               options  + [|
+                             yield! prepoIs |> Array.map ((/=) opIOption  ) 
+                             yield! assembs |> Array.map ((/=) opReference)
+                             yield! defines |> Array.map ((/=) opDefine   )
+                             if options.Contains "++staticlinkall" then 
+                                 yield! assembs |> Array.map (Path.GetFileNameWithoutExtension >> ((+) "staticlink:") >> ((/=) opGenFSharp2 ))         
+                          |]
+          if options.Contains "++showoptions"    then printfn "%s" (options2.Get (fun _ -> true) |> String.concat "\n")               
+          if options.Contains "++copyassemblies" then 
+              assembs |> Array.iter (fun f -> Path.GetDirectoryName(fileName) |> copyIfMust f)      
           options2
           
       type CodeSnippet with
-          static member PrepareCompileOptions options fileName (snps: CodeSnippet seq) =
-              let  addLinePrepos =  options |> Array.exists ((=) "++removelinedirectives") |> not
+          static member PrepareCompileOptions (options1: CompOptions) (snps: CodeSnippet seq) =
+              let  addLinePrepos =  options1.Contains "++removelinedirectives" |> not
               let  lines, code, assembs, defines, prepoIs, nowarns = CodeSnippet.ReducedCode addLinePrepos snps
-              let  options2    = prepOptions options fileName (code, assembs, defines, prepoIs, nowarns)
+              let  options2      = prepOptions options1 (code, assembs, defines, prepoIs, nowarns)
               options2
       
       open System.IO
       
-      let compileOptionsWinExeDebug filename =
-          [| @"--target:winexe"    
-             sprintf "-o:%s" <| Path.ChangeExtension(filename, "exe")
-             @"-g"
-             @"--debug:full"
-             //@"--noframework"
-             @"--define:DEBUG"
-             @"--define:TRACE"
-             @"--optimize-"
-             @"--tailcalls-"
-             @"--warn:3"
-             @"--warnaserror:76"
-             @"--vserrors"
-             @"--utf8output"
-             @"--fullpaths"
-             @"--flaterrors"
-             @"--subsystemversion:6.00"
-             @"--highentropyva+"
-             //@"++showoptions"
-             @"++removelinedirectives"
+      let (?) (ops:CompOptions) name = ops.FindV name
+      
+      let genericOptions = 
+        CompOptions
+          [|
+             opSnippet     /= "Test"
+             opName        /= fun os -> (os?snippet : string).Split('/') |> Array.last
+             opTarget      /= "exe"
+             opDirectory   /= fun os -> "Compiled" +/+ os?name
+             opExtension   /= fun os -> match os?target with | "library" -> "dll" | _ -> "exe"
+             opFileName    /= fun os -> os?directory +/+ os?name + ".fs"
+             opSource      /= fun os -> os?filename
+             opOutput      /= fun os -> System.IO.Path.ChangeExtension(os?source, os?extension)
           |]
-                
-      let compileOptionsExeDebug filename =
-          [| @"--target:exe"    
-             sprintf "-o:%s" <| Path.ChangeExtension(filename, "exe")
-             @"-g"
-             @"--debug:full"
-             //@"--noframework"
-             @"--define:DEBUG"
-             @"--define:TRACE"
-             @"--optimize-"
-             @"--tailcalls-"
-             @"--warn:3"
-             @"--warnaserror:76"
-             @"--vserrors"
-             @"--utf8output"
-             @"--fullpaths"
-             @"--flaterrors"
-             @"--subsystemversion:6.00"
-             @"--highentropyva+"
-             //@"++showoptions"
-             @"++removelinedirectives"
+          
+      let dllOptions    = CompOptions [| opTarget      /= "library" |]  
+      let winExeOptions = CompOptions [| opTarget      /= "winexe"  |]
+      
+      let siteOptions =
+        CompOptions
+          [|
+             opGenWSharper /= "ws:Site"
+             opWebSite     /= fun os -> os?directory +/+ "website"
+             opGenWSharper /= fun os -> sprintf "project:%s"  os?name
+          |] 
+       
+      let debugOptions = 
+        CompOptions
+          [|
+             opDebug       /= "full"
+             opDefine      /= "DEBUG"
+             opDefine      /= "TRACE"
+             opGenFSharp2  /= "optimize-"
+             opGenFSharp2  /= "tailcalls-"
           |]
-                
-      let compileOptionsDllDebug filename =
-          [| @"--target:library"   
-             sprintf "-o:%s" <| Path.ChangeExtension(filename, "dll")
-             @"-g"
-             @"--debug:full"
+      
+      let otherOptions =
+        CompOptions
+          [|
+             opGenFSharp1  /= "g"
              //@"--noframework"
-             @"--define:DEBUG"
-             @"--define:TRACE"
-             @"--optimize-"
-             @"--tailcalls-"
-             @"--warn:3"
-             @"--warnaserror:76"
-             @"--vserrors"
-             @"--utf8output"
-             @"--fullpaths"
-             @"--flaterrors"
-             @"--subsystemversion:6.00"
-             @"--highentropyva+"
-             //@"++showoptions"
-             @"++removelinedirectives"
+             opGenFSharp2  /= "warn:3"
+             opGenFSharp2  /= "warnaserror:76"
+             opGenFSharp2  /= "vserrors"
+             opGenFSharp2  /= "utf8output"
+             opGenFSharp2  /= "fullpaths"
+             opGenFSharp2  /= "flaterrors"
+             opGenFSharp2  /= "subsystemversion:6.00"
+             opGenFSharp2  /= "highentropyva+"
+             opGenInternal /= "showoptions"
+             opGenInternal /= "removelinedirectives"
           |]
       
       type FsStationClient with
-          member this.PrepareCompileOptions(optionsC, fileName, snpPath) = 
+          member this.PrepareCompileOptions(options1) = 
               Wrap.wrapper {
+                  let  snpPath   = options1?snippet
                   let!   preds   = this.RequestPreds snpPath
-                  let    options = CodeSnippet.PrepareCompileOptions (optionsC fileName) fileName preds
+                  let    options = CodeSnippet.PrepareCompileOptions options1 preds
                   return options
               }
-          member this.CompileSnippet(optionsC, fileName, snpPath, printMsgs) = 
+          member this.CompileSnippetW(options1, printMsgs) = 
               Wrap.wrapper {
-                  printMsgs <| sprintf "Compiling %s ..."                      snpPath
-                  let! options2   = this.PrepareCompileOptions (optionsC, fileName, snpPath)
-                  let! msgs, stat = FSharpChecker.Create().Compile options2
-                  printMsgs <|
-                      match msgs with
-                      | [||] -> "Compiled " + fileName
-                      | _    -> msgs |> Seq.map (sprintf "%A") |> String.concat "\n"
-              } |> Wrap.runSynchronously printMsgs
-          member this.CompileSnippet(optionsC, fileName, snpPath) = this.CompileSnippet(optionsC, fileName, snpPath, printfn "%s")
-              
+                  let  snpPath   = options1?snippet
+                  //printMsgs <| sprintf "Compiling %s ..." snpPath
+                  let! options2   = this.PrepareCompileOptions options1
+                  let! msgs, stat = options2.Get CompOptions.FSharpOptions 
+                                    |> Array.append [| "IGNORED" |] 
+                                    |> FSharpChecker.Create().Compile
+                  return msgs
+                  //printMsgs <|
+                  //    match msgs with
+                  //    | [||] -> "Compiled " + options2?filename
+                  //    | _    -> msgs |> Seq.map (sprintf "%A") |> String.concat "\n"
+              } //|> Wrap.runSynchronously printMsgs
+          member this.CompileSnippetW options  = this.CompileSnippetW(options,  printfn "%s")
+          member this.CompileWsSiteW options1 =
+              Wrap.wrapper {
+                  let  snpPath   = options1?snippet
+                  let  site      = options1?website
+                  let  dest      = options1?directory
+                  do   Directory.CreateDirectory(site) |> ignore
+                  let! options2  = this.PrepareCompileOptions options1
+                  do!  options2.Get CompOptions.WSharperOptions
+                       |> Seq.map (sprintf "%A")
+                       |> String.concat "  "
+                       |> fun ops -> (new ShellEx(@"..\..\Common\packages\Zafir.FSharp\tools\WsFsc.exe", ops)).StartAndWait()
+                  do   copyIfMust  "FSharp.Core.dll" dest
+              }
       
-//# 1 @"f3c40a7d-724c-47fb-88fd-a38b9680b7cb ACTIONS.fsx"
-module Actions =
-  //# 1 @"(2)c8c93861-321c-4d73-beb0-2fef0052bc7b compile & run Demo as WebServer3.fsx"
+  //#else(2)7479dc9d-94cd-4762-a1b8-cf6e09436c3f WebSharper Code.fsx"
   //#define WEBSHARPER
+  (*
+   Code to be Compiled to Javascript and run in the browser
+   using `Compile WebSharper` or `Run WebSharper`
+  *)
   
-  open System.IO
-  open FSSGlobal.FsStationShared
-  open FSSGlobal.Useful
-  
-  Wrap.wrapper {
-      let  snippet   = @"FSSGlobal/WebSharper Code/WebSharper Client-Server Demo/Server"
-      let  dest      = @"Compiled\WebServer3"
-      let  fsFile    = @"WebServer3.fs"
-      let  url       = @"http://localhost:9001/"
-      let  file      = Path.Combine(dest, fsFile)
-      let  optionsF  = compileOptionsExeDebug >> Array.append [| "++copyassemblies" ;  "--project:WebServer3" ; "--ws:Site" ; sprintf @"--wsoutput:%s\site" dest |]
-      let  fsstation = FsStationClient("Compile Server3")
-      do   printfn     "Assembling Code %s" fsFile
-      let! options   = fsstation.PrepareCompileOptions(optionsF, file, snippet)
-      do   Directory.CreateDirectory(dest + @"\site") |> ignore
-      do   printfn     "Compiling %s" fsFile
-      do!  options
-           |> Seq.skip 1
-           |> Seq.map (sprintf "%A")
-           |> String.concat "  "
-           |> fun ops -> printfn "%s" ops ; ops
-           |> fun ops -> (new ShellEx(@"D:\Abe\CIPHERWorkspace\CIPHERPrototype\Common\packages\Zafir.FSharp\build\..\tools\WsFsc.exe", ops)).StartAndWait()
-      do   copyIfMust  "FSharp.Core.dll" dest
-      do   printfn     "Starting %s"     fsFile
-      do   runProcess  (System.IO.Path.ChangeExtension(file, "exe")) url |> ignore
-      do   runProcess  url "" |> ignore
-  } |> Wrap.runSynchronously (printfn "%s")
-  
-  
+    //#else(4)210013b7-280e-4692-a5b1-0b1512666b10 WebSharper Client-Server Demo.fsx"
+    module WSServer = 
+      //#else(6)c8c93861-321c-4d73-beb0-2fef0052bc7b compile & run ClientServerDemo.fsx"
+      open System.IO
+      open test.FsStationShared
+      open test.Useful
+      
+         let  options   = genericOptions
+                        + siteOptions
+                        + debugOptions
+                        + otherOptions
+                        + opSnippet     /= "FSSGlobal/WebSharper Code/WebSharper Client-Server Demo/ClientServerDemo"
+                        + opGenInternal /= "copyassemblies"
+         let  exeFile   = options?output
+         let  site      = options?website
+      
