@@ -8,23 +8,29 @@
 #r @"WebSharper.JavaScript.dll"
 #r @"WebSharper.Web.dll"
 #r @"WebSharper.Sitelets.dll"
-#r @"remote.dll"
+#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
+#r @"FSharp.Data.dll"
 #r @"FSharp.Compiler.Service.dll"
+#r @"remote.dll"
 //# 1 "required for nowarns to work"
 #nowarn "1182"
 #nowarn "40"
 #nowarn "1178"
-//#elsebf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
+//# 1 @"bf864f3c-1370-42f2-ac8a-565a604892e8 FSSGlobal.fsx"
 //#nowarn "1182"
 //#nowarn "40"
 //#r @"D:\Abe\CIPHERWorkspace\CIPHERPrototype\WebServer\bin\FSharp.Core.dll"
+#if INTERACTIVE
 #I @"../WebServer/bin"
-module test =
+module FSSGlobal   =
+#else
+namespace FSSGlobal
+#endif
 
-  //#else(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
+  //# 1 @"(2)edbbf11e-4698-4e33-af0c-135d5b21799b F# Code.fsx"
   // Code to be evaluated using FSI: `Evaluate F#`
-    //#else(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
-    //#if WEBSHARPER
+    //# 1 @"(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
+    #if WEBSHARPER
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
     
@@ -43,18 +49,18 @@ module test =
     open WebSharper.UI.Next.Client
     type on   = WebSharper.UI.Next.Html.on
     type attr = WebSharper.UI.Next.Html.attr
-    //#endif
-    //#else(4)7c4a82bc-58cd-48a7-bd7e-79de148a1cf0 Useful.fsx"
-    //#if WEBSHARPER
+    #endif
+    //# 1 @"(4)7c4a82bc-58cd-48a7-bd7e-79de148a1cf0 Useful.fsx"
+    #if WEBSHARPER
     [<WebSharper.JavaScript>]
-    //#endif
+    #endif
     module Useful =
-      //#else(6)368caae7-6a67-4063-9af3-978c25b81ac2 Result, Wrap.fsx"
+      //# 1 @"(6)368caae7-6a67-4063-9af3-978c25b81ac2 Result, Wrap.fsx"
       open System
       //#nowarn "1178"
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       module Option =
           let defaultValue v =
               function
@@ -94,30 +100,30 @@ module test =
           abstract member ErrMsg   : string
           abstract member IsWarning: bool
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       type ExceptionThrown(exn:Exception) =
           interface ErrMsg with
               member this.ErrMsg   : string = sprintf "%A" exn
               member this.IsWarning: bool   = false
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       type ErrOptionIsNone() =
           interface ErrMsg with
               member this.ErrMsg   : string = "Option is None"
               member this.IsWarning: bool   = false
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       type Result<'TSuccess> = Result of 'TSuccess option * ErrMsg list     
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       module Result =
           let inline succeed             x       = Result (Some x           , [  ]             )
           let inline succeedWithMsg      x  m    = Result (Some x           , [m ]             )
@@ -267,9 +273,9 @@ module test =
       | WSimple of 'T
       | WOption of 'T option
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       module Wrap =
           let errOptionIsNone = ErrOptionIsNone() :> ErrMsg
       
@@ -443,9 +449,9 @@ module test =
                                >> sprintf "%s" >> printMsg
                              ,    sprintf "%A" >> printMsg
                              ,    sprintf "%A" >> printMsg)
-      //#if WEBSHARPER
+      #if WEBSHARPER
           [< Inline "console.log('runSynchronously should not be used in Javascript')" >]                       
-      //#endif
+      #endif
           let runSynchronously (printMsg: string->unit) (w: Wrap<unit>) =
               w
               |> getAsyncR
@@ -458,23 +464,23 @@ module test =
                   >> printMsg
                  )
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [<JavaScript>]
-      //#endif
+      #endif
       type Wrap<'T> with
           static member Start           (w:Wrap<_   >,           ?cancToken) = Async.Start           (Wrap.getAsync  w,                                ?cancellationToken= cancToken)
           static member StartAsTask     (w:Wrap<'T  >, ?options, ?cancToken) = Async.StartAsTask     (Wrap.getAsyncR w, ?taskCreationOptions= options, ?cancellationToken= cancToken)
-      //#if WEBSHARPER
+      #if WEBSHARPER
           [< Inline "console.log('RunSynchronously should not be used in Javascript')" >]                       
-      //#endif
+      #endif
           static member RunSynchronously(w:Wrap<'T  >, ?timeout, ?cancToken) = Async.RunSynchronously(Wrap.getAsyncR w, ?timeout            = timeout, ?cancellationToken= cancToken)
       
-      //#else(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
+      //# 1 @"(6)7a655466-e218-4121-a7b6-f9c70a922e07 extract, now, Async.fsx"
       let extract n (s:string) = s.Substring(0, min n s.Length)
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [< Inline "(function (n) { return n.getFullYear() + '-' +(n.getMonth() + 1) + '-' +  n.getDate() + ' '+n.getHours()+ ':'+n.getMinutes()+ ':'+n.getSeconds()+ ':'+n.getMilliseconds() })(new Date(Date.now()))" >]
-      //#endif
+      #endif
       let nowStamp() = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture)
       
       module Async =
@@ -483,7 +489,34 @@ module test =
                   let! a = va
                   return f a 
               } 
-      //#else(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 prepareFsCode.fsx"
+      //# 1 @"(6)218507eb-4a87-4c11-b5d9-53a2213dd36a Regex.fsx"
+      #if WEBSHARPER
+      
+      let (|REGEX|_|) (expr: string) (opt: string) (value: string) =
+          if value = null then None else
+          try 
+              match JavaScript.String(value).Match(RegExp(expr, opt)) with
+              | null         -> None
+              | [| |]        -> None
+              | m            -> Some m
+          with e -> None
+      #endif
+      
+      //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
+      open System.Text.RegularExpressions
+      
+      #if WEBSHARPER
+      [< Inline "console.log('not implemented in JavaScript')" >]
+      #endif
+      let (|Regex|_|) pattern input =
+          if input = null then None else
+          try 
+              let m = Regex.Match(input, pattern)
+              if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
+              else None
+          with e -> None
+      
+      //# 1 @"(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 separateDirectives.fsx"
       type PreproDirective =
       | PrepoR      of string
       | PrepoDefine of string
@@ -512,8 +545,8 @@ module test =
                                       | true when line.StartsWith("#line"  ) -> (preL    line, line |> quoted |> PrepoLine  )
                                       | true when line.StartsWith("#I"     ) -> (comment line, line |> quoted |> PrepoI     )
                                       | true when line.StartsWith("#if"    ) -> (        line, line           |> PrepoIf    )
-                                      | true when line.StartsWith("//#else"  ) -> (        line,                   PrepoElse  )
-                                      | true when line.StartsWith("//#endif" ) -> (        line,                   PrepoEndIf )
+                                      | true when line.StartsWith("#else"  ) -> (        line,                   PrepoElse  )
+                                      | true when line.StartsWith("#endif" ) -> (        line,                   PrepoEndIf )
                                       | true when line.StartsWith("#light" ) -> (        line, false          |> PrepoLight )
                                       | true when line.StartsWith("#"      ) -> (comment line, line           |> PrepoOther )
                                       | _                                    -> (        line,                   NoPrepo    ) 
@@ -528,22 +561,30 @@ module test =
           code, assembs, defines, prepoIs, nowarns
       
       
-      //#else(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
+      //# 1 @"(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
       open System.IO
       
-      let copyIfMust f destDir =
-          let t = Path.Combine(destDir, Path.GetFileName(f))
-          let fit = FileInfo t
+      let copyIfNotExistsToFile from dest =
+          let fit = FileInfo dest
+          if not fit.Exists then
+              File.Copy(from, dest, true )
+      
+      let copyIfMustToFile from dest =
+          let fit = FileInfo dest
           let must = 
               match fit.Exists with 
               | false -> true
               | true  ->
-                  let fif = FileInfo t
+                  let fif = FileInfo dest
                   fif.Length <> fit.Length || fif.LastWriteTime <> fit.LastWriteTime
           if must then
-              File.Copy(f, t, true )    
+              File.Copy(from, dest, true )
+      
+      let copyIfMustToDir from destDir =
+          let dest = Path.Combine(destDir, Path.GetFileName(from))
+          copyIfMustToFile from dest
           
-      //#else(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
+      //# 1 @"(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
       open System.Diagnostics
       open System.Text
       
@@ -651,9 +692,9 @@ module test =
                   try proc.Close  () with _ -> ()
                   try proc.Dispose() with _ -> ()
       
-      //#else(6)15cf771f-22b1-4796-8e34-6c16f35d6506 Path.Combine.fsx"
+      //# 1 @"(6)15cf771f-22b1-4796-8e34-6c16f35d6506 Path.Combine.fsx"
       let inline (+/+) a b = System.IO.Path.Combine(a, b)
-      //#else(6)ef053bdf-997b-49c8-a401-1611a568bd8a CompOptions.fsx"
+      //# 1 @"(6)ef053bdf-997b-49c8-a401-1611a568bd8a CompOptions.fsx"
       type CompOptionClass = 
           | OpFSharp
           | OpWebSharper
@@ -699,185 +740,326 @@ module test =
           static member (+) (ops: CompOptions, o:   CompOption * CompOptionValue    ) = ops + [| o |]
           static member (+) (os1: CompOptions, os2: CompOptions                     ) = match os2 with | CompOptions a2 -> os1 + a2
       
+      let (?) (ops:CompOptions) name = ops.FindV name
       
-      let opSnippet     = { name = "snippet"     ; unique = true  ; opClass = OpInternal   ; prefix = "++snippet:"   }
-      let opDirectory   = { name = "directory"   ; unique = true  ; opClass = OpInternal   ; prefix = "++directory:" }
-      let opName        = { name = "name"        ; unique = true  ; opClass = OpInternal   ; prefix = "++name:"      }
-      let opExtension   = { name = "extension"   ; unique = true  ; opClass = OpInternal   ; prefix = "++extension:" }
-      let opFileName    = { name = "filename"    ; unique = true  ; opClass = OpInternal   ; prefix = "++filename:"  }
-      let opGenInternal = { name = "genInternal" ; unique = false ; opClass = OpInternal   ; prefix = "++"           }
+      let opSnippet     = { name = "Snippet"     ; unique = true  ; opClass = OpInternal   ; prefix = "++snippet:"   }
+      let opDirectory   = { name = "Directory"   ; unique = true  ; opClass = OpInternal   ; prefix = "++directory:" }
+      let opName        = { name = "Name"        ; unique = true  ; opClass = OpInternal   ; prefix = "++name:"      }
+      let opExtension   = { name = "Extension"   ; unique = true  ; opClass = OpInternal   ; prefix = "++extension:" }
+      let opFileName    = { name = "Filename"    ; unique = true  ; opClass = OpInternal   ; prefix = "++filename:"  }
+      let opConfig      = { name = "Config"      ; unique = true  ; opClass = OpInternal   ; prefix = "++config:"    }
+      let opGenInternal = { name = "GenInternal" ; unique = false ; opClass = OpInternal   ; prefix = "++"           }
           
-      let opIOption     = { name = "iOption"     ; unique = false ; opClass = OpFSharp     ; prefix = "-I:"          }
-      let opReference   = { name = "reference"   ; unique = false ; opClass = OpFSharp     ; prefix = "-r:"          }
-      let opSource      = { name = "source"      ; unique = false ; opClass = OpFSharp     ; prefix = ""             }
-      let opTarget      = { name = "target"      ; unique = true  ; opClass = OpFSharp     ; prefix = "--target:"    }
-      let opOutput      = { name = "output"      ; unique = true  ; opClass = OpFSharp     ; prefix = "-o:"          }
-      let opDebug       = { name = "debug"       ; unique = true  ; opClass = OpFSharp     ; prefix = "--debug:"     }
-      let opDefine      = { name = "define"      ; unique = false ; opClass = OpFSharp     ; prefix = "--define:"    }
-      let opGenFSharp1  = { name = "genFSharp1"  ; unique = false ; opClass = OpFSharp     ; prefix = "-"            }
-      let opGenFSharp2  = { name = "genFSharp2"  ; unique = false ; opClass = OpFSharp     ; prefix = "--"           }
+      let opIOption     = { name = "IOption"     ; unique = false ; opClass = OpFSharp     ; prefix = "-I:"          }
+      let opReference   = { name = "Reference"   ; unique = false ; opClass = OpFSharp     ; prefix = "-r:"          }
+      let opSource      = { name = "Source"      ; unique = false ; opClass = OpFSharp     ; prefix = ""             }
+      let opTarget      = { name = "Target"      ; unique = true  ; opClass = OpFSharp     ; prefix = "--target:"    }
+      let opOutput      = { name = "Output"      ; unique = true  ; opClass = OpFSharp     ; prefix = "-o:"          }
+      let opDebug       = { name = "Debug"       ; unique = true  ; opClass = OpFSharp     ; prefix = "--debug:"     }
+      let opDefine      = { name = "Define"      ; unique = false ; opClass = OpFSharp     ; prefix = "--define:"    }
+      let opGenFSharp1  = { name = "GenFSharp1"  ; unique = false ; opClass = OpFSharp     ; prefix = "-"            }
+      let opGenFSharp2  = { name = "GenFSharp2"  ; unique = false ; opClass = OpFSharp     ; prefix = "--"           }
       
-      let opWebSite     = { name = "website"     ; unique = true  ; opClass = OpWebSharper ; prefix = "--wsoutput:"  }
-      let opGenWSharper = { name = "genWSharper" ; unique = false ; opClass = OpWebSharper ; prefix = "--"           }
+      let opWebSite     = { name = "Website"     ; unique = true  ; opClass = OpWebSharper ; prefix = "--wsoutput:"  }
+      let opGenWSharper = { name = "GenWSharper" ; unique = false ; opClass = OpWebSharper ; prefix = "--"           }
       
       
-    //#else(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
-    //#if WEBSHARPER
-    [<WebSharper.JavaScript>]
-    //#endif
-    module FsStationShared =
-    
-      //#else(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
+    //# 1 @"(4)376fdef6-dfcf-40c5-bd14-97c3b246bb30 UsefulNoWS.fsx"
+    module UsefulNoWS =
+      //# 1 @"(6)82ab58ca-79e8-47f9-8917-f444d3320751 Rpc Calling.fsx"
+      //#r "FSharp.Data.dll"
+      
+      open System
+      open System.Net
+      open System.Text
+      open System.IO
+      open WebSharper
+      open WebSharper.Remoting
+      open WebSharper.JavaScript
+      
+      #if WEBSHARPER
+      [<WebSharper.JavaScript>]
+      #endif
+      type AddressId = AddressId of string
+      
+      #if WEBSHARPER
+      [<WebSharper.JavaScript>]
+      #endif
+      type Request = {
+          toId              : AddressId
+          fromId            : AddressId
+          content           : string
+          mutable messageId : Guid option
+      }
+      
+      #if WEBSHARPER
+      [<WebSharper.JavaScript>]
+      #endif
+      type MBMessage =
+      | Listener of AddressId * (Request->unit) * (exn->unit) * (OperationCanceledException->unit)
+      | Request  of Request   * (string ->unit) * (exn->unit) * (OperationCanceledException->unit)
+      | Reply    of Guid      *  string
+      
+      #if WEBSHARPER
+      [<WebSharper.JavaScript>]
+      #endif
+      type POMessage =
+      | POIdentification
+      | POEcho   of string
+      | POListeners
+      | POPendingRequests
+      | POPendingReplys
+      
+      #if WEBSHARPER
+      [<WebSharper.JavaScript>]
+      #endif
+      type POResponse =
+      | POString  of string
+      | POStrings of string[]
+      
+      let extract n (s:string) = s.Substring(0, min n s.Length)
+      let now() = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture)
+      
+      type PostOffice() =
+          let mutable listeners = [| |]
+          let mutable requests  = [| |]
+          let mutable sent      = [| |]
+          let agent = MailboxProcessor.Start(fun mail ->
+              async {
+                  while true do
+                      let! mbMsg = mail.Receive()
+                      match mbMsg with
+                      | Listener                    (listener, lfs, lfe, lfc)  ->
+                          requests
+                          |> Array.indexed
+                          |> Array.tryPick (fun (i, (request , rfs, rfe, rfc)) -> 
+                              if request.toId <> listener then None else
+                              requests <- Array.append requests .[0..i-1]  requests .[i+1..requests .Length - 1]
+                              Some(lfs, request, rfs))
+                          |> (fun v -> (if v.IsNone then 
+                                          listeners <- 
+                                              listeners 
+                                              |> Array.filter(fun (lnr, lfs, exn, cen) -> 
+                                                  if lnr = listener then
+                                                      //exn <| DivideByZeroException ()
+                                                      //exn <| TimeoutException ()
+                                                      lfs <| {
+                                                                  toId      = AddressId ""
+                                                                  fromId    = AddressId ""
+                                                                  content   = "{\"$\":0}"
+                                                                  messageId = None
+                                                              }
+                                                      false
+                                                  else true) 
+                                              |> Array.append [| listener, lfs, lfe, lfc |]); v)
+                      | Request                     (request , rfs, rfe, rfc)  ->
+                          listeners
+                          |> Array.indexed
+                          |> Array.tryPick (fun (i, (listener, lfs, lfe, lfc)) -> 
+                              if request.toId <> listener then None else 
+                              listeners <- Array.append listeners.[0..i-1] listeners.[i+1..listeners.Length - 1]
+                              Some(lfs, request, rfs))
+                          |> (fun v -> (if v.IsNone then requests  <- requests  |> Array.append [| request , rfs, rfe, rfc |]); v)
+                      | Reply                       (reply   , response)  ->
+                          sent
+                          |> Array.indexed
+                          |> Array.pick (fun (i, (request , rfs)) -> 
+                              if request.messageId.Value <> reply then None else
+                              sent      <- Array.append sent     .[0..i-1] sent     .[i+1..sent     .Length - 1]
+                              rfs response
+                              Some ())
+                          None
+                      |> Option.iter (fun (lfs, request, rfs) -> 
+                          request.messageId <- Some <| Guid.NewGuid()
+                          sent <- sent |> Array.append [| request, rfs |]
+                          lfs request
+                      )
+              }
+          )
+          with
+              member this.AwaitRequest    listener  fs fe fc = agent.Post <| Listener (listener, fs, fe, fc)
+              member this.SendRequest     request   fs fe fc = 
+                  printfn "%s Request: %A %A %A" (now()) request.toId request.fromId (extract 80 request.content)
+                  agent.Post <| Request  (request , fs, fe, fc)
+              member this.ReplyTo         request   response = 
+                  printfn "%s Reply:   %s"       (now()) (extract 100 response)
+                  agent.Post <| Reply    (request , response  )
+              member this.Listeners       ()                 = listeners |> Array.map (function | AddressId id, _, _, _ -> id)
+              member this.Requests        ()                 = requests  |> Array.map (sprintf "%A")
+              member this.Sent            ()                 = sent      |> Array.map (sprintf "%A")
+      
+      let postOffice = PostOffice()
+      
+      [< Rpc >]
+      let awaitRequestFor (listener:AddressId) =
+          let startAsync (fs, fe, fc) = postOffice.AwaitRequest listener fs fe fc
+          Async.FromContinuations startAsync
+      
+      [< Rpc >]
+      let replyTo    (reply:Guid) response =
+          async {
+              postOffice.ReplyTo reply response
+          }
+      
+      open FSharp.Data
+      open FSharp.Data.JsonExtensions
+      
+      [< Rpc >]
+      let sendRequest  toId fromId content =
+          if toId = AddressId "WebServer:PostOffice" then
+              async {
+                  let msg = Json.Deserialize<POMessage> content
+                  return
+                      match msg with
+                      | POIdentification  -> POString     "WebServer:PostOffice"
+                      | POEcho        txt -> POString     txt
+                      | POListeners       -> POStrings <| postOffice.Listeners()
+                      | POPendingRequests -> POStrings <| postOffice.Requests ()
+                      | POPendingReplys   -> POStrings <| postOffice.Sent     ()
+                      |> Json.Serialize 
+              }
+          else
+          let startAsync (fs, fe, fc) = postOffice.SendRequest   
+                                          { toId      = toId   
+                                            fromId    = fromId 
+                                            content   = content 
+                                            messageId = None }
+                                          fs fe fc
+          Async.FromContinuations startAsync
+      
+      let RpcCall (url:string) method (data:string) =
+          async {
+              //printfn "RpcCall %s" (extract 100 data)
+              let req = WebRequest.Create(url) :?> HttpWebRequest 
+              req.Timeout         <- 300_000
+              req.ProtocolVersion <- HttpVersion.Version10
+              req.Method          <- "POST"
+              req.ContentType     <- "application/json"
+              req.Headers.Add("x-websharper-rpc", method            )
+              let postBytes = Encoding.ASCII.GetBytes(data)
+              req.ContentLength <- int64 postBytes.Length
+              let reqStream = req.GetRequestStream() 
+              reqStream.Write(postBytes, 0, postBytes.Length);
+              reqStream.Close()
+              
+              // Obtain response and download the resulting page 
+              // (The sample contains the first & last name from POST data)
+              use resp   = req.GetResponse() 
+              use stream = resp.GetResponseStream() 
+              use reader = new StreamReader(stream)
+              let msg    = reader.ReadToEnd()
+              //printfn "RpcCallResponse %s" (extract 100 msg)
+              let json   = JsonValue.Parse msg
+              return       json.["$DATA"]
+          }
+      
+      let serializeAddressId aId =
+          match aId with
+          | AddressId v -> sprintf """{"$":0,"$0":"%s"}""" v
+      
+      let sendRequestRpc (toId: AddressId) (fromId: AddressId) (content: string): Async<string> =
+          async {
+              let! msg =
+                  [| serializeAddressId toId ; serializeAddressId fromId ; Json.Serialize content |]
+                  |> String.concat ", "
+                  |> sprintf "[%s]"
+                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.sendRequest:1096816393"
+              return msg.AsString()
+          }
+      
+      let awaitRequestForRpc (listener:AddressId) =
+          async {
+              let! msg =
+                  [| serializeAddressId listener |]
+                  |> String.concat ", "
+                  |> sprintf "[%s]"
+                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570"
+              let  v = msg.["$V"]
+              let req    =
+                  {
+                      toId      = AddressId <| v?toId  .["$V"].["$0"].AsString()
+                      fromId    = AddressId <| v?fromId.["$V"].["$0"].AsString()
+                      content   = v?content                          .AsString()
+                      messageId = Some <| v?messageId  .["$V"].["$0"].AsGuid  ()
+                  }
+              return req
+          }
+      
+      let replyToRpc (reply:Guid) response =
+          async {
+              let! msg =
+                  [| sprintf "\"%s\"" <| reply.ToString() ; Json.Serialize response |]
+                  |> String.concat ", "
+                  |> sprintf "[%s]"
+                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.replyTo:-1092841374"
+              return ()
+          }
+      
+    //# 1 @"(4)6568955e-6aa8-4f8f-b93f-b7e97622c677 FsTranslator.fsx"
+    module FsTranslator =
+      //# 1 @"(6)b7c2d8cd-7246-4ad1-af46-ffbb7acde6e0 TranslatorError.fsx"
+      //#r "FSharp.Compiler.Service.dll"
+      open Microsoft.FSharp.Compiler.SourceCodeServices
+      open Microsoft.FSharp.Compiler
       open Useful
       
-      let inline swap f a b = f b a
-            
-      let snippetName name (content: string) =
-          if name <> "" then name else 
-          content.Split([| '\n' |], System.StringSplitOptions.RemoveEmptyEntries)
-          |> Seq.map    (fun l -> l.Trim())
-          |> Seq.filter (fun l -> not (l.StartsWith("#") || l.StartsWith("[<") || l.StartsWith("//")))
-          |> Seq.tryHead
-          |> Option.defaultValue "<empty>"
+      type TranslatorError =
+          | MustProvideAssemblyOutputPath
+          | MustProvideProjectPath
+          | WarningFSharp                 of string
+          | ErrFSharp                     of string
+          | ErrWebSharper                 of string
+          | NothingToTranslateToJavaScript
+          | OutputAssemblyNotFound        of string
+      with interface ErrMsg with
+              member this.ErrMsg =
+                  if this = NothingToTranslateToJavaScript then "WebSharper found nothing that required translation to JavaScript. Possibly a [< JavaScript >] attribute is missing." else
+                  sprintf "%A"this
+              member this.IsWarning = match this with | WarningFSharp _ -> true | _ -> false
       
-      let sanitize n =
-          let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
-                          '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
-                          '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
-                          '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
-                          '\\'  ; '/'|] //"
-          n |> String.filter (fun c -> not <| Array.contains c illegal)
+      let getIndentFile input =
+          match input with
+          | Regex "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent, file
+          | _                                                 -> 0         , input
       
-      type CodeSnippetId = CodeSnippetId of System.Guid   
-      with static member New = CodeSnippetId <| System.Guid.NewGuid()
-           member this.Text  = match this with CodeSnippetId guid -> guid.ToString()
-      
-      type CodeSnippet = {
-          name         : string
-          content      : string
-          parent       : CodeSnippetId option
-          predecessors : CodeSnippetId list
-          id           : CodeSnippetId
-          expanded     : bool
-          level        : int
-          properties   : Map<string, string>
-      } with
-          member this.Name = snippetName this.name this.content
-          member this.NameSanitized =
-              this.Name
-              |> sanitize
-              |> (fun c -> this.id.Text + " " + c + ".fsx")
-      //    member this.ContentIndented addLinePrepos =
-      //        let indent        = this.level * 2
-      //        let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
-      //        let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "# 1 @\"%s%s\"" prfx this.NameSanitized |] 
-      //        this.content.Split('\n') 
-      //        |> addLinePs
-      //        |> separatePrepros (not addLinePrepos)
-      //        |> indentF
-      //      , indent
-      
-      // tail recursion does not optimize
-      let rec preds fetcher outs (ins : CodeSnippetId list) : CodeSnippetId list =
-          match ins with
-          | []         -> outs
-          | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
-                          |> preds fetcher (if outs |> Seq.contains hd then outs else hd::outs)
-      
-      let predsL fetcher (ins : CodeSnippetId list) : CodeSnippetId list =
-          let mutable ins  = ins 
-          let mutable outs = []
-          while not ins.IsEmpty do
-              match ins with
-              | []         -> ()
-              | hd :: rest -> if outs |> Seq.contains hd then
-                                  ins  <- rest
-                              else
-                                  ins  <- List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
-                                  outs <- hd::outs
-          outs
-      
-      type CodeSnippet with
-          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) = predsL fetcher [ this.id ]        
-          static member TryFindByKey  snps key = snps |> Seq.tryFind (fun snp        -> snp.id = key)
-          member this.SeparateCode addLinePrepos =
-              let indent        = this.level * 2
-              let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
-              let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "# 1 @\"%s%s\"" prfx this.NameSanitized |]
-              let code, assembs, defines, prepIs, nowarns  =
-                  this.content.Split('\n') 
-                  |> addLinePs
-                  |> separatePrepros (not addLinePrepos)
-                  |> indentF
-                  |> separateDirectives
-              [| this.NameSanitized, code.Length, indent |] , code, assembs, defines, prepIs, nowarns
-          static member AddSeps (lines1:(string*int*int)[], code1:string[], assembs1:string[], defines1:string[], prepIs1:string[], nowarns1:string[])
-                                (lines2:(string*int*int)[], code2:string[], assembs2:string[], defines2:string[], prepIs2:string[], nowarns2:string[]) =
-              Array.append lines1   lines2
-            , Array.append code1    code2
-            , Seq  .append assembs1 assembs2 |> Seq.distinct |> Seq.toArray
-            , Seq  .append defines1 defines2 |> Seq.distinct |> Seq.toArray
-            , Seq  .append prepIs1  prepIs2  |> Seq.distinct |> Seq.toArray
-            , Seq  .append nowarns1 nowarns2 |> Seq.distinct |> Seq.toArray
-          static member ReducedCode  addLinePrepos (snippets: CodeSnippet seq) =
-              snippets
-              |> Seq.map(fun snp -> snp.SeparateCode addLinePrepos)
-              |> fun snps -> if snps |> Seq.isEmpty then seq [ [||],  [||],  [||],  [||],  [||],  [||] ] else snps
-              |> Seq.reduce CodeSnippet.AddSeps
-              |> fun (lines, code, assembs, defines, prepIs, nowarns) ->
-                 (lines, code |> String.concat "\n" |> Array.singleton, assembs, defines, prepIs, nowarns)
-          static member FinishCode addLinePrepos (lines:(string*int*int)[],code:string[], assembs:string[], defines:string[], prepIs:string[], nowarns:string[]) =
-              let config = defines |> Seq.sort |> Seq.map ((+)"-d:") |> String.concat " "
-              let part1  =
-                [ if config <> "" then yield "////" + config
-                  yield! prepIs  |> Seq.map (sprintf "#I @\"%s\""    )
-                  yield! assembs |> Seq.map (sprintf "#r @\"%s\""    )
-                  if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "# 1 \"required for nowarns to work\""
-                  yield! nowarns |> Seq.map (sprintf "#nowarn \"%s\"")
-                ]
-              Seq.append part1 code |> String.concat "\n"
-            , lines 
-              |> Seq.mapFold (fun firstLine (name, len, ind) -> (name, (ind, firstLine, firstLine + len)), firstLine + len) part1.Length
-              |> fst
-              |> Seq.toArray
-          static member CodeAndStarts   addLinePrepos (snippets:CodeSnippet seq) =
-              CodeSnippet.ReducedCode   addLinePrepos snippets
-              |> CodeSnippet.FinishCode addLinePrepos
-          static member CodeFsx         addLinePrepos snps = CodeSnippet.CodeAndStarts addLinePrepos snps |> fst
-      //    static member CodeMerged  addLinePrepos (snippets: CodeSnippet seq) =
-      //        let bySnippet = 
-      //            snippets
-      //            |> Seq.map(fun snp -> 
-      //                let code, indent = snp.ContentIndented addLinePrepos
-      //                snp, indent, code
-      //            )
-      //        (bySnippet, bySnippet |> Seq.collect (function _, _, code -> code))
-      //    static member CodeParts addLinePrepos snippets =
-      //        let bySnippet, merged                        = CodeSnippet.CodeMerged addLinePrepos snippets
-      //        let code, assembs, defines, prepIs, nowarns  = separateDirectives merged
-      //        let config = defines |> Seq.distinct |> Seq.sort |> Seq.map ((+)"-d:")             |> String.concat " "
-      //        [   if config <> "" then yield "////" + config
-      //            yield! prepIs  |> Seq.distinct             |> Seq.map (sprintf "#I @\"%s\""    )
-      //            yield! assembs |> Seq.distinct             |> Seq.map (sprintf "#r @\"%s\""    )
-      //            if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "# 1 \"required for nowarns to work\""
-      //            yield! nowarns |> Seq.distinct             |> Seq.map (sprintf "#nowarn \"%s\"")
-      //        ], code, bySnippet
-      //    static member CodeFsx0 addLinePrepos (cur, snippets) =
-      //        let part1, part2, bySnippet = CodeSnippet.CodeParts addLinePrepos (Array.append snippets [| cur |])
-      //        [ yield! part1 ; yield! part2 ] |> String.concat "\n"
+      let fSharpError2TranspilerError (error : FSharpErrorInfo) =
+          let indent, file = System.IO.Path.GetFileNameWithoutExtension error.FileName |> getIndentFile  
+          sprintf "%s (%d,%d) - (%d,%d) %s %d: %s" 
+             file 
+             error.StartLineAlternate (error.StartColumn - indent) 
+             error.EndLineAlternate   (error.EndColumn   - indent) 
+             error.Subcategory error.ErrorNumber error.Message
+          |> (if   error.Severity = FSharpErrorSeverity.Error  
+              then ErrFSharp     
+              else WarningFSharp
+             )
+          :> ErrMsg
+          
+      let extractConfig (code:string[]) = if code.[0].StartsWith "////-d:" then code.[0].[4..] else ""
       
       
-      //#else(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
+    //# 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
+    #if WEBSHARPER
+    [<WebSharper.JavaScript>]
+    #endif
+    module FsStationShared =
+    
+      //# 1 @"(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
+      #if FSS_SERVER
+      #else
+      
       //#r "remote.dll"
       open CIPHERPrototype.Messaging
+      #endif
       
       open WebSharper
       open Useful
+      open UsefulNoWS
       
       
-      //#if WEBSHARPER
+      #if WEBSHARPER
       [< Inline "true" >]
-      //#endif          
+      #endif          
       let inJavaScript = false
       
       let selectF fj fn =
@@ -885,9 +1067,19 @@ module test =
           | true  -> fj
           | false -> fn
           
-      //#if WEBSHARPER
-      let AsyncStart asy = Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))    
-      //#endif          
+      #if WEBSHARPER
+      let AsyncStart asy     = Async.StartWithContinuations(asy, id, (fun e -> JS.Alert(e.ToString()) ), fun c -> JS.Alert(c.ToString()))    
+      [< Inline "" >]
+      let awaitRequestForRpc = awaitRequestForRpc
+      [< Inline "" >]
+      let sendRequestRpc     = sendRequestRpc
+      [< Inline "" >]
+      let replyToRpc         = replyToRpc
+      #else
+      let AsyncStart asy = Async.Start asy
+      #endif          
+      
+      let AddressId = AddressId
       
       let awaitRequestForF = selectF awaitRequestFor awaitRequestForRpc
       let sendRequestF     = selectF sendRequest         sendRequestRpc
@@ -937,7 +1129,147 @@ module test =
           member this.ClientId              = clientId
           static member EndPoint_           = "http://localhost:9000/FSharpStation.html"
           
-      //#else(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
+      //# 1 @"(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
+      open Useful
+      
+      let inline swap f a b = f b a
+            
+      let snippetName name (content: string) =
+          if name <> "" then name else 
+          content.Split([| '\n' |], System.StringSplitOptions.RemoveEmptyEntries)
+          |> Seq.map    (fun l -> l.Trim())
+          |> Seq.filter (fun l -> not (l.StartsWith("#") || l.StartsWith("[<") || l.StartsWith("//")))
+          |> Seq.tryHead
+          |> Option.defaultValue "<empty>"
+      
+      let sanitize n =
+          let illegal = [|'"'   ; '<'   ; '>'   ; '|'   ; '\000'; '\001'; '\002'; '\003'; '\004'; '\005'; '\006';
+                          '\007'; '\b'  ; '\009'; '\010'; '\011'; '\012'; '\013'; '\014'; '\015';
+                          '\016'; '\017'; '\018'; '\019'; '\020'; '\021'; '\022'; '\023'; '\024';
+                          '\025'; '\026'; '\027'; '\028'; '\029'; '\030'; '\031'; ':'   ; '*'   ; '?';
+                          '\\'  ; '/'|] //"
+          n |> String.filter (fun c -> not <| Array.contains c illegal)
+      
+      type CodeSnippetId = CodeSnippetId of System.Guid   
+      with static member New = CodeSnippetId <| System.Guid.NewGuid()
+           member this.Text  = match this with CodeSnippetId guid -> guid.ToString()
+      
+      type CodeSnippet = {
+          name         : string
+          content      : string
+          parent       : CodeSnippetId option
+          predecessors : CodeSnippetId list
+          id           : CodeSnippetId
+          expanded     : bool
+          level        : int
+          properties   : Map<string, string>
+      } with
+          member this.Name = snippetName this.name this.content
+          member this.NameSanitized =
+              this.Name
+              |> sanitize
+              |> (fun c -> this.id.Text + " " + c + ".fsx")
+      //    member this.ContentIndented addLinePrepos =
+      //        let indent        = this.level * 2
+      //        let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
+      //        let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |] 
+      //        this.content.Split('\n') 
+      //        |> addLinePs
+      //        |> separatePrepros (not addLinePrepos)
+      //        |> indentF
+      //      , indent
+      
+      // tail recursion does not optimize
+      let rec preds fetcher outs (ins : CodeSnippetId list) : CodeSnippetId list =
+          match ins with
+          | []         -> outs
+          | hd :: rest -> List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                          |> preds fetcher (if outs |> Seq.contains hd then outs else hd::outs)
+      
+      let predsL fetcher (ins : CodeSnippetId list) : CodeSnippetId list =
+          let mutable ins  = ins 
+          let mutable outs = []
+          while not ins.IsEmpty do
+              match ins with
+              | []         -> ()
+              | hd :: rest -> if outs |> Seq.contains hd then
+                                  ins  <- rest
+                              else
+                                  ins  <- List.collect id [ rest ; hd |> fetcher |> Option.toList |> List.collect (fun s -> s.parent |> Option.toList |> List.append <| s.predecessors) ]
+                                  outs <- hd::outs
+          outs
+      
+      type CodeSnippet with
+          member this.UniquePredecessors (fetcher: CodeSnippetId -> CodeSnippet option) = predsL fetcher [ this.id ]        
+          static member TryFindByKey  snps key = snps |> Seq.tryFind (fun snp        -> snp.id = key)
+          member this.SeparateCode addLinePrepos =
+              let indent        = this.level * 2
+              let indentF, prfx = if indent = 0         then (id, "") else (Array.map    (fun (l, pr) -> String.replicate indent " " + l, pr), sprintf"(%d)" indent)
+              let addLinePs     = if not addLinePrepos  then  id      else  Array.append [| sprintf "//# 1 @\"%s%s\"" prfx this.NameSanitized |]
+              let code, assembs, defines, prepIs, nowarns  =
+                  this.content.Split('\n') 
+                  |> addLinePs
+                  |> separatePrepros (not addLinePrepos)
+                  |> indentF
+                  |> separateDirectives
+              [| this.NameSanitized, code.Length, indent |] , code, assembs, defines, prepIs, nowarns
+          static member AddSeps (lines1:(string*int*int)[], code1:string[], assembs1:string[], defines1:string[], prepIs1:string[], nowarns1:string[])
+                                (lines2:(string*int*int)[], code2:string[], assembs2:string[], defines2:string[], prepIs2:string[], nowarns2:string[]) =
+              Array.append lines1   lines2
+            , Array.append code1    code2
+            , Seq  .append assembs1 assembs2 |> Seq.distinct |> Seq.toArray
+            , Seq  .append defines1 defines2 |> Seq.distinct |> Seq.toArray
+            , Seq  .append prepIs1  prepIs2  |> Seq.distinct |> Seq.toArray
+            , Seq  .append nowarns1 nowarns2 |> Seq.distinct |> Seq.toArray
+          static member ReducedCode  addLinePrepos (snippets: CodeSnippet seq) =
+              snippets
+              |> Seq.map(fun snp -> snp.SeparateCode addLinePrepos)
+              |> fun snps -> if snps |> Seq.isEmpty then seq [ [||],  [||],  [||],  [||],  [||],  [||] ] else snps
+              |> Seq.reduce CodeSnippet.AddSeps
+              |> fun (lines, code, assembs, defines, prepIs, nowarns) ->
+                 (lines, code |> String.concat "\n" |> Array.singleton, assembs, defines, prepIs, nowarns)
+          static member FinishCode addLinePrepos (lines:(string*int*int)[],code:string[], assembs:string[], defines:string[], prepIs:string[], nowarns:string[]) =
+              let config = defines |> Seq.sort |> Seq.map ((+)"-d:") |> String.concat " "
+              let part1  =
+                [ if config <> "" then yield "////" + config
+                  yield! prepIs  |> Seq.map (sprintf "#I @\"%s\""    )
+                  yield! assembs |> Seq.map (sprintf "#r @\"%s\""    )
+                  if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+                  yield! nowarns |> Seq.map (sprintf "#nowarn \"%s\"")
+                ]
+              Seq.append part1 code |> String.concat "\n"
+            , lines 
+              |> Seq.mapFold (fun firstLine (name, len, ind) -> (name, (ind, firstLine, firstLine + len)), firstLine + len) part1.Length
+              |> fst
+              |> Seq.toArray
+          static member CodeAndStarts   addLinePrepos (snippets:CodeSnippet seq) =
+              CodeSnippet.ReducedCode   addLinePrepos snippets
+              |> CodeSnippet.FinishCode addLinePrepos
+          static member CodeFsx         addLinePrepos snps = CodeSnippet.CodeAndStarts addLinePrepos snps |> fst
+      //    static member CodeMerged  addLinePrepos (snippets: CodeSnippet seq) =
+      //        let bySnippet = 
+      //            snippets
+      //            |> Seq.map(fun snp -> 
+      //                let code, indent = snp.ContentIndented addLinePrepos
+      //                snp, indent, code
+      //            )
+      //        (bySnippet, bySnippet |> Seq.collect (function _, _, code -> code))
+      //    static member CodeParts addLinePrepos snippets =
+      //        let bySnippet, merged                        = CodeSnippet.CodeMerged addLinePrepos snippets
+      //        let code, assembs, defines, prepIs, nowarns  = separateDirectives merged
+      //        let config = defines |> Seq.distinct |> Seq.sort |> Seq.map ((+)"-d:")             |> String.concat " "
+      //        [   if config <> "" then yield "////" + config
+      //            yield! prepIs  |> Seq.distinct             |> Seq.map (sprintf "#I @\"%s\""    )
+      //            yield! assembs |> Seq.distinct             |> Seq.map (sprintf "#r @\"%s\""    )
+      //            if addLinePrepos && (nowarns |> Seq.isEmpty |> not) then yield "//# 1 \"required for nowarns to work\""
+      //            yield! nowarns |> Seq.distinct             |> Seq.map (sprintf "#nowarn \"%s\"")
+      //        ], code, bySnippet
+      //    static member CodeFsx0 addLinePrepos (cur, snippets) =
+      //        let part1, part2, bySnippet = CodeSnippet.CodeParts addLinePrepos (Array.append snippets [| cur |])
+      //        [ yield! part1 ; yield! part2 ] |> String.concat "\n"
+      
+      
+      //# 1 @"(6)f6ebdffc-049c-4493-8de8-e32072419479 FSMessage,FSResponse.fsx"
       type FSMessage =
           | GetIdentification
           | GenericMessage        of string
@@ -967,8 +1299,7 @@ module test =
           | StringResponseR   of string option * (string * FSSeverity)[]
       
       
-      //#else(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
-      open CIPHERPrototype.Messaging
+      //# 1 @"(6)5597a227-c983-46fc-87e2-cbe241faa279 FsStationClient.fsx"
       
       type FsStationClientErr =
           | FSMessage             of string * FSSeverity
@@ -1026,10 +1357,11 @@ module test =
           static member FSStationId_                          = "FSharpStation"
       
       
-      //#else(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
-      //#r "FSharp.Compiler.Service.dll"
-      open Microsoft.FSharp.Compiler.SourceCodeServices
+      //# 1 @"(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
+      open Useful
+      open FsTranslator
       open System.IO
+      open Microsoft.FSharp.Compiler.SourceCodeServices
       
       let prepOptions (options:CompOptions) (code, assembs, defines, prepoIs, nowarns) =
           let  code2 =
@@ -1037,7 +1369,7 @@ module test =
                 yield! nowarns |> Seq.distinct |> Seq.map (sprintf "#nowarn \"%s\"")
                 yield! code 
              ] |> String.concat "\n"
-          let  fileName = options?filename
+          let  fileName = options?Filename
           do   File.WriteAllText(fileName, code2)
           let  options2 = 
                options  + [|
@@ -1049,7 +1381,7 @@ module test =
                           |]
           if options.Contains "++showoptions"    then printfn "%s" (options2.Get (fun _ -> true) |> String.concat "\n")               
           if options.Contains "++copyassemblies" then 
-              assembs |> Array.iter (fun f -> Path.GetDirectoryName(fileName) |> copyIfMust f)      
+              assembs |> Array.iter (fun f -> Path.GetDirectoryName(fileName) |> copyIfMustToDir f)      
           options2
           
       type CodeSnippet with
@@ -1059,32 +1391,29 @@ module test =
               let  options2      = prepOptions options1 (code, assembs, defines, prepoIs, nowarns)
               options2
       
-      open System.IO
-      
-      let (?) (ops:CompOptions) name = ops.FindV name
+      let dllOptions     = CompOptions [| opTarget      /= "library"                                                                     |]  
+      let exeOptions     = CompOptions [| opTarget      /= "exe"     ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
+      let winExeOptions  = CompOptions [| opTarget      /= "winexe"  ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
       
       let genericOptions = 
         CompOptions
           [|
              opSnippet     /= "Test"
-             opName        /= fun os -> (os?snippet : string).Split('/') |> Array.last
-             opTarget      /= "exe"
-             opDirectory   /= fun os -> "Compiled" +/+ os?name
-             opExtension   /= fun os -> match os?target with | "library" -> "dll" | _ -> "exe"
-             opFileName    /= fun os -> os?directory +/+ os?name + ".fs"
-             opSource      /= fun os -> os?filename
-             opOutput      /= fun os -> System.IO.Path.ChangeExtension(os?source, os?extension)
+             opName        /= fun os -> (os?Snippet : string).Split('/') |> Array.last
+             opDirectory   /= fun os -> "Compiled" +/+ os?Name
+             opExtension   /= fun os -> match os?Target with | "library" -> "dll" | _ -> "exe"
+             opFileName    /= fun os -> os?Directory +/+ os?Name + ".fs"
+             opSource      /= fun os -> os?Filename
+             opOutput      /= fun os -> System.IO.Path.ChangeExtension(os?Source, os?Extension)
+             opConfig      /= fun os -> os?Output + ".config"
           |]
           
-      let dllOptions    = CompOptions [| opTarget      /= "library" |]  
-      let winExeOptions = CompOptions [| opTarget      /= "winexe"  |]
-      
       let siteOptions =
         CompOptions
           [|
              opGenWSharper /= "ws:Site"
-             opWebSite     /= fun os -> os?directory +/+ "website"
-             opGenWSharper /= fun os -> sprintf "project:%s"  os?name
+             opWebSite     /= fun os -> os?Directory +/+ "website"
+             opGenWSharper /= fun os -> sprintf "project:%s"  os?Name
           |] 
        
       let debugOptions = 
@@ -1114,63 +1443,81 @@ module test =
              opGenInternal /= "removelinedirectives"
           |]
       
+      let compileOptionsDllDebug (snp:string) = 
+          genericOptions
+          + dllOptions
+          + siteOptions
+          + debugOptions
+          + otherOptions
+          + opSnippet     /= snp
+          
+      let compileOptionsExeDebug    snp = compileOptionsDllDebug snp + exeOptions   
+      let compileOptionsWinExeDebug snp = compileOptionsDllDebug snp + winExeOptions
+          
       type FsStationClient with
           member this.PrepareCompileOptions(options1) = 
               Wrap.wrapper {
-                  let  snpPath   = options1?snippet
+                  let  snpPath   = options1?Snippet
                   let!   preds   = this.RequestPreds snpPath
                   let    options = CodeSnippet.PrepareCompileOptions options1 preds
                   return options
               }
           member this.CompileSnippetW(options1, printMsgs) = 
               Wrap.wrapper {
-                  let  snpPath   = options1?snippet
+                  let  snpPath   = options1?Snippet
                   //printMsgs <| sprintf "Compiling %s ..." snpPath
+                  let  directory = options1?Directory
+                  let  config    = options1?Config
+                  do   Directory.CreateDirectory(directory) |> ignore
                   let! options2   = this.PrepareCompileOptions options1
                   let! msgs, stat = options2.Get CompOptions.FSharpOptions 
                                     |> Array.append [| "IGNORED" |] 
                                     |> FSharpChecker.Create().Compile
-                  return msgs
-                  //printMsgs <|
-                  //    match msgs with
-                  //    | [||] -> "Compiled " + options2?filename
-                  //    | _    -> msgs |> Seq.map (sprintf "%A") |> String.concat "\n"
-              } //|> Wrap.runSynchronously printMsgs
+                  let! res = Result.succeedWithMsgs () (msgs |> Array.map fSharpError2TranspilerError |> Seq.toList)
+                  if options2.Contains "++copyassemblies" then copyIfMustToDir        "FSharp.Core.dll"      directory
+                  if options2.Contains "++copyconfig"     then copyIfNotExistsToFile  "WebServer.exe.config" config
+                  return res
+              }
           member this.CompileSnippetW options  = this.CompileSnippetW(options,  printfn "%s")
           member this.CompileWsSiteW options1 =
               Wrap.wrapper {
-                  let  snpPath   = options1?snippet
-                  let  site      = options1?website
-                  let  dest      = options1?directory
+                  let  snpPath   = options1?Snippet
+                  let  site      = options1?Website
+                  let  dest      = options1?Directory
+                  let  config    = options1?Config
                   do   Directory.CreateDirectory(site) |> ignore
                   let! options2  = this.PrepareCompileOptions options1
                   do!  options2.Get CompOptions.WSharperOptions
                        |> Seq.map (sprintf "%A")
                        |> String.concat "  "
                        |> fun ops -> (new ShellEx(@"..\..\Common\packages\Zafir.FSharp\tools\WsFsc.exe", ops)).StartAndWait()
-                  do   copyIfMust  "FSharp.Core.dll" dest
+                  if options2.Contains "++copyassemblies" then copyIfMustToDir        "FSharp.Core.dll"      dest
+                  if options2.Contains "++copyconfig"     then copyIfNotExistsToFile  "WebServer.exe.config" config
               }
       
-  //#else(2)7479dc9d-94cd-4762-a1b8-cf6e09436c3f WebSharper Code.fsx"
+  //# 1 @"(2)7479dc9d-94cd-4762-a1b8-cf6e09436c3f WebSharper Code.fsx"
   //#define WEBSHARPER
   (*
    Code to be Compiled to Javascript and run in the browser
    using `Compile WebSharper` or `Run WebSharper`
   *)
   
-    //#else(4)210013b7-280e-4692-a5b1-0b1512666b10 WebSharper Client-Server Demo.fsx"
-    module WSServer = 
-      //#else(6)c8c93861-321c-4d73-beb0-2fef0052bc7b compile & run ClientServerDemo.fsx"
+    //# 1 @"(4)5035c5c2-a9d2-49eb-a26c-e0a9637e1af0 FSharpStationServer.fsx"
+    
+      //# 1 @"(6)5e8209e0-9203-4fe0-8289-fb4579b24038 compile & run FSharpStation.fsx"
       open System.IO
-      open test.FsStationShared
-      open test.Useful
+      open FsStationShared
+      open Useful
       
-         let  options   = genericOptions
-                        + siteOptions
-                        + debugOptions
-                        + otherOptions
-                        + opSnippet     /= "FSSGlobal/WebSharper Code/WebSharper Client-Server Demo/ClientServerDemo"
-                        + opGenInternal /= "copyassemblies"
-         let  exeFile   = options?output
-         let  site      = options?website
+      Wrap.wrapper {
+          let  options   = compileOptionsExeDebug "FSSGlobal/WebSharper Code/FSharpStationServer/FSharpStation"
+          let  exeFile   = options?Output
+          let  site      = Path.GetFullPath(options?Website)
+          do!  FsStationClient("Compile WebSharper").CompileWsSiteW options
+          do   printfn     "Starting %s"     exeFile
+          let  url       = @"http://localhost:9010/"
+          let  parms     = sprintf "%A %A" site url 
+          do   runProcess  exeFile parms |> ignore
+          do   runProcess  url     ""    |> ignore
+      } |> Wrap.runSynchronously (printfn "%s")
       

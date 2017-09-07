@@ -2817,6 +2817,10 @@
  {
   return HtmlNode.htmlAttribute("src",v);
  };
+ HtmlNode.charset=function(v)
+ {
+  return HtmlNode.htmlAttribute("charset",v);
+ };
  HtmlNode.rel=function(v)
  {
   return HtmlNode.htmlAttribute("rel",v);

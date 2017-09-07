@@ -86,7 +86,7 @@
                        CIPHERSpaceLoadFiles(["/Scripts/WebSharper/WebSharper.Core.JavaScript/Runtime.js", "/Scripts/WebSharper/WebSharper.Main.js", "/Scripts/WebSharper/WebSharper.Collections.js", "/Scripts/WebSharper/WebSharper.Control.js", "/Scripts/WebSharper/WebSharper.Web.js", "/Scripts/WebSharper/WebSharper.UI.Next.js", "/Scripts/WebSharper/Common.js"], function()
 {
  "use strict";
- var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,SplitterNode,SplitterStructure,MenuEntry,MenuNode,Menu,Action,RunCode,EditorRpc,RunNode,FSharpStation,Position,ErrCompiler,KeyMapAutoComplete,CodeSnippet$1,SC$1,WebServer3_GeneratedPrintf,WebServer3_JsonDecoder,WebServer3_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,JSON,Remoting,AjaxRemotingProvider,Date,Option$1,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Map,MatchFailureException,Slice,Json,Provider,FSharpMap,JavaScript,JSModule,HashSet,ListModel;
+ var FSSGlobal,Useful,Option,ExceptionThrown,ErrOptionIsNone,Result,ropBuilder,Wrap,Builder,Async,ResetableMemoize,PreproDirective,FsStationShared,CodeSnippetId,CodeSnippet,MessagingClient,FSMessage,FSSeverity,FsStationClientErr,FsStationClient,FSAutoComplete,Utils,Pos,Range,Document,CommandResponse,Location,CompletionResponse,OverloadDescription,OverloadParameter,Overload,MethodResponse,SymbolUseRange,SymbolUseResponse,HelpTextResponse,CompilerLocationResponse,FSharpErrorInfo,ErrorResponse,Colorization,Declaration,DeclarationResponse,OpenNamespace,QualifySymbol,ResolveNamespaceResponse,UnionCaseResponse,ACMessage,FSAutoCompleteClient,HtmlNode,Val,HelperType,HtmlNode$1,Template,Button,Input,Hoverable,TextArea,CodeMirrorPos,CodeMirrorEditor,CodeMirror,Hint,HintResponse,HintOptions,LintResponse,SplitterBar,Grid,TabStrip,SplitterNode,SplitterStructure,MenuEntry,MenuNode,Menu,Action,RunCode,RunNode,FSharpStation,Position,ErrCompiler,KeyMapAutoComplete,CodeSnippet$1,SC$1,WebServer3_GeneratedPrintf,WebServer3_JsonDecoder,WebServer3_JsonEncoder,GeneratedPrintf,IntelliFactory,Runtime,WebSharper,PrintfHelpers,List,Strings,Seq,Concurrency,console,Collections,Dictionary,Arrays,Unchecked,Guid,JSON,Date,Remoting,Option$1,UI,Next,View,Doc,AttrModule,AttrProxy,Var,Input$1,Mouse,FSharpSet,BalancedTree,Map,MatchFailureException,Slice,Json,Provider,FSharpMap,JavaScript,JSModule,HashSet,AjaxRemotingProvider,ListModel;
  FSSGlobal=window.FSSGlobal=window.FSSGlobal||{};
  Useful=FSSGlobal.Useful=FSSGlobal.Useful||{};
  Option=Useful.Option=Useful.Option||{};
@@ -160,7 +160,6 @@
  Menu=Template.Menu=Template.Menu||{};
  Action=Template.Action=Template.Action||{};
  RunCode=FSSGlobal.RunCode=FSSGlobal.RunCode||{};
- EditorRpc=RunCode.EditorRpc=RunCode.EditorRpc||{};
  RunNode=RunCode.RunNode=RunCode.RunNode||{};
  FSharpStation=FSSGlobal.FSharpStation=FSSGlobal.FSharpStation||{};
  Position=FSharpStation.Position=FSharpStation.Position||{};
@@ -187,9 +186,8 @@
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Guid=WebSharper&&WebSharper.Guid;
  JSON=window.JSON;
- Remoting=WebSharper&&WebSharper.Remoting;
- AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  Date=window.Date;
+ Remoting=WebSharper&&WebSharper.Remoting;
  Option$1=WebSharper&&WebSharper.Option;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
@@ -211,6 +209,7 @@
  JavaScript=WebSharper&&WebSharper.JavaScript;
  JSModule=JavaScript&&JavaScript.JSModule;
  HashSet=Collections&&Collections.HashSet;
+ AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  ListModel=Next&&Next.ListModel;
  Option.modify=function(modifier)
  {
@@ -1464,13 +1463,13 @@
   },
   sendMessage:function(toId,msg)
   {
-   return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.sendRequest:1096816393",[toId,this.fromId,msg]);
+   return(((FsStationShared.sendRequestF())(toId))(this.fromId))(msg);
   },
   awaitMessage:function(respond)
   {
    var $this,b;
    $this=this;
-   Concurrency.StartWithContinuations((b=null,Concurrency.Delay(function()
+   (FsStationShared.AsyncStartF())((b=null,Concurrency.Delay(function()
    {
     return Concurrency.While(function()
     {
@@ -1487,7 +1486,7 @@
      {
       return n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate()+" "+n.getHours()+":"+n.getMinutes()+":"+n.getSeconds()+":"+n.getMilliseconds();
      }(new window.Date(Date.now()))))($this.clientId);
-     return Concurrency.Bind(Concurrency.StartChild((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[$this.fromId]),{
+     return Concurrency.Bind(Concurrency.StartChild((FsStationShared.awaitRequestForF())($this.fromId),{
       $:1,
       $0:$this.tout
      }),function(a)
@@ -1498,7 +1497,7 @@
        {
         return Concurrency.Bind(respond($this.clientId,a$1.content),function(a$2)
         {
-         return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[a$1.messageId.$0,a$2]),function()
+         return Concurrency.Bind(((FsStationShared.replyToF())(a$1.messageId.$0))(a$2),function()
          {
           return Concurrency.Return(null);
          });
@@ -1519,15 +1518,7 @@
       });
      });
     }));
-   })),function()
-   {
-   },function(e)
-   {
-    window.alert(window.String(e));
-   },function(c)
-   {
-    window.alert(window.String(c));
-   },null);
+   })));
   },
   get_ClientId:function()
   {
@@ -1924,6 +1915,39 @@
    $0:this.fsIds
   };
  },FsStationClient);
+ FsStationShared.AsyncStartF=function()
+ {
+  SC$1.$cctor();
+  return SC$1.AsyncStartF;
+ };
+ FsStationShared.replyToF=function()
+ {
+  SC$1.$cctor();
+  return SC$1.replyToF;
+ };
+ FsStationShared.sendRequestF=function()
+ {
+  SC$1.$cctor();
+  return SC$1.sendRequestF;
+ };
+ FsStationShared.awaitRequestForF=function()
+ {
+  SC$1.$cctor();
+  return SC$1.awaitRequestForF;
+ };
+ FsStationShared.AsyncStart=function(asy)
+ {
+  Concurrency.StartWithContinuations(asy,function()
+  {
+  },function(e)
+  {
+   window.alert(window.String(e));
+  },function(c)
+  {
+   window.alert(window.String(c));
+  },null);
+ };
+ FsStationShared.selectF=window.id;
  FsStationShared.predsL=function(fetcher,ins)
  {
   var ins$1,outs;
@@ -4986,24 +5010,6 @@
   SC$1.$cctor();
   return SC$1.codeMirrorIncludes;
  };
- EditorRpc.evaluate=function(callback,source)
- {
-  EditorRpc.callRPC((new AjaxRemotingProvider.New()).Async("ZafirTranspiler:CIPHERPrototype.Editor.evaluate:-1485533303",[source]),callback);
- };
- EditorRpc.translate=function(callback,minified,source)
- {
-  EditorRpc.callRPC((new AjaxRemotingProvider.New()).Async("ZafirTranspiler:CIPHERPrototype.Editor.translate:796244877",[source,minified]),callback);
- };
- EditorRpc.callRPC=function(asy,callback)
- {
-  Concurrency.StartWithContinuations(asy,callback,function(e)
-  {
-   window.alert(window.String(e));
-  },function(c)
-  {
-   window.alert(window.String(c));
-  },null);
- };
  RunNode=RunCode.RunNode=Runtime.Class({
   createBaseNode:function()
   {
@@ -5055,39 +5061,6 @@
   }).appendChild(p),e=this.createNode(),p.appendChild(e),e)):m$1.firstChild);
   clearNode==null||clearNode.$0?this.runNode.innerHTML="":void 0;
  },RunNode);
- RunCode.startRPC=function(asy)
- {
-  Concurrency.StartWithContinuations(asy,function()
-  {
-  },function(e)
-  {
-   window.alert(window.String(e));
-  },function(c)
-  {
-   window.alert(window.String(c));
-  },null);
- };
- RunCode.compile=function(fThen,fFail,code)
- {
-  var c;
-  c=function($1,msgs)
-  {
-   var a;
-   a=$1==null?null:{
-    $:1,
-    $0:RunCode.completeJS($1.$0)
-   };
-   a==null?fFail(msgs):fThen(msgs,a.$0);
-  };
-  EditorRpc.translate(function($1)
-  {
-   return c($1[0],$1[1]);
-  },false,code);
- };
- RunCode.completeJS=function(js)
- {
-  return"\r\n          CIPHERSpaceLoadFileGlobalFileRef = null;\r\n          CIPHERSpaceLoadFile = function (filename, callback) {\r\n              if (filename.slice(-3) == \".js\" || filename.slice(-4) == \".fsx\" || filename.slice(-3) == \".fs\") { //if filename is a external JavaScript file\r\n                  var fileRef = null;\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement('script')\r\n                      fileRef.setAttribute(\"type\", \"text/javascript\")\r\n                      fileRef.setAttribute(\"src\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-4) == \".css\") { //if filename is an external CSS file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"stylesheet\")\r\n                      fileRef.setAttribute(\"type\", \"text/css\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-5) == \".html\") { //if filename is an external HTML file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"import\")\r\n                      fileRef.setAttribute(\"type\", \"text/html\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              if (!!fileRef) {\r\n                  CIPHERSpaceLoadFileGlobalFileRef = fileRef;\r\n      \u0009\u0009\u0009fileRef.onload = function () { fileRef.onload = null;  callback(); }\r\n                  document.getElementsByTagName(\"head\")[0].appendChild(fileRef);\r\n              }\r\n          }\r\n          CIPHERSpaceLoadFiles = function (files, callback) {\r\n              var newCallback = callback\r\n              if (!!CIPHERSpaceLoadFileGlobalFileRef && !!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n                  var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n                  CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n                  newCallback = function () {\r\n                      callback();\r\n                      oldCallback();\r\n                  }\r\n              }\r\n              var i = 0;\r\n              loadNext = function () {\r\n                  if (i < files.length) {\r\n                      var file = files[i];\r\n                      i++;\r\n                      CIPHERSpaceLoadFile(file, loadNext);\r\n                  }\r\n                  else newCallback();\r\n              };\r\n              loadNext();\r\n      \u0009}\r\n          CIPHERSpaceLoadFiles(['https://code.jquery.com/jquery-3.1.1.min.js'], function() {}); \r\n      \u0009CIPHERSpaceLoadFilesDoAfter = function (callback) {\r\n      \u0009\u0009var newCallback = callback\r\n      \u0009\u0009if (!!CIPHERSpaceLoadFileGlobalFileRef) {\r\n      \u0009\u0009\u0009if (!!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n      \u0009\u0009\u0009\u0009var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n      \u0009\u0009\u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n      \u0009\u0009\u0009\u0009newCallback = function () {\r\n      \u0009\u0009\u0009\u0009\u0009oldCallback();\r\n      \u0009\u0009\u0009\u0009\u0009callback();\r\n      \u0009\u0009\u0009\u0009}\r\n      \u0009\u0009\u0009}\r\n      \u0009\u0009}\r\n      \u0009\u0009else CIPHERSpaceLoadFileGlobalFileRef = {};\r\n      \u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = newCallback;\r\n      \u0009}\r\n      \r\n      CIPHERSpaceLoadFilesDoAfter(function() { \r\n        if (typeof IntelliFactory !=='undefined')\r\n          IntelliFactory.Runtime.Start();\r\n        for (key in window) { \r\n          if (key.startsWith(\"StartupCode$\")) \r\n            try { window[key].$cctor(); } catch (e) {} \r\n        } \r\n      })\r\n                       "+js;
- };
  Position.NewBrowser={
   $:3
  };
@@ -6007,7 +5980,7 @@
      $:4,
      $0:(o$6=a[0],o$6==null?null:{
       $:1,
-      $0:RunCode.completeJS(o$6.$0)
+      $0:FSharpStation.completeJS(o$6.$0)
      }),
      $1:FSharpStation.transMsgs(a[1])
     });
@@ -6263,10 +6236,14 @@
      })])
     },function(a$1)
     {
-     return b.Return(RunCode.completeJS(a$1));
+     return b.Return(FSharpStation.completeJS(a$1));
     });
    });
   });
+ };
+ FSharpStation.completeJS=function(js)
+ {
+  return"\r\n          CIPHERSpaceLoadFileGlobalFileRef = null;\r\n          CIPHERSpaceLoadFile = function (filename, callback) {\r\n              if (filename.slice(-3) == \".js\" || filename.slice(-4) == \".fsx\" || filename.slice(-3) == \".fs\") { //if filename is a external JavaScript file\r\n                  var fileRef = null;\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement('script')\r\n                      fileRef.setAttribute(\"type\", \"text/javascript\")\r\n                      fileRef.setAttribute(\"src\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-4) == \".css\") { //if filename is an external CSS file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"stylesheet\")\r\n                      fileRef.setAttribute(\"type\", \"text/css\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              else if (filename.slice(-5) == \".html\") { //if filename is an external HTML file\r\n                  var pre = document.querySelector('script[src=\"' + filename + '\"]')\r\n                  if (!pre) {\r\n                      fileRef = document.createElement(\"link\")\r\n                      fileRef.setAttribute(\"rel\", \"import\")\r\n                      fileRef.setAttribute(\"type\", \"text/html\")\r\n                      fileRef.setAttribute(\"href\", filename)\r\n                  }\r\n                  else callback();\r\n              }\r\n              if (!!fileRef) {\r\n                  CIPHERSpaceLoadFileGlobalFileRef = fileRef;\r\n      \u0009\u0009\u0009fileRef.onload = function () { fileRef.onload = null;  callback(); }\r\n                  document.getElementsByTagName(\"head\")[0].appendChild(fileRef);\r\n              }\r\n          }\r\n          CIPHERSpaceLoadFiles = function (files, callback) {\r\n              var newCallback = callback\r\n              if (!!CIPHERSpaceLoadFileGlobalFileRef && !!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n                  var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n                  CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n                  newCallback = function () {\r\n                      callback();\r\n                      oldCallback();\r\n                  }\r\n              }\r\n              var i = 0;\r\n              loadNext = function () {\r\n                  if (i < files.length) {\r\n                      var file = files[i];\r\n                      i++;\r\n                      CIPHERSpaceLoadFile(file, loadNext);\r\n                  }\r\n                  else newCallback();\r\n              };\r\n              loadNext();\r\n      \u0009}\r\n          CIPHERSpaceLoadFiles(['https://code.jquery.com/jquery-3.1.1.min.js'], function() {}); \r\n      \u0009CIPHERSpaceLoadFilesDoAfter = function (callback) {\r\n      \u0009\u0009var newCallback = callback\r\n      \u0009\u0009if (!!CIPHERSpaceLoadFileGlobalFileRef) {\r\n      \u0009\u0009\u0009if (!!(CIPHERSpaceLoadFileGlobalFileRef.onload)) {\r\n      \u0009\u0009\u0009\u0009var oldCallback = CIPHERSpaceLoadFileGlobalFileRef.onload;\r\n      \u0009\u0009\u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = null;\r\n      \u0009\u0009\u0009\u0009newCallback = function () {\r\n      \u0009\u0009\u0009\u0009\u0009oldCallback();\r\n      \u0009\u0009\u0009\u0009\u0009callback();\r\n      \u0009\u0009\u0009\u0009}\r\n      \u0009\u0009\u0009}\r\n      \u0009\u0009}\r\n      \u0009\u0009else CIPHERSpaceLoadFileGlobalFileRef = {};\r\n      \u0009\u0009CIPHERSpaceLoadFileGlobalFileRef.onload = newCallback;\r\n      \u0009}\r\n      \r\n      CIPHERSpaceLoadFilesDoAfter(function() { \r\n        if (typeof IntelliFactory !=='undefined')\r\n          IntelliFactory.Runtime.Start();\r\n        for (key in window) { \r\n          if (key.startsWith(\"StartupCode$\")) \r\n            try { window[key].$cctor(); } catch (e) {} \r\n        } \r\n      })\r\n                       "+js;
  };
  FSharpStation.draggedId=function()
  {
@@ -6705,10 +6682,35 @@
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
-  var g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,u,f,f$1,g$2,g$3,p,f$2,f$3,g$4,g$5,p$1,view,contentVar,changingIRefO,contentVarChanged,refVarChanged,p$2,p$3,s$2,v$5,v$6,x,view$1,contentVar$1,changingIRefO$1,contentVarChanged$1,refVarChanged$1,x$1,x$2;
+  var $1,$2,$3,$4,$5,$6,g,v,g$1,m,s,v$1,v$2,s$1,v$3,v$4,u,f,f$1,g$2,g$3,p,f$2,f$3,g$4,g$5,p$1,view,contentVar,changingIRefO,contentVarChanged,refVarChanged,p$2,p$3,s$2,v$5,v$6,x,view$1,contentVar$1,changingIRefO$1,contentVarChanged$1,refVarChanged$1,x$1,x$2;
   SC$1.result=new ropBuilder.New();
   SC$1.errOptionIsNone=new ErrOptionIsNone.New();
   SC$1.wrapper=new Builder.New();
+  $2=FsStationShared.selectF(function(l)
+  {
+   return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570",[l]);
+  },void 0);
+  SC$1.awaitRequestForF=$2;
+  $4=FsStationShared.selectF(Runtime.Curried3(function(t,f$4,c)
+  {
+   return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.sendRequest:1096816393",[t,f$4,c]);
+  }),void 0);
+  SC$1.sendRequestF=$4;
+  $6=FsStationShared.selectF(function(r)
+  {
+   return function(r$1)
+   {
+    return(new AjaxRemotingProvider.New()).Async("Remote:CIPHERPrototype.Messaging.replyTo:-1092841374",[r,r$1]);
+   };
+  },void 0);
+  SC$1.replyToF=$6;
+  SC$1.AsyncStartF=FsStationShared.selectF(function(a)
+  {
+   FsStationShared.AsyncStart(a);
+  },function(a)
+  {
+   Concurrency.Start(a,null);
+  });
   SC$1.renderDoc=(g=(v=Doc.Empty(),function(o)
   {
    return o==null?v:o.$0;
@@ -6724,9 +6726,9 @@
    });
   },function(a)
   {
-   return Arrays.map(function($1)
+   return Arrays.map(function($7)
    {
-    return m($1[0],$1[1]);
+    return m($7[0],$7[1]);
    },a);
   }),function(x$3)
   {
@@ -6912,9 +6914,9 @@
     FSharpStation.getHints(e,c,a);
    },function(a)
    {
-    Template.showHints(ed,function($1)
+    Template.showHints(ed,function($7)
     {
-     return g$6($1[0],$1[1],$1[2]);
+     return g$6($7[0],$7[1],$7[2]);
     },false,a);
    })));
    Template.setLint(ed,function(t)
