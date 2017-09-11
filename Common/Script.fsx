@@ -1,17 +1,17 @@
-﻿////-d:WEBSHARPER
+﻿////-d:COMPILING -d:FSS_SERVER
+#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
 #r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
 #r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
 #r @"WebSharper.Core.dll"
+#r @"WebSharper.Core.JavaScript.dll"
 #r @"WebSharper.Collections.dll"
 #r @"WebSharper.Main.dll"
 #r @"WebSharper.UI.Next.dll"
 #r @"WebSharper.JavaScript.dll"
 #r @"WebSharper.Web.dll"
 #r @"WebSharper.Sitelets.dll"
-#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
-#r @"FSharp.Data.dll"
+#r @"Compiled\RemotingDll\RemotingDll2.dll"
 #r @"FSharp.Compiler.Service.dll"
-#r @"remote.dll"
 //# 1 "required for nowarns to work"
 #nowarn "1182"
 #nowarn "40"
@@ -31,10 +31,12 @@ namespace FSSGlobal
   // Code to be evaluated using FSI: `Evaluate F#`
     //# 1 @"(4)60bffe71-edde-4971-8327-70b9f5c578bb open WebSharper.fsx"
     #if WEBSHARPER
+    //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll"
     //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Core.dll"
     
     //#r @"WebSharper.Core.dll"
+    //#r @"WebSharper.Core.JavaScript.dll"
     //#r @"WebSharper.Collections.dll"
     //#r @"WebSharper.Main.dll"
     //#r @"WebSharper.UI.Next.dll"
@@ -107,6 +109,7 @@ namespace FSSGlobal
           interface ErrMsg with
               member this.ErrMsg   : string = sprintf "%A" exn
               member this.IsWarning: bool   = false
+          override this.ToString() = (this :> ErrMsg).ErrMsg
       
       #if WEBSHARPER
       [<JavaScript>]
@@ -115,6 +118,15 @@ namespace FSSGlobal
           interface ErrMsg with
               member this.ErrMsg   : string = "Option is None"
               member this.IsWarning: bool   = false
+      
+      #if WEBSHARPER
+      [<JavaScript>]
+      #endif
+      type ErrSimple(msg, warning) =
+          interface ErrMsg with
+              member this.ErrMsg   : string = msg
+              member this.IsWarning: bool   = warning
+          override this.ToString() = (this :> ErrMsg).ErrMsg
       
       #if WEBSHARPER
       [<JavaScript>]
@@ -255,14 +267,20 @@ namespace FSSGlobal
                                | false -> elems |> Seq.map   (function | Result (vO,_)-> vO.Value            ) |> succeed
               )
       
-          let getMessages (ms: ErrMsg list) =
+          let getMessages   (ms: ErrMsg list) = ms |> List.map (fun m -> m.ErrMsg) |> String.concat "\n"
+          let countMessages (ms: ErrMsg list) =
               if ms = [] then "" else
               let errors   = ms |> List.filter(fun m -> m.IsWarning |> not)
               let warnings = ms |> List.filter(fun m -> m.IsWarning       )
-              if errors.Length = 0 
-              then sprintf "%s"
-              else sprintf "%d errors\n%s" errors.Length
-              <| (ms |> List.map (fun m -> m.ErrMsg) |> String.concat "\n")
+              match errors.Length, warnings.Length with
+              | 0, 0 -> sprintf "%s"
+              | 1, 0 -> sprintf "%s"
+              | 0, 1 -> sprintf "%s"
+              | 1, 1 -> sprintf "1 error, 1 warning\n%s"
+              | e, 0 -> sprintf "%d errors\n%s" e
+              | 0, w -> sprintf "%d warnings\n%s" w
+              | e, w -> sprintf "%d errors, %d warnings\n%s" e w
+              <| getMessages ms
        
       open Result
       
@@ -452,17 +470,21 @@ namespace FSSGlobal
       #if WEBSHARPER
           [< Inline "console.log('runSynchronously should not be used in Javascript')" >]                       
       #endif
-          let runSynchronously (printMsg: string->unit) (w: Wrap<unit>) =
+          let runSynchronouslyR (w: Wrap<_>) =
               w
               |> getAsyncR
               |> Async.RunSynchronously
-              |> (Result.mapMsgs Result.getMessages
-                  >> function
-                     | Some _, msgs -> msgs
-                     | None  , msgs -> printfn "Failed!" ; msgs
-                  >> sprintf "%s" 
-                  >> printMsg
-                 )
+          let runSynchronouslyO count (w: Wrap<_>) =
+              w
+              |> runSynchronouslyR
+              |> (Result.mapMsgs (if count then Result.countMessages else Result.getMessages))
+          let runSynchronouslyS count (w: Wrap<_>) =
+              w
+              |> runSynchronouslyO count
+              |> function
+                 | Some r, msgs -> sprintf "%O\n%s" r    msgs
+                 | None  , msgs -> sprintf "Failed!\n%s" msgs
+                 
       
       #if WEBSHARPER
       [<JavaScript>]
@@ -489,7 +511,7 @@ namespace FSSGlobal
                   let! a = va
                   return f a 
               } 
-      //# 1 @"(6)218507eb-4a87-4c11-b5d9-53a2213dd36a Regex.fsx"
+      //# 1 @"(6)218507eb-4a87-4c11-b5d9-53a2213dd36a REGEX.fsx"
       #if WEBSHARPER
       
       let (|REGEX|_|) (expr: string) (opt: string) (value: string) =
@@ -501,20 +523,6 @@ namespace FSSGlobal
               | m            -> Some m
           with e -> None
       #endif
-      
-      //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
-      open System.Text.RegularExpressions
-      
-      #if WEBSHARPER
-      [< Inline "console.log('not implemented in JavaScript')" >]
-      #endif
-      let (|Regex|_|) pattern input =
-          if input = null then None else
-          try 
-              let m = Regex.Match(input, pattern)
-              if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
-              else None
-          with e -> None
       
       //# 1 @"(6)ace1fc12-3dfb-4db8-80c9-5bde1e7d0597 separateDirectives.fsx"
       type PreproDirective =
@@ -561,32 +569,62 @@ namespace FSSGlobal
           code, assembs, defines, prepoIs, nowarns
       
       
-      //# 1 @"(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
-      open System.IO
+    //# 1 @"(4)376fdef6-dfcf-40c5-bd14-97c3b246bb30 UsefulDotNet.fsx"
+    module UsefulDotNet =
+      //# 1 @"(6)7646acbc-2c28-4159-98b1-2365d19fc97c Regex, Regexs.fsx"
+      //#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll"
+      open System.Text.RegularExpressions
       
-      let copyIfNotExistsToFile from dest =
-          let fit = FileInfo dest
-          if not fit.Exists then
-              File.Copy(from, dest, true )
+      let (|Regex|_|) pattern input =
+          if input = null then None else
+          try 
+              let m = Regex.Match(input, pattern)
+              if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
+              else None
+          with e -> None
       
-      let copyIfMustToFile from dest =
-          let fit = FileInfo dest
-          let must = 
-              match fit.Exists with 
-              | false -> true
-              | true  ->
-                  let fif = FileInfo dest
-                  fif.Length <> fit.Length || fif.LastWriteTime <> fit.LastWriteTime
-          if must then
-              File.Copy(from, dest, true )
+      let (|Regexs|) pattern input =
+          if input = null then [| |] else
+          try 
+              let ms = Regex.Matches(input, pattern)
+              [| for m in ms do yield m.Value |] 
+          with e -> [| |]
       
-      let copyIfMustToDir from destDir =
-          let dest = Path.Combine(destDir, Path.GetFileName(from))
-          copyIfMustToFile from dest
+      //# 1 @"(6)9becc68c-9cc2-4f29-82df-e510d10226db fSharpError2TranspilerError.fsx"
+      open Microsoft.FSharp.Compiler.SourceCodeServices
+      open Microsoft.FSharp.Compiler
+      open Useful
+      
+      type FSharpErrors =
+          | WarningFSharp                 of string
+          | ErrFSharp                     of string
+      with interface ErrMsg with
+              member this.ErrMsg    = sprintf "%A"this
+              member this.IsWarning = match this with | WarningFSharp _ -> true | _ -> false
+      
+      let getIndentFile input =
+          match input with
+          | Regex "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent, file
+          | _                                                 -> 0         , input
+         
+      let fSharpError2TranspilerError (error : Microsoft.FSharp.Compiler.FSharpErrorInfo) =
+          let indent, file = System.IO.Path.GetFileNameWithoutExtension error.FileName |> getIndentFile  
+          sprintf "%s (%d,%d) - (%d,%d) %s %d: %s" 
+             file 
+             error.StartLineAlternate (error.StartColumn - indent) 
+             error.EndLineAlternate   (error.EndColumn   - indent) 
+             error.Subcategory error.ErrorNumber error.Message
+          |> (if   error.Severity = FSharpErrorSeverity.Error  
+              then ErrFSharp     
+              else WarningFSharp
+             )
+          :> ErrMsg
+          
           
       //# 1 @"(6)b30f4582-64bd-49e5-aca2-29897fef74c5 runProcess.fsx"
       open System.Diagnostics
       open System.Text
+      open Useful
       
       let runProcess p ops =
           let procStart   = ProcessStartInfo(p, ops)
@@ -648,13 +686,18 @@ namespace FSSGlobal
               let started = this.Start()
               proc.WaitForExit()
               let    output  = (consume bufferOutput).Trim()
-              let    error   = (consume bufferError ).Trim() 
-              let    msgs    = [ if                   output        <> "" then yield ShellOutput   output        :> ErrMsg
-                                 if                   error         <> "" then yield ShellErrors   error         :> ErrMsg
-                                 if proc.HasExited && proc.ExitCode <> 0  then yield ShellExitCode proc.ExitCode :> ErrMsg]
-              let    msgs2   = if msgs.IsEmpty && not started then [ ShellDidNotStart :> ErrMsg ] else msgs                           
-              let    res     = Result ((if not started || (proc.HasExited && proc.ExitCode = 0) then Some() else None), msgs2) 
-              res
+              let    error   = (consume bufferError ).Trim()
+              (output, error, if proc.HasExited then proc.ExitCode else -99999)
+          member this.StartAndWaitR() =
+              let out, errs, exit = this.StartAndWait()
+              if exit <> 0
+              then Result.failWithMsgs
+                      [ if out  <> ""              then yield ErrSimple ("stdout: " + out           , true ) :> ErrMsg
+                        if errs <> ""              then yield ErrSimple (errs                       , false) :> ErrMsg
+                        if errs  = "" || exit <> 1 then yield ErrSimple (sprintf "ExitCode: %d" exit, false) :> ErrMsg
+                      ]
+              else Result.succeedWithMsgs out 
+                      [ if errs <> ""              then yield ErrSimple (errs                       , false) :> ErrMsg ]
           member this.Send(txt: string)   = proc.StandardInput.WriteLine txt
           member this.Output  ()          = consume bufferOutput
           member this.Error   ()          = consume bufferError
@@ -692,351 +735,203 @@ namespace FSSGlobal
                   try proc.Close  () with _ -> ()
                   try proc.Dispose() with _ -> ()
       
+      
+      let runProcess2 p ops =
+          let procStart   = ProcessStartInfo(p, ops)
+          let shell       = new ShellEx(procStart)
+          shell.StartAndWaitR() 
+      
+      
+      //# 1 @"(6)ab5ab0ca-eb45-4851-affe-4690bb75d055 copyIfMust.fsx"
+      open System.IO
+      
+      let copyIfNotExistsToFile from dest =
+          let fit = FileInfo dest
+          if not fit.Exists then
+              File.Copy(from, dest, true )
+      
+      let copyIfMustToFile from dest =
+          let fit = FileInfo dest
+          let must = 
+              match fit.Exists with 
+              | false -> true
+              | true  ->
+                  let fif = FileInfo dest
+                  fif.Length <> fit.Length || fif.LastWriteTime <> fit.LastWriteTime
+          if must then
+              File.Copy(from, dest, true )
+      
+      let copyIfMustToDir from destDir =
+          let dest = Path.Combine(destDir, Path.GetFileName(from))
+          copyIfMustToFile from dest
+          
       //# 1 @"(6)15cf771f-22b1-4796-8e34-6c16f35d6506 Path.Combine.fsx"
       let inline (+/+) a b = System.IO.Path.Combine(a, b)
       //# 1 @"(6)ef053bdf-997b-49c8-a401-1611a568bd8a CompOptions.fsx"
-      type CompOptionClass = 
-          | OpFSharp
-          | OpWebSharper
-          | OpInternal
-      
-      type CompOption = 
-          {
-              name   : string
-              unique : bool
-              opClass: CompOptionClass  
-              prefix : string
-          }
-      with
-          static member (/=) (op: CompOption, v: CompOptionValue) = op,           v
-          static member (/=) (op: CompOption, v                 ) = op, OpVText   v
-          static member (/=) (op: CompOption, v                 ) = op, OpVTextOF v
-      
-      and CompOptionValue =
-          | OpVText   of                string
-          | OpVTextOF of (CompOptions -> string)
-      with 
-          member this.Value ops = 
-              match this with
-              | OpVText   v  -> v
-              | OpVTextOF fo -> fo ops
-      
-      and CompOptions = CompOptions of (CompOption * CompOptionValue) []
-      with
-          member this.Find  name        =  this |> function CompOptions ops ->  ops |> Array.find   (fun (opT, opV) -> name = opT.name                      )
-          member this.FindV name        = (this.Find name |> snd).Value this
-          member this.Contains v        =  this |> function CompOptions ops ->  ops |> Array.exists (fun (opT, opV) -> v    = opT.prefix + (opV.Value this) )
-          member this.Get   f           =  this |> function CompOptions ops ->  ops |> Array.filter f |> Array.map (fun (opT, opV) ->        opT.prefix + (opV.Value this) )
-          static member FSharpOptions   = fun ({opClass=cls}, _) -> cls = OpFSharp
-          static member WSharperOptions = fun ({opClass=cls}, _) -> cls = OpFSharp || cls = OpWebSharper
-          static member (?) (ops: CompOptions, name: string) = ops.FindV name
-          static member (+) (os1: CompOptions, a2: (CompOption * CompOptionValue) []) = 
-              match os1 with 
-              | CompOptions a1 -> 
-                  a1
-                  |> Array.filter (fun (opT, _) -> (not opT.unique) || (a2 |> Array.exists (fst >> (=) opT) |> not) )
-                  |> Array.append <| a2 
-                  |> CompOptions
-          static member (+) (ops: CompOptions, o:   CompOption * CompOptionValue    ) = ops + [| o |]
-          static member (+) (os1: CompOptions, os2: CompOptions                     ) = match os2 with | CompOptions a2 -> os1 + a2
-      
-      let (?) (ops:CompOptions) name = ops.FindV name
-      
-      let opSnippet     = { name = "Snippet"     ; unique = true  ; opClass = OpInternal   ; prefix = "++snippet:"   }
-      let opDirectory   = { name = "Directory"   ; unique = true  ; opClass = OpInternal   ; prefix = "++directory:" }
-      let opName        = { name = "Name"        ; unique = true  ; opClass = OpInternal   ; prefix = "++name:"      }
-      let opExtension   = { name = "Extension"   ; unique = true  ; opClass = OpInternal   ; prefix = "++extension:" }
-      let opFileName    = { name = "Filename"    ; unique = true  ; opClass = OpInternal   ; prefix = "++filename:"  }
-      let opConfig      = { name = "Config"      ; unique = true  ; opClass = OpInternal   ; prefix = "++config:"    }
-      let opGenInternal = { name = "GenInternal" ; unique = false ; opClass = OpInternal   ; prefix = "++"           }
+      module CompOptionsModule = // needs to be in a module so (?) operator does not collide with websharper
           
-      let opIOption     = { name = "IOption"     ; unique = false ; opClass = OpFSharp     ; prefix = "-I:"          }
-      let opReference   = { name = "Reference"   ; unique = false ; opClass = OpFSharp     ; prefix = "-r:"          }
-      let opSource      = { name = "Source"      ; unique = false ; opClass = OpFSharp     ; prefix = ""             }
-      let opTarget      = { name = "Target"      ; unique = true  ; opClass = OpFSharp     ; prefix = "--target:"    }
-      let opOutput      = { name = "Output"      ; unique = true  ; opClass = OpFSharp     ; prefix = "-o:"          }
-      let opDebug       = { name = "Debug"       ; unique = true  ; opClass = OpFSharp     ; prefix = "--debug:"     }
-      let opDefine      = { name = "Define"      ; unique = false ; opClass = OpFSharp     ; prefix = "--define:"    }
-      let opGenFSharp1  = { name = "GenFSharp1"  ; unique = false ; opClass = OpFSharp     ; prefix = "-"            }
-      let opGenFSharp2  = { name = "GenFSharp2"  ; unique = false ; opClass = OpFSharp     ; prefix = "--"           }
-      
-      let opWebSite     = { name = "Website"     ; unique = true  ; opClass = OpWebSharper ; prefix = "--wsoutput:"  }
-      let opGenWSharper = { name = "GenWSharper" ; unique = false ; opClass = OpWebSharper ; prefix = "--"           }
-      
-      
-    //# 1 @"(4)376fdef6-dfcf-40c5-bd14-97c3b246bb30 UsefulNoWS.fsx"
-    module UsefulNoWS =
-      //# 1 @"(6)82ab58ca-79e8-47f9-8917-f444d3320751 Rpc Calling.fsx"
-      //#r "FSharp.Data.dll"
-      
-      open System
-      open System.Net
-      open System.Text
-      open System.IO
-      open WebSharper
-      open WebSharper.Remoting
-      open WebSharper.JavaScript
-      
-      #if WEBSHARPER
-      [<WebSharper.JavaScript>]
-      #endif
-      type AddressId = AddressId of string
-      
-      #if WEBSHARPER
-      [<WebSharper.JavaScript>]
-      #endif
-      type Request = {
-          toId              : AddressId
-          fromId            : AddressId
-          content           : string
-          mutable messageId : Guid option
-      }
-      
-      #if WEBSHARPER
-      [<WebSharper.JavaScript>]
-      #endif
-      type MBMessage =
-      | Listener of AddressId * (Request->unit) * (exn->unit) * (OperationCanceledException->unit)
-      | Request  of Request   * (string ->unit) * (exn->unit) * (OperationCanceledException->unit)
-      | Reply    of Guid      *  string
-      
-      #if WEBSHARPER
-      [<WebSharper.JavaScript>]
-      #endif
-      type POMessage =
-      | POIdentification
-      | POEcho   of string
-      | POListeners
-      | POPendingRequests
-      | POPendingReplys
-      
-      #if WEBSHARPER
-      [<WebSharper.JavaScript>]
-      #endif
-      type POResponse =
-      | POString  of string
-      | POStrings of string[]
-      
-      let extract n (s:string) = s.Substring(0, min n s.Length)
-      let now() = System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture)
-      
-      type PostOffice() =
-          let mutable listeners = [| |]
-          let mutable requests  = [| |]
-          let mutable sent      = [| |]
-          let agent = MailboxProcessor.Start(fun mail ->
-              async {
-                  while true do
-                      let! mbMsg = mail.Receive()
-                      match mbMsg with
-                      | Listener                    (listener, lfs, lfe, lfc)  ->
-                          requests
-                          |> Array.indexed
-                          |> Array.tryPick (fun (i, (request , rfs, rfe, rfc)) -> 
-                              if request.toId <> listener then None else
-                              requests <- Array.append requests .[0..i-1]  requests .[i+1..requests .Length - 1]
-                              Some(lfs, request, rfs))
-                          |> (fun v -> (if v.IsNone then 
-                                          listeners <- 
-                                              listeners 
-                                              |> Array.filter(fun (lnr, lfs, exn, cen) -> 
-                                                  if lnr = listener then
-                                                      //exn <| DivideByZeroException ()
-                                                      //exn <| TimeoutException ()
-                                                      lfs <| {
-                                                                  toId      = AddressId ""
-                                                                  fromId    = AddressId ""
-                                                                  content   = "{\"$\":0}"
-                                                                  messageId = None
-                                                              }
-                                                      false
-                                                  else true) 
-                                              |> Array.append [| listener, lfs, lfe, lfc |]); v)
-                      | Request                     (request , rfs, rfe, rfc)  ->
-                          listeners
-                          |> Array.indexed
-                          |> Array.tryPick (fun (i, (listener, lfs, lfe, lfc)) -> 
-                              if request.toId <> listener then None else 
-                              listeners <- Array.append listeners.[0..i-1] listeners.[i+1..listeners.Length - 1]
-                              Some(lfs, request, rfs))
-                          |> (fun v -> (if v.IsNone then requests  <- requests  |> Array.append [| request , rfs, rfe, rfc |]); v)
-                      | Reply                       (reply   , response)  ->
-                          sent
-                          |> Array.indexed
-                          |> Array.pick (fun (i, (request , rfs)) -> 
-                              if request.messageId.Value <> reply then None else
-                              sent      <- Array.append sent     .[0..i-1] sent     .[i+1..sent     .Length - 1]
-                              rfs response
-                              Some ())
-                          None
-                      |> Option.iter (fun (lfs, request, rfs) -> 
-                          request.messageId <- Some <| Guid.NewGuid()
-                          sent <- sent |> Array.append [| request, rfs |]
-                          lfs request
-                      )
+          type CompOptionClass = 
+              | OpFSharp
+              | OpWebSharper
+              | OpInternal
+          
+          type CompOption = 
+              {
+                  name   : string
+                  unique : bool
+                  opClass: CompOptionClass  
+                  prefix : string
               }
-          )
           with
-              member this.AwaitRequest    listener  fs fe fc = agent.Post <| Listener (listener, fs, fe, fc)
-              member this.SendRequest     request   fs fe fc = 
-                  printfn "%s Request: %A %A %A" (now()) request.toId request.fromId (extract 80 request.content)
-                  agent.Post <| Request  (request , fs, fe, fc)
-              member this.ReplyTo         request   response = 
-                  printfn "%s Reply:   %s"       (now()) (extract 100 response)
-                  agent.Post <| Reply    (request , response  )
-              member this.Listeners       ()                 = listeners |> Array.map (function | AddressId id, _, _, _ -> id)
-              member this.Requests        ()                 = requests  |> Array.map (sprintf "%A")
-              member this.Sent            ()                 = sent      |> Array.map (sprintf "%A")
-      
-      let postOffice = PostOffice()
-      
-      [< Rpc >]
-      let awaitRequestFor (listener:AddressId) =
-          let startAsync (fs, fe, fc) = postOffice.AwaitRequest listener fs fe fc
-          Async.FromContinuations startAsync
-      
-      [< Rpc >]
-      let replyTo    (reply:Guid) response =
-          async {
-              postOffice.ReplyTo reply response
-          }
-      
-      open FSharp.Data
-      open FSharp.Data.JsonExtensions
-      
-      [< Rpc >]
-      let sendRequest  toId fromId content =
-          if toId = AddressId "WebServer:PostOffice" then
-              async {
-                  let msg = Json.Deserialize<POMessage> content
-                  return
-                      match msg with
-                      | POIdentification  -> POString     "WebServer:PostOffice"
-                      | POEcho        txt -> POString     txt
-                      | POListeners       -> POStrings <| postOffice.Listeners()
-                      | POPendingRequests -> POStrings <| postOffice.Requests ()
-                      | POPendingReplys   -> POStrings <| postOffice.Sent     ()
-                      |> Json.Serialize 
-              }
-          else
-          let startAsync (fs, fe, fc) = postOffice.SendRequest   
-                                          { toId      = toId   
-                                            fromId    = fromId 
-                                            content   = content 
-                                            messageId = None }
-                                          fs fe fc
-          Async.FromContinuations startAsync
-      
-      let RpcCall (url:string) method (data:string) =
-          async {
-              //printfn "RpcCall %s" (extract 100 data)
-              let req = WebRequest.Create(url) :?> HttpWebRequest 
-              req.Timeout         <- 300_000
-              req.ProtocolVersion <- HttpVersion.Version10
-              req.Method          <- "POST"
-              req.ContentType     <- "application/json"
-              req.Headers.Add("x-websharper-rpc", method            )
-              let postBytes = Encoding.ASCII.GetBytes(data)
-              req.ContentLength <- int64 postBytes.Length
-              let reqStream = req.GetRequestStream() 
-              reqStream.Write(postBytes, 0, postBytes.Length);
-              reqStream.Close()
-              
-              // Obtain response and download the resulting page 
-              // (The sample contains the first & last name from POST data)
-              use resp   = req.GetResponse() 
-              use stream = resp.GetResponseStream() 
-              use reader = new StreamReader(stream)
-              let msg    = reader.ReadToEnd()
-              //printfn "RpcCallResponse %s" (extract 100 msg)
-              let json   = JsonValue.Parse msg
-              return       json.["$DATA"]
-          }
-      
-      let serializeAddressId aId =
-          match aId with
-          | AddressId v -> sprintf """{"$":0,"$0":"%s"}""" v
-      
-      let sendRequestRpc (toId: AddressId) (fromId: AddressId) (content: string): Async<string> =
-          async {
-              let! msg =
-                  [| serializeAddressId toId ; serializeAddressId fromId ; Json.Serialize content |]
-                  |> String.concat ", "
-                  |> sprintf "[%s]"
-                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.sendRequest:1096816393"
-              return msg.AsString()
-          }
-      
-      let awaitRequestForRpc (listener:AddressId) =
-          async {
-              let! msg =
-                  [| serializeAddressId listener |]
-                  |> String.concat ", "
-                  |> sprintf "[%s]"
-                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.awaitRequestFor:278590570"
-              let  v = msg.["$V"]
-              let req    =
-                  {
-                      toId      = AddressId <| v?toId  .["$V"].["$0"].AsString()
-                      fromId    = AddressId <| v?fromId.["$V"].["$0"].AsString()
-                      content   = v?content                          .AsString()
-                      messageId = Some <| v?messageId  .["$V"].["$0"].AsGuid  ()
-                  }
-              return req
-          }
-      
-      let replyToRpc (reply:Guid) response =
-          async {
-              let! msg =
-                  [| sprintf "\"%s\"" <| reply.ToString() ; Json.Serialize response |]
-                  |> String.concat ", "
-                  |> sprintf "[%s]"
-                  |> RpcCall WebSharper.Remoting.EndPoint "Remote:CIPHERPrototype.Messaging.replyTo:-1092841374"
-              return ()
-          }
-      
-    //# 1 @"(4)6568955e-6aa8-4f8f-b93f-b7e97622c677 FsTranslator.fsx"
-    module FsTranslator =
-      //# 1 @"(6)b7c2d8cd-7246-4ad1-af46-ffbb7acde6e0 TranslatorError.fsx"
-      //#r "FSharp.Compiler.Service.dll"
-      open Microsoft.FSharp.Compiler.SourceCodeServices
-      open Microsoft.FSharp.Compiler
-      open Useful
-      
-      type TranslatorError =
-          | MustProvideAssemblyOutputPath
-          | MustProvideProjectPath
-          | WarningFSharp                 of string
-          | ErrFSharp                     of string
-          | ErrWebSharper                 of string
-          | NothingToTranslateToJavaScript
-          | OutputAssemblyNotFound        of string
-      with interface ErrMsg with
-              member this.ErrMsg =
-                  if this = NothingToTranslateToJavaScript then "WebSharper found nothing that required translation to JavaScript. Possibly a [< JavaScript >] attribute is missing." else
-                  sprintf "%A"this
-              member this.IsWarning = match this with | WarningFSharp _ -> true | _ -> false
-      
-      let getIndentFile input =
-          match input with
-          | Regex "^\\((\\d+)\\)\\s(.*)$" [_ ; indent ; file] -> int indent, file
-          | _                                                 -> 0         , input
-      
-      let fSharpError2TranspilerError (error : FSharpErrorInfo) =
-          let indent, file = System.IO.Path.GetFileNameWithoutExtension error.FileName |> getIndentFile  
-          sprintf "%s (%d,%d) - (%d,%d) %s %d: %s" 
-             file 
-             error.StartLineAlternate (error.StartColumn - indent) 
-             error.EndLineAlternate   (error.EndColumn   - indent) 
-             error.Subcategory error.ErrorNumber error.Message
-          |> (if   error.Severity = FSharpErrorSeverity.Error  
-              then ErrFSharp     
-              else WarningFSharp
-             )
-          :> ErrMsg
+              static member (/=) (op: CompOption, v: CompOptionValue) = op,           v
+              static member (/=) (op: CompOption, v                 ) = op, OpVText   v
+              static member (/=) (op: CompOption, v                 ) = op, OpVTextOF v
           
-      let extractConfig (code:string[]) = if code.[0].StartsWith "////-d:" then code.[0].[4..] else ""
-      
+          and CompOptionValue =
+              | OpVText   of                string
+              | OpVTextOF of (CompOptions -> string)
+          with 
+              member this.Value ops = 
+                  match this with
+                  | OpVText   v  -> v
+                  | OpVTextOF fo -> fo ops
+          
+          and CompOptions = CompOptions of (CompOption * CompOptionValue) []
+          with
+              member this.Pairs             =  this |> function CompOptions ops ->  ops
+              member this.Exists   f        =  this.Pairs |> Array.exists f 
+              member this.Find     name     =  this.Pairs |> Array.find (fun (opT, opV) -> name = opT.name)
+              member this.FindV    name     = (this.Find name |> snd).Value this
+              member this.Contains co       =  this.Exists (fun (opT, opV) -> co   = opT                           )
+              member this.Contains v        =  this.Exists (fun (opT, opV) -> v    = opT.prefix + (opV.Value this) )
+              member this.Get      f        =  this.Pairs |> Array.filter f |> Array.map (fun (opT, opV) ->        opT.prefix + (opV.Value this) )
+              static member FSharpOptions   = fun ({opClass=cls}, _) -> cls = OpFSharp
+              static member WSharperOptions = fun ({opClass=cls}, _) -> cls = OpFSharp || cls = OpWebSharper
+              static member (?) (ops: CompOptions, name: string) = ops.FindV name
+              static member (+) (os1: CompOptions, a2: (CompOption * CompOptionValue) seq) = 
+                  match os1 with 
+                  | CompOptions a1 -> 
+                      a1
+                      |> Array.filter (fun (opT, _) -> (not opT.unique) || (a2 |> Seq.exists (fst >> (=) opT) |> not) )
+                      |> Seq.append <| a2
+                      |> Seq.toArray
+                      |> CompOptions
+              static member (+) (ops: CompOptions, o:   CompOption * CompOptionValue      ) = ops + [| o |]
+              static member (+) (os1: CompOptions, os2: CompOptions                       ) = match os2 with | CompOptions a2 -> os1 + a2
+          
+          let (?) (ops:CompOptions) name = ops.FindV name
+          
+          let opSnippet     = { name = "Snippet"     ; unique = true  ; opClass = OpInternal   ; prefix = "++snippet:"   }
+          let opDirectory   = { name = "Directory"   ; unique = true  ; opClass = OpInternal   ; prefix = "++directory:" }
+          let opName        = { name = "Name"        ; unique = true  ; opClass = OpInternal   ; prefix = "++name:"      }
+          let opExtension   = { name = "Extension"   ; unique = true  ; opClass = OpInternal   ; prefix = "++extension:" }
+          let opFileName    = { name = "Filename"    ; unique = true  ; opClass = OpInternal   ; prefix = "++filename:"  }
+          let opConfig      = { name = "Config"      ; unique = true  ; opClass = OpInternal   ; prefix = "++config:"    }
+          let opGenInternal = { name = "GenInternal" ; unique = false ; opClass = OpInternal   ; prefix = "++"           }
+          let opWebSharper  = { name = "WebSharper"  ; unique = true  ; opClass = OpInternal   ; prefix = "++websharper:"}
+              
+          let opIOption     = { name = "IOption"     ; unique = false ; opClass = OpFSharp     ; prefix = "-I:"          }
+          let opReference   = { name = "Reference"   ; unique = false ; opClass = OpFSharp     ; prefix = "-r:"          }
+          let opSource      = { name = "Source"      ; unique = false ; opClass = OpFSharp     ; prefix = ""             }
+          let opTarget      = { name = "Target"      ; unique = true  ; opClass = OpFSharp     ; prefix = "--target:"    }
+          let opOutput      = { name = "Output"      ; unique = true  ; opClass = OpFSharp     ; prefix = "-o:"          }
+          let opDebug       = { name = "Debug"       ; unique = true  ; opClass = OpFSharp     ; prefix = "--debug:"     }
+          let opDefine      = { name = "Define"      ; unique = false ; opClass = OpFSharp     ; prefix = "--define:"    }
+          let opGenFSharp1  = { name = "GenFSharp1"  ; unique = false ; opClass = OpFSharp     ; prefix = "-"            }
+          let opGenFSharp2  = { name = "GenFSharp2"  ; unique = false ; opClass = OpFSharp     ; prefix = "--"           }
+          
+          let opWebSite     = { name = "Website"     ; unique = true  ; opClass = OpWebSharper ; prefix = "--wsoutput:"  }
+          let opGenWSharper = { name = "GenWSharper" ; unique = false ; opClass = OpWebSharper ; prefix = "--"           }
+          
+          let dllOptions     = CompOptions [| opTarget      /= "library"                                                                     |]  
+          let exeOptions     = CompOptions [| opTarget      /= "exe"     ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
+          let winExeOptions  = CompOptions [| opTarget      /= "winexe"  ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
+          
+          let genericOptions = 
+            CompOptions
+              [|
+                 opSnippet     /= "Test"
+                 opName        /= fun os -> (os?Snippet : string).Split('/') |> Array.last
+                 opDirectory   /= fun os -> "Compiled" +/+ os?Name
+                 opExtension   /= fun os -> match os?Target with | "library" -> "dll" | _ -> "exe"
+                 opFileName    /= fun os -> os?Directory +/+ os?Name + ".fs"
+                 opSource      /= fun os -> os?Filename
+                 opOutput      /= fun os -> System.IO.Path.ChangeExtension(os?Source, os?Extension)
+                 opConfig      /= fun os -> os?Output + ".config"
+                 opWebSharper  /= fun os -> if (os:CompOptions).Exists (fun (opT, opV) -> opT.opClass = OpWebSharper) then "1" else "0"
+              |]
+              
+          let siteOptions =
+            CompOptions
+              [|
+                 opGenWSharper /= "ws:Site"
+                 opWebSite     /= fun os -> os?Directory +/+ "website"
+                 opGenWSharper /= fun os -> sprintf "project:%s"  os?Name
+              |] 
+           
+          let wsProjectOptions =
+            CompOptions
+              [|
+                 opGenWSharper /= fun os -> sprintf "project:%s"  os?Name
+              |] 
+           
+          let debugOptions = 
+            CompOptions
+              [|
+                 opGenFSharp1  /= "g"
+                 opDebug       /= "full"
+                 opDefine      /= "DEBUG"
+                 opDefine      /= "TRACE"
+                 opGenFSharp2  /= "optimize-"
+                 opGenFSharp2  /= "tailcalls-"
+              |]
+          
+          let otherOptions =
+            CompOptions
+              [|
+                 //@"--noframework"
+                 opGenFSharp2  /= "warn:3"
+                 opGenFSharp2  /= "warnaserror:76"
+                 opGenFSharp2  /= "vserrors"
+                 opGenFSharp2  /= "utf8output"
+                 opGenFSharp2  /= "fullpaths"
+                 opGenFSharp2  /= "flaterrors"
+                 opGenFSharp2  /= "subsystemversion:6.00"
+                 opGenFSharp2  /= "highentropyva+"
+                 opGenInternal /= "removelinedirectives"
+              |]
+          
+          let compileOptionsDll (snp:string) = 
+              genericOptions
+              + dllOptions
+              + otherOptions
+              + opSnippet     /= snp
+              
+          let compileOptionsDllDebug (snp:string) = compileOptionsDll snp + debugOptions        
+          let compileOptionsExeDebug    snp = compileOptionsDllDebug snp + exeOptions   
+          let compileOptionsWinExeDebug snp = compileOptionsDllDebug snp + winExeOptions
+              
+          let prepOptions (options:CompOptions) (code : string [], assembs : string [], defines : string [], prepoIs : string [], nowarns : string []) =
+              let  code2 =
+                 [
+                    yield! nowarns |> Seq.distinct |> Seq.map (sprintf "#nowarn \"%s\"")
+                    yield! code 
+                 ] |> String.concat "\n"
+              let  fileName = options?Filename
+              do   System.IO.File.WriteAllText(fileName, code2)
+              let  options2 = 
+                   options  + [|
+                                 yield! prepoIs |> Array.map ((/=) opIOption  ) 
+                                 yield! assembs |> Array.map ((/=) opReference)
+                                 yield! defines |> Array.map ((/=) opDefine   )
+                                 if options.Contains "++staticlinkall" then 
+                                     yield! assembs |> Array.map (System.IO.Path.GetFileNameWithoutExtension >> ((+) "staticlink:") >> ((/=) opGenFSharp2 ))         
+                              |]
+              if options.Contains "++copyassembliesxx" then 
+                  assembs |> Array.iter (fun f -> System.IO.Path.GetDirectoryName(fileName) |> copyIfMustToDir f)      
+              if options2.Contains "++showoptions"    then printfn "%s" (options2.Get (fun _ -> true) |> String.concat "\n")               
+              options2
+          
       
     //# 1 @"(4)63eca270-405a-4789-941a-e298bbd265bd FsStationShared.fsx"
     #if WEBSHARPER
@@ -1045,17 +940,21 @@ namespace FSSGlobal
     module FsStationShared =
     
       //# 1 @"(6)eb54ba64-3d11-4347-97c8-aeae9e3e3121 MessagingClient.fsx"
-      #if FSS_SERVER
+      //#define FSS_SERVER
+      
+      #if INTERACTIVE
+      open FSSGlobal.UsefulFewJS
+      open FSSGlobal.UsefulFewJS.Messaging
+      //#r @"Compiled\RemotingDll\RemotingDll2.dll"
       #else
       
       //#r "remote.dll"
       open CIPHERPrototype.Messaging
       #endif
-      
       open WebSharper
       open Useful
-      open UsefulNoWS
-      
+      //open UsefulFewJS
+      //open UsefulFewJS.Messaging
       
       #if WEBSHARPER
       [< Inline "true" >]
@@ -1079,7 +978,7 @@ namespace FSSGlobal
       let AsyncStart asy = Async.Start asy
       #endif          
       
-      let AddressId = AddressId
+      let  AddressId = AddressId
       
       let awaitRequestForF = selectF awaitRequestFor awaitRequestForRpc
       let sendRequestF     = selectF sendRequest         sendRequestRpc
@@ -1087,7 +986,7 @@ namespace FSSGlobal
       let AsyncStartF      = selectF AsyncStart             Async.Start
       
       type MessagingClient(clientId, ?timeout, ?endPoint:string) =
-          let wsEndPoint = endPoint    |> Option.defaultValue "http://localhost:9000/FSharpStation.html"
+          let wsEndPoint = endPoint    |> Option.defaultValue "http://localhost:9010/"
           let tout       = timeout     |> Option.defaultValue 100_000
           let fromId     = AddressId clientId
           do WebSharper.Remoting.EndPoint <- wsEndPoint 
@@ -1127,7 +1026,7 @@ namespace FSSGlobal
           member this.POListeners      ()   = poMsg poStrings POListeners
           member this.EndPoint              = wsEndPoint
           member this.ClientId              = clientId
-          static member EndPoint_           = "http://localhost:9000/FSharpStation.html"
+          static member EndPoint_           = "http://localhost:9010/"
           
       //# 1 @"(6)2deb54e7-009e-4297-b2bc-1c86d04203a4 CodeSnippet.fsx"
       open Useful
@@ -1358,32 +1257,14 @@ namespace FSSGlobal
       
       
       //# 1 @"(6)56e5bc09-e528-49cc-9d42-6359b32a0cc9 FsStationClient Compile Extension.fsx"
+      //#r "FSharp.Compiler.Service.dll"
+      
       open Useful
-      open FsTranslator
+      open UsefulDotNet
+      open UsefulDotNet.CompOptionsModule
       open System.IO
       open Microsoft.FSharp.Compiler.SourceCodeServices
       
-      let prepOptions (options:CompOptions) (code, assembs, defines, prepoIs, nowarns) =
-          let  code2 =
-             [
-                yield! nowarns |> Seq.distinct |> Seq.map (sprintf "#nowarn \"%s\"")
-                yield! code 
-             ] |> String.concat "\n"
-          let  fileName = options?Filename
-          do   File.WriteAllText(fileName, code2)
-          let  options2 = 
-               options  + [|
-                             yield! prepoIs |> Array.map ((/=) opIOption  ) 
-                             yield! assembs |> Array.map ((/=) opReference)
-                             yield! defines |> Array.map ((/=) opDefine   )
-                             if options.Contains "++staticlinkall" then 
-                                 yield! assembs |> Array.map (Path.GetFileNameWithoutExtension >> ((+) "staticlink:") >> ((/=) opGenFSharp2 ))         
-                          |]
-          if options.Contains "++showoptions"    then printfn "%s" (options2.Get (fun _ -> true) |> String.concat "\n")               
-          if options.Contains "++copyassemblies" then 
-              assembs |> Array.iter (fun f -> Path.GetDirectoryName(fileName) |> copyIfMustToDir f)      
-          options2
-          
       type CodeSnippet with
           static member PrepareCompileOptions (options1: CompOptions) (snps: CodeSnippet seq) =
               let  addLinePrepos =  options1.Contains "++removelinedirectives" |> not
@@ -1391,69 +1272,6 @@ namespace FSSGlobal
               let  options2      = prepOptions options1 (code, assembs, defines, prepoIs, nowarns)
               options2
       
-      let dllOptions     = CompOptions [| opTarget      /= "library"                                                                     |]  
-      let exeOptions     = CompOptions [| opTarget      /= "exe"     ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
-      let winExeOptions  = CompOptions [| opTarget      /= "winexe"  ; opGenInternal /= "copyassemblies" ; opGenInternal /= "copyconfig" |]
-      
-      let genericOptions = 
-        CompOptions
-          [|
-             opSnippet     /= "Test"
-             opName        /= fun os -> (os?Snippet : string).Split('/') |> Array.last
-             opDirectory   /= fun os -> "Compiled" +/+ os?Name
-             opExtension   /= fun os -> match os?Target with | "library" -> "dll" | _ -> "exe"
-             opFileName    /= fun os -> os?Directory +/+ os?Name + ".fs"
-             opSource      /= fun os -> os?Filename
-             opOutput      /= fun os -> System.IO.Path.ChangeExtension(os?Source, os?Extension)
-             opConfig      /= fun os -> os?Output + ".config"
-          |]
-          
-      let siteOptions =
-        CompOptions
-          [|
-             opGenWSharper /= "ws:Site"
-             opWebSite     /= fun os -> os?Directory +/+ "website"
-             opGenWSharper /= fun os -> sprintf "project:%s"  os?Name
-          |] 
-       
-      let debugOptions = 
-        CompOptions
-          [|
-             opDebug       /= "full"
-             opDefine      /= "DEBUG"
-             opDefine      /= "TRACE"
-             opGenFSharp2  /= "optimize-"
-             opGenFSharp2  /= "tailcalls-"
-          |]
-      
-      let otherOptions =
-        CompOptions
-          [|
-             opGenFSharp1  /= "g"
-             //@"--noframework"
-             opGenFSharp2  /= "warn:3"
-             opGenFSharp2  /= "warnaserror:76"
-             opGenFSharp2  /= "vserrors"
-             opGenFSharp2  /= "utf8output"
-             opGenFSharp2  /= "fullpaths"
-             opGenFSharp2  /= "flaterrors"
-             opGenFSharp2  /= "subsystemversion:6.00"
-             opGenFSharp2  /= "highentropyva+"
-             opGenInternal /= "showoptions"
-             opGenInternal /= "removelinedirectives"
-          |]
-      
-      let compileOptionsDllDebug (snp:string) = 
-          genericOptions
-          + dllOptions
-          + siteOptions
-          + debugOptions
-          + otherOptions
-          + opSnippet     /= snp
-          
-      let compileOptionsExeDebug    snp = compileOptionsDllDebug snp + exeOptions   
-      let compileOptionsWinExeDebug snp = compileOptionsDllDebug snp + winExeOptions
-          
       type FsStationClient with
           member this.PrepareCompileOptions(options1) = 
               Wrap.wrapper {
@@ -1462,62 +1280,68 @@ namespace FSSGlobal
                   let    options = CodeSnippet.PrepareCompileOptions options1 preds
                   return options
               }
-          member this.CompileSnippetW(options1, printMsgs) = 
+          member this.CompileFSharpW(options:CompOptions) = 
               Wrap.wrapper {
-                  let  snpPath   = options1?Snippet
-                  //printMsgs <| sprintf "Compiling %s ..." snpPath
-                  let  directory = options1?Directory
-                  let  config    = options1?Config
-                  do   Directory.CreateDirectory(directory) |> ignore
-                  let! options2   = this.PrepareCompileOptions options1
-                  let! msgs, stat = options2.Get CompOptions.FSharpOptions 
-                                    |> Array.append [| "IGNORED" |] 
+                  let! msgs, exit = options.Get CompOptions.FSharpOptions 
+                                    |> Array.append [| "IGNORED_Fsc.exe" |] 
                                     |> FSharpChecker.Create().Compile
-                  let! res = Result.succeedWithMsgs () (msgs |> Array.map fSharpError2TranspilerError |> Seq.toList)
+                  let  errs       = [ yield! msgs |> Array.map fSharpError2TranspilerError
+                                      if exit <> 0 && (exit <> 1 || msgs.Length = 0) then yield ErrSimple (sprintf "ExitCode: %d" exit, false) :> ErrMsg
+                                    ]
+                  let! res        = if   exit <> 0
+                                    then Result.failWithMsgs                errs
+                                    else Result.succeedWithMsgs "Compiled!" errs
+                  return res
+              }
+          member this.CompileWebSharperW(options:CompOptions) =
+              Wrap.wrapper {
+                  if options.Contains opWebSite then
+                      let  site     = options?Website
+                      if options.Contains "++createdirectory"     then Directory.CreateDirectory(site) |> ignore
+                  let! res          = options.Get CompOptions.WSharperOptions
+                                       |> Seq.map (sprintf "%A")
+                                       |> String.concat "  "
+                                       |> fun ops -> (new ShellEx(@"..\..\Common\packages\Zafir.FSharp\tools\WsFsc.exe", ops)).StartAndWaitR()
+                  return if res = "" then "Compiled!" else res
+              }
+          member this.CompileSnippetW options  = 
+              Wrap.wrapper {
+                  let  snpPath      = options?Snippet
+                  let  config       = options?Config
+                  let  directory    = options?Directory
+                  do   Directory.CreateDirectory(directory) |> ignore
+                  let! options2     = this.PrepareCompileOptions options
+                  let  compiler     = if options2.Contains "++websharper:1" then this.CompileWebSharperW else this.CompileFSharpW
+                  let! res          = compiler options2
                   if options2.Contains "++copyassemblies" then copyIfMustToDir        "FSharp.Core.dll"      directory
                   if options2.Contains "++copyconfig"     then copyIfNotExistsToFile  "WebServer.exe.config" config
                   return res
               }
-          member this.CompileSnippetW options  = this.CompileSnippetW(options,  printfn "%s")
-          member this.CompileWsSiteW options1 =
-              Wrap.wrapper {
-                  let  snpPath   = options1?Snippet
-                  let  site      = options1?Website
-                  let  dest      = options1?Directory
-                  let  config    = options1?Config
-                  do   Directory.CreateDirectory(site) |> ignore
-                  let! options2  = this.PrepareCompileOptions options1
-                  do!  options2.Get CompOptions.WSharperOptions
-                       |> Seq.map (sprintf "%A")
-                       |> String.concat "  "
-                       |> fun ops -> (new ShellEx(@"..\..\Common\packages\Zafir.FSharp\tools\WsFsc.exe", ops)).StartAndWait()
-                  if options2.Contains "++copyassemblies" then copyIfMustToDir        "FSharp.Core.dll"      dest
-                  if options2.Contains "++copyconfig"     then copyIfNotExistsToFile  "WebServer.exe.config" config
-              }
+              
       
-  //# 1 @"(2)7479dc9d-94cd-4762-a1b8-cf6e09436c3f WebSharper Code.fsx"
-  //#define WEBSHARPER
-  (*
-   Code to be Compiled to Javascript and run in the browser
-   using `Compile WebSharper` or `Run WebSharper`
-  *)
+//# 1 @"f3c40a7d-724c-47fb-88fd-a38b9680b7cb ACTIONS.fsx"
+module Actions =
+  //# 1 @"(2)15ddb111-736f-4f18-9ff3-9b13f9560cb8 Compile Modules.fsx"
+  //#define FSS_SERVER
+  //#define COMPILING
+  open FSSGlobal.FsStationShared // open's need to be here
+  open FSSGlobal.Useful
+  open FSSGlobal.UsefulDotNet.CompOptionsModule
   
-    //# 1 @"(4)5035c5c2-a9d2-49eb-a26c-e0a9637e1af0 FSharpStationServer.fsx"
+  let fsStation = FsStationClient("Compile Modules")
+  [
+  
+  
+    //# 1 @"(4)b89801cc-5412-4025-bd88-c6ec0624a970 FSSGlobalF# CodeFsTranslatorFsTranslator         compileOptionsExeDebug.fsx"
+    ("FSSGlobal/F# Code/FsTranslator/FsTranslator"        |> compileOptionsExeDebug)   + [| opDirectory /= @"D:\Abe\CIPHERWorkspace\CIPHERPrototype\WebServer\bin" |]
     
-      //# 1 @"(6)5e8209e0-9203-4fe0-8289-fb4579b24038 compile & run FSharpStation.fsx"
-      open System.IO
-      open FsStationShared
-      open Useful
-      
-      Wrap.wrapper {
-          let  options   = compileOptionsExeDebug "FSSGlobal/WebSharper Code/FSharpStationServer/FSharpStation"
-          let  exeFile   = options?Output
-          let  site      = Path.GetFullPath(options?Website)
-          do!  FsStationClient("Compile WebSharper").CompileWsSiteW options
-          do   printfn     "Starting %s"     exeFile
-          let  url       = @"http://localhost:9010/"
-          let  parms     = sprintf "%A %A" site url 
-          do   runProcess  exeFile parms |> ignore
-          do   runProcess  url     ""    |> ignore
-      } |> Wrap.runSynchronously (printfn "%s")
-      
+    //# 1 @"(4)d39e3783-fb76-4963-b9fe-2da76c4b2a86 Compile.fsx"
+    // select the module(s) to compile
+    
+    ] |> Seq.iter (id 
+            //>> swap (+) [ opGenInternal /= "showoptions" ] 
+            >> fsStation.CompileSnippetW 
+            >> Wrap.runSynchronouslyS true
+            >> printfn "%s"
+            )
+    
