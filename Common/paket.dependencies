@@ -4,7 +4,7 @@ framework: net47
 nuget CryptSharpOfficial 
 nuget FSharp.Configuration
 nuget FSharp.Core
-nuget FSharp.Compiler.Service
+nuget FSharp.Compiler.Service 13
 nuget FSharp.Data
 nuget FSharp.Data.SqlClient
 nuget HtmlAgilityPack
@@ -22,4 +22,4 @@ nuget Zafir
 nuget Zafir.Compiler
 nuget Zafir.FSharp
 nuget Zafir.Owin
-nuget Zafir.UI.Next         4.0.158.67-beta9
+nuget Zafir.UI.Next        
